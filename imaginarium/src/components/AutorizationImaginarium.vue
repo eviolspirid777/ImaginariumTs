@@ -37,7 +37,28 @@ const hideModalWindow = () => {
   emits("hideModal");
 }
 
+// const translateText = async (text:string) => {
+//   const encodedParams = new URLSearchParams();
+//   encodedParams.set('from', 'en');
+//   encodedParams.set('to', 'ru');
+//   encodedParams.set('text', `${text}`);
+  
+//   const options = {
+//     method: 'POST',
+//     url: 'https://google-translate113.p.rapidapi.com/api/v1/translator/text',
+//     headers: {
+//       'content-type': 'application/x-www-form-urlencoded',
+//       'X-RapidAPI-Key': 'faeb50bffdmsh9219c56861df2a4p12d215jsn05d3202774f1',
+//       'X-RapidAPI-Host': 'google-translate113.p.rapidapi.com'
+//     },
+//     data: encodedParams,
+//   }
+//   const response = await axios.request(options);
+//   console.log(response.data);
+// }
+
 const enterTheGame = async () => {
+  // translateText('it is me');
   try{
     if(playerName.value.length > 0 && playerPassword.value.length > 0){
       let user = {name:playerName.value, password:playerPassword.value};

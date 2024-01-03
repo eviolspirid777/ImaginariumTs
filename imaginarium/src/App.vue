@@ -39,10 +39,6 @@ const showAutorizeWindow = (val:string) => {
   else if(val === "help"&& autorizeWindow.value === false)
     helpWindow.value = true;
 }
-
-const hideAutorizeWindow = () => {
-  autorizeWindow.value = false;
-}
 </script>
 
 <style scoped lang="scss">

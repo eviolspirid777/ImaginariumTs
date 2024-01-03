@@ -7,8 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<UsersContext>(opt => opt.UseNpgsql("Server=localhost;Database=eviolspiridDB;Port=5432;UserId=postgres;Password=94monizi;"));
-
+builder.Services.AddDbContext<ImaginariumContext>(opt => opt.UseNpgsql("Server=localhost;Database=eviolspiridDB;Port=5432;UserId=postgres;Password=94monizi;"));
 var app = builder.Build();
 
 app.UseCors(cors => cors

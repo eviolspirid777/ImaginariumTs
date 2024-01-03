@@ -6,18 +6,19 @@ namespace Imaginarium.Controllers
 	[Route("api/[controller]")]
 	public class UsersController : Controller
 	{
-		private UsersContext _context { get; set; } = null!;
+		private ImaginariumContext _ImaginariumContext { get; set; } = null!;
 
-		public UsersController(UsersContext context) 
+
+		public UsersController(ImaginariumContext usersContext) 
 		{
-			_context = context;
-			_context.Database.EnsureCreated();
+			_ImaginariumContext = usersContext;
+			_ImaginariumContext.Database.EnsureCreated();
 		}
 
 		[HttpGet("autorize")]
 		public async Task<IActionResult> Get(string name, string password)
 		{
-			var user = _context.Users.FirstOrDefault(u => u.name == name);
+			var user = _ImaginariumContext.Users.FirstOrDefault(u => u.name == name);
 			//Если пользователь не найден
 			if (user == null)
 			{
@@ -29,22 +30,22 @@ namespace Imaginarium.Controllers
 			}
 			return BadRequest();
 		}
-		[HttpGet("list")]
+		[HttpGet("listCards")]
 		public async Task<IActionResult> ListAll()
 		{
-			return Ok(_context.Users.ToList());
+			return Ok(_ImaginariumContext.Users.ToList());
 		}
 
 		[HttpPost("register")]
 		public async Task<IActionResult> register(Users user)
 		{
 			//Проверка на наличие студента в бд
-			if (_context.Users.Contains(user))
+			if (_ImaginariumContext.Users.Contains(user))
 			{
 				return BadRequest();
 			}
-			_context.Users.Add(user);
-			_context.SaveChanges();
+			_ImaginariumContext.Users.Add(user);
+			_ImaginariumContext.SaveChanges();
 			return Ok();
 		}
 	}
