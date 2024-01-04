@@ -6,7 +6,7 @@
           <span class="modal-container-exit" @click="hideModalWindow">x</span>
         </div>
         <div class="modal-wrapper-imageAdd">
-            <input type="file" accept="image/*" @change="onFileSelect" style="color: wheat;">
+            <input type="file" accept="image/*" @change="selectFile" style="color: wheat;">
             <button @click="uploadFile">
                 SaveFile
             </button>
@@ -26,7 +26,7 @@ emits("hideModal");
 
 const selectedFile = ref();
 
-const onFileSelect = async (event: any) => {
+const selectFile = async (event: any) => {
   //присваивает переменной изображение
   selectedFile.value = await event.target.files[0];
 }

@@ -15,8 +15,8 @@
         {{ error }}
       </span>
       <div class="modal-wrapper-button">
-        <button type="button" @click="registerAccount">Reg</button>
-        <button type="button" @click="enterTheGame">Enter</button>
+        <button type="button" @click="register">Reg</button>
+        <button type="button" @click="login">Enter</button>
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@ const hideModalWindow = () => {
 //   console.log(response.data);
 // }
 
-const enterTheGame = async () => {
+const login = async () => {
   // translateText('it is me');
   try{
     if(playerName.value.length > 0 && playerPassword.value.length > 0){
@@ -87,7 +87,7 @@ const enterTheGame = async () => {
   }
 }
 
-const registerAccount = async () => {
+const register = async () => {
   try{
     if(playerName.value.length > 0 && playerPassword.value.length > 0) {
       let user = {name:playerName.value, password:playerPassword.value};

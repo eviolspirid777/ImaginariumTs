@@ -2,7 +2,7 @@
   <header class="header">
     <img class="header-logo" src="../icons/base-imaginarium-logo.png" alt="Имаджинариум" />
     <span v-for="(val, key) in helpMenu" :key="key" class="header-menu">
-      <span class="header-menu-item" @click="showAutorizeWindow(val.key)">
+      <span class="header-menu-item" @click="displaySwitcher(val.key)">
         <i :class="val.class" /> {{ val.value }}
       </span>
     </span>
@@ -41,7 +41,7 @@ const helpMenu = ref([
 { key: "upload", value: "Загрузить", class:"fa-regular fa-cards"}
 ])
 
-const showAutorizeWindow = (val:string) => {
+const displaySwitcher = (val:string) => {
   if(val === "play" && helpWindow.value === false)
     autorizeWindow.value = true;
   else if(val === "help"&& autorizeWindow.value === false)
