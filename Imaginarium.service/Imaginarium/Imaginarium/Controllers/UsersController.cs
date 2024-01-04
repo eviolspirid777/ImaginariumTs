@@ -15,7 +15,7 @@ namespace Imaginarium.Controllers
 			_ImaginariumContext.Database.EnsureCreated();
 		}
 
-		[HttpGet("autorize")]
+		[HttpPost("autorize")]
 		public async Task<IActionResult> Get(string name, string password)
 		{
 			var user = _ImaginariumContext.Users.FirstOrDefault(u => u.name == name);

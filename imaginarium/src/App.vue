@@ -10,6 +10,7 @@
   <main class="main">
     <AutorizationWindow v-show="autorizeWindow" @hideModal="() => autorizeWindow = false"/>
     <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
+    <CardsWindow v-show="cardsWindow" @hide-modal="() => cardsWindow = false"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">
@@ -23,14 +24,17 @@
 import {ref} from "vue"
 import AutorizationWindow from "../src/components/AutorizationImaginarium.vue"
 import HelpWindow from "../src/components/HelpImaginarium.vue"
+import CardsWindow from "../src/components/CardsAdd.vue"
 import "../icons/main.scss"
 
 const autorizeWindow = ref(false);
 const helpWindow = ref(false);
+const cardsWindow = ref(false);
 
 const helpMenu = ref([
-{ key: "play", value: "Играть", class: "fa-solid fa-card-spade"},
-{ key: "help", value: "Помощь", class: "fa-sharp fa-regular fa-question"}
+{ key: "play", value: "Играть", class: "fa-sharp fa-regular fa-game-board"},
+{ key: "help", value: "Помощь", class: "fa-sharp fa-regular fa-question"},
+{ key: "upload", value: "Загрузить", class:"fa-regular fa-cards"}
 ])
 
 const showAutorizeWindow = (val:string) => {
@@ -38,7 +42,10 @@ const showAutorizeWindow = (val:string) => {
     autorizeWindow.value = true;
   else if(val === "help"&& autorizeWindow.value === false)
     helpWindow.value = true;
+  else if( val === "upload" && (autorizeWindow.value === false && helpWindow.value === false))
+    cardsWindow.value = true;
 }
+
 </script>
 
 <style scoped lang="scss">

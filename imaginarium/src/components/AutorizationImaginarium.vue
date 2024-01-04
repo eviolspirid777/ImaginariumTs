@@ -62,7 +62,7 @@ const enterTheGame = async () => {
   try{
     if(playerName.value.length > 0 && playerPassword.value.length > 0){
       let user = {name:playerName.value, password:playerPassword.value};
-      let response = (await axios.get(`http://localhost:5276/api/Users/autorize?name=${user.name}&password=${user.password}`));
+      let response = (await axios.post(`http://localhost:5276/api/Users/autorize?name=${user.name}&password=${user.password}`));
       if(response.status == 404){
         error.value = "Неправильный пароль!";
         throw new Error("Неправильный пароль!");
@@ -133,10 +133,10 @@ const registerAccount = async () => {
 
   &-wrapper{
     width: 400px;
-    height: 200px;
+    height: 180px;
     background-color: #000000;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-flow: column nowrap;
     border-radius: 10px;
