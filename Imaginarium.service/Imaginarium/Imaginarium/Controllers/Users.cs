@@ -10,5 +10,6 @@ namespace Imaginarium.Controllers
 		public int id { get; set; }
 		public string name { get; set; }
 		public string password { get; set; }
-    }
+		public Room? Room { get; set; }
+	}
 }

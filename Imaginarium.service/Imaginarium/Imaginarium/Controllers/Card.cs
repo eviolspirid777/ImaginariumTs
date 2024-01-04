@@ -9,8 +9,9 @@ namespace Imaginarium.Controllers
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int id { get; set; }
-        public string cardUrl { get; set; }
-        public string cardName { get; set; }
-        public bool inGame { get; set; }
-    }
+		public string CardUrl { get; set; }
+		public bool InGame { get; set; }
+		public string CardName { get; set; }
+		public Room? Room { get; set; }
+	}
 }

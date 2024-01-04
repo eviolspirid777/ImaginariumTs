@@ -7,6 +7,7 @@ namespace Imaginarium.Controllers
 	{
 		public DbSet<Users> Users { get; set; } = null!;
 		public DbSet<Card> Cards { get; set; } = null!;
+		public DbSet<Room> Rooms { get; set; } = null!;
 
 		public ImaginariumContext(DbContextOptions<ImaginariumContext> options) : base(options)
 		{
