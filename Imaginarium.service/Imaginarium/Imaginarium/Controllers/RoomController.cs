@@ -22,11 +22,11 @@ namespace Imaginarium.Controllers
 			var room = new Room();
 			room.Cards = new List<Card>();
 			room.Users = new List<Users>();
-			room.Cards.Add(new Card { CardName= "HisCard2", CardUrl="my/url3", InGame=false, id=3});
+			room.Cards.Add(new Card { CardName = "HisCard2", CardUrl = "my/url3", InGame = false, id = 3 });
 			var usersList = new List<Users>() { new Users { id = 3, name = "Him" }, new Users { id = 4, name = "Him2" } };
 			room.Users.AddRange(usersList);
 			_context.Rooms.Add(room);
-			await _context.SaveChangesAsync();	
+			await _context.SaveChangesAsync();
 			return Ok();
 		}
 

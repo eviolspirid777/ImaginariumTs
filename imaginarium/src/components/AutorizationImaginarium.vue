@@ -21,43 +21,21 @@
 import { ref } from "vue"
 import axios from "axios"
 
-const emits = defineEmits(["hideModal"]);
+const emits = defineEmits(["hideModal", "closeWindow"]);
 
 const error = ref("")
 const playerName = ref("")
-// const playerPassword = ref("")
 
 const hideModalWindow = () => {
-  emits("hideModal", {});
+  emits("closeWindow");
 }
 
-// const translateText = async (text:string) => {
-//   const encodedParams = new URLSearchParams();
-//   encodedParams.set('from', 'en');
-//   encodedParams.set('to', 'ru');
-//   encodedParams.set('text', `${text}`);
-  
-//   const options = {
-//     method: 'POST',
-//     url: 'https://google-translate113.p.rapidapi.com/api/v1/translator/text',
-//     headers: {
-//       'content-type': 'application/x-www-form-urlencoded',
-//       'X-RapidAPI-Key': 'faeb50bffdmsh9219c56861df2a4p12d215jsn05d3202774f1',
-//       'X-RapidAPI-Host': 'google-translate113.p.rapidapi.com'
-//     },
-//     data: encodedParams,
-//   }
-//   const response = await axios.request(options);
-//   console.log(response.data);
-// }
-
 const login = async () => {
-  // translateText('it is me');
   try{
     if(playerName.value.length > 0){
       let response = (await axios.post(`http://localhost:5276/api/Users/autorize?sendName=${playerName.value}`));
       if(response.status == 400){
-        error.value = "Такого пользователя нет!";
+        error.value = "Такого пользователя нет или он уже в игре!";
         throw new Error("Такого пользователя нет!");
       }
       console.log(response.data);

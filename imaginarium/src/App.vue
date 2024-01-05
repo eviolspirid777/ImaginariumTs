@@ -10,13 +10,10 @@
 
   </header>
   <main class="main">
-    <AutorizationWindow v-if="autorizeWindow" @hideModal="autorizeComplete"/>
+    <AutorizationWindow v-if="autorizeWindow" @hideModal="autorizeComplete" @close-window="() => autorizeWindow = false"/>
     <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
     <CardsWindow v-show="cardsWindow" @hide-modal="() => cardsWindow = false"/>
-    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="clearUser" :selected-user="currentUser"/>
-      <!-- <div>
-        <button @click="test">qweqwe</button>
-      </div> -->
+    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="hideWaitingRoom" :selected-user="currentUser"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">
@@ -33,6 +30,7 @@ import HelpWindow from "../src/components/HelpImaginarium.vue"
 import CardsWindow from "../src/components/CardsAdd.vue"
 import "../icons/main.scss"
 import WaitingRoom from "./components/WaitingRoom.vue"
+import axios from "axios"
 
 const autorizeWindow = ref(false);
 const helpWindow = ref(false);
@@ -47,17 +45,11 @@ const helpMenu = ref([
   { key: "help", value: "Описание", iconclass: "fa-sharp fa-regular fa-question", fontsize: "17px" }
 ]);
 
-
-const clearUser = (user: any) => {
-  if(Object.keys(user).length > 0){
-    currentUser.value = currentUser.value.filter(u => u.name !== user.name);
-    waitingRoomWindow.value = false;
-  }
-  else{
-    waitingRoomWindow.value = false;
-    return ;
-  }
-}
+const hideWaitingRoom = async () => {
+  waitingRoomWindow.value = false;
+  if(currentUser.value.name != undefined)
+    await axios.post(`https://localhost:7186/api/Users/sliceUser?name=${currentUser.value.name}`);
+};
 
 const displaySwitcher = (val:string) => {
   if(val === "play" && helpWindow.value === false && cardsWindow.value === false)
@@ -67,11 +59,6 @@ const displaySwitcher = (val:string) => {
   else if( val === "upload" && autorizeWindow.value === false && helpWindow.value === false)
     cardsWindow.value = true;
 }
-
-// const test = async () => {
-//   let res = await axios.get("https://localhost:7186/api/Room/listRooms");
-//   console.log("my data:",res.data)
-// }
 
 const autorizeComplete = (user: any) => {
   if(Object.keys(user).length > 0)
@@ -87,7 +74,6 @@ const autorizeComplete = (user: any) => {
   }
 
 }
-
 </script>
 
 <style scoped lang="scss">

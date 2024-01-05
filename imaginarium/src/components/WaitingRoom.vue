@@ -6,7 +6,7 @@
         <span class="modal-container-exit" @click="hideModalWindow">x</span>
       </div>
       <ul v-for="(player,key) in players" :key="key">
-        <li>{{player.name}} <i :class="[isValid ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[isValid ? `color:green;`: `color:red;`]"/></li>
+        <li>{{player.name}} <i :class="[player.isReady ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[player.isReady ? `color:green;`: `color:red;`]"/></li>
       </ul>
       <button class="modal-wrapper-ready" @click="isReadySwitcher">Ready</button>
     </div>
@@ -14,30 +14,30 @@
 </template>
 <script lang="ts" setup>
 import axios from 'axios';
-import {ref, onMounted, watch} from "vue";
+import {ref, onMounted, onBeforeUnmount} from "vue";
 
 const emits = defineEmits(["hideModal"]);
 
 const props = defineProps({
-    selectedUser: {
-        type: Object,
-        default: () => {}
-    }
+  selectedUser: {
+    type: Object,
+    default: () => {}
+  }
 });
 
-const players = ref(undefined);
+const players = ref();
 const currentPlayer = ref(props.selectedUser);
-const isValid = ref(false);
+const interval = ref();
 
+// watch(() => currentPlayer, (newVal) => {
+//   currentPlayer.value = newVal;
+// })
 
-watch(() => props.selectedUser, (newVal) => {
-  currentPlayer.value = newVal;
-})
-
-const isReadySwitcher = () => {
-  console.log(currentPlayer.value)
+const isReadySwitcher = async () => {
+  if(currentPlayer.value.name !== undefined)
+    await axios.get(`http://localhost:5276/api/Users/switchReady?name=${currentPlayer.value.name}`);
   currentPlayer.value.isReady = !currentPlayer.value.isReady
-  isValid.value = currentPlayer.value.isReady
+  console.log(currentPlayer.value.isReady)
 }
 
 const fetchPlayers = async () => {
@@ -51,13 +51,15 @@ const fetchPlayers = async () => {
 
 onMounted(() => {
   fetchPlayers();
-  setInterval(fetchPlayers, 5000);
+  setInterval(fetchPlayers, 1000);
 });
 
+onBeforeUnmount(() => {
+  // window.close();
+})
+
 const hideModalWindow = async () => {
-  console.log("this is:",currentPlayer.value)
-  await axios.post(`http://localhost:5276/api/Users/sliceUser`, currentPlayer.value);
-  emits("hideModal", currentPlayer.value);
+  emits("hideModal");
 }
 </script>
 <style scoped lang="scss">

@@ -27,7 +27,6 @@ emits("hideModal");
 const selectedFile = ref();
 
 const selectFile = async (event: any) => {
-  //присваивает переменной изображение
   selectedFile.value = await event.target.files[0];
 }
 
