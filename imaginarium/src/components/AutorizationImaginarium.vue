@@ -78,7 +78,7 @@ const login = async () => {
 .main-modal{
   margin-top: -20px;
   width: 500px;
-  height: 300px;
+  height: 230px;
   background-color: black;
   border-radius: 10px;
 }
@@ -89,7 +89,7 @@ const login = async () => {
     top: 140;
     left: 0;
     width: 100%;
-    height: 94%;
+    height: 89%;
     background-color: rgba(0, 0, 0, 0.6);
     align-items: center;
     justify-content: center;
@@ -97,7 +97,7 @@ const login = async () => {
 
   &-wrapper{
     width: 400px;
-    height: 180px;
+    height: 145px;
     background-color: #000000;
     display: flex;
     justify-content: flex-start;
@@ -108,15 +108,6 @@ const login = async () => {
     color: wheat;
     font-family: Arial, Helvetica, sans-serif;
     &-name{
-      padding-left: 30px;
-      font-size: 20px;
-      cursor: default;
-      user-select: none;
-      & input{
-        background-color: wheat;
-      }
-    }
-    &-password{
       font-size: 20px;
       cursor: default;
       user-select: none;
@@ -132,7 +123,7 @@ const login = async () => {
       display: flex;
         button{
         margin-right: 80px;
-        margin-left: 70px;
+        margin-left: 80px;
         margin-top: 10px;
         min-height: 30px;
         width: 80px;

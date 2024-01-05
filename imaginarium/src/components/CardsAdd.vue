@@ -47,7 +47,7 @@ const uploadFile = async () => {
     top: 140;
     left: 0;
     width: 100%;
-    height: 94%;
+    height: 89%;
     background-color: rgba(0, 0, 0, 0.6);
     align-items: center;
     justify-content: center;

@@ -51,11 +51,11 @@ const helpMenu = ref([
 
 
 const displaySwitcher = (val:string) => {
-  if(val === "play" && helpWindow.value === false)
+  if(val === "play" && helpWindow.value === false && cardsWindow.value === false)
     autorizeWindow.value = true;
-  else if(val === "help"&& autorizeWindow.value === false)
+  else if(val === "help"&& autorizeWindow.value === false && cardsWindow.value === false)
     helpWindow.value = true;
-  else if( val === "upload" && (autorizeWindow.value === false && helpWindow.value === false))
+  else if( val === "upload" && autorizeWindow.value === false && helpWindow.value === false)
     cardsWindow.value = true;
 }
 
