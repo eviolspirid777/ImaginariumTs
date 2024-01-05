@@ -8,9 +8,10 @@
     </span>
   </header>
   <main class="main">
-    <AutorizationWindow v-show="autorizeWindow" @hideModal="() => autorizeWindow = false"/>
+    <AutorizationWindow v-show="autorizeWindow" @hideModal="autorizeComplete"/>
     <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
     <CardsWindow v-show="cardsWindow" @hide-modal="() => cardsWindow = false"/>
+    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="() => waitingRoomWindow = false" :selected-user="currentUser"/>
       <!-- <div>
         <button @click="test">qweqwe</button>
       </div> -->
@@ -29,11 +30,14 @@ import AutorizationWindow from "../src/components/AutorizationImaginarium.vue"
 import HelpWindow from "../src/components/HelpImaginarium.vue"
 import CardsWindow from "../src/components/CardsAdd.vue"
 import "../icons/main.scss"
-import axios from "axios"
+import WaitingRoom from "./components/WaitingRoom.vue"
 
 const autorizeWindow = ref(false);
 const helpWindow = ref(false);
 const cardsWindow = ref(false);
+const waitingRoomWindow = ref(false);
+
+const currentUser = ref ();
 
 const helpMenu = ref([
 { key: "play", value: "Играть", class: "fa-sharp fa-regular fa-game-board"},
@@ -54,6 +58,20 @@ const displaySwitcher = (val:string) => {
 //   let res = await axios.get("https://localhost:7186/api/Room/listRooms");
 //   console.log("my data:",res.data)
 // }
+
+const autorizeComplete = (user: any) => {
+  if(Object.keys(user).length > 0)
+  {
+    autorizeWindow.value = false;
+    waitingRoomWindow.value = true;
+    currentUser.value = user;
+  }
+  else
+  {
+    autorizeWindow.value = false;
+  }
+
+}
 
 </script>
 

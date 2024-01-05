@@ -23,7 +23,7 @@ namespace Imaginarium.Controllers
 			room.Cards = new List<Card>();
 			room.Users = new List<Users>();
 			room.Cards.Add(new Card { CardName= "HisCard2", CardUrl="my/url3", InGame=false, id=3});
-			var usersList = new List<Users>() { new Users { id = 3, name = "Him", password = "HisPass" }, new Users { id = 4, name = "Him2", password = "HisPass2" } };
+			var usersList = new List<Users>() { new Users { id = 3, name = "Him" }, new Users { id = 4, name = "Him2" } };
 			room.Users.AddRange(usersList);
 			_context.Rooms.Add(room);
 			await _context.SaveChangesAsync();	
@@ -44,8 +44,7 @@ namespace Imaginarium.Controllers
 				Users = r.Users.Select(u => new Users
 				{
 					id = u.id,
-					name = u.name,
-					password = u.password
+					name = u.name
 				}),
 				Cards = r.Cards.Select(c => new Card
 				{
