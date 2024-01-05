@@ -25,7 +25,7 @@ namespace Imaginarium.Controllers
 			if (user == null)
 			{
 				_ImaginariumContext.Users.Add(new Users { name = sendName });
-				_ImaginariumContext.SaveChanges();
+				await _ImaginariumContext.SaveChangesAsync();
 				var temp = _ImaginariumContext.Users.FirstOrDefault(u => u.name == sendName);
 				currentPlayers.Add(temp);
 				return Ok();
@@ -40,7 +40,7 @@ namespace Imaginarium.Controllers
 		[HttpPost("sliceUser")]
 		public async Task<IActionResult> sliceUser(Users user)
 		{
-			var userToDelete = _ImaginariumContext.Users.FirstOrDefault(u => u.id == user.id);
+			var userToDelete = _ImaginariumContext.Users.FirstOrDefault(u => u.name == user.name);
 			if (userToDelete == null)
 				return BadRequest();
 			_ImaginariumContext.Users.Remove(userToDelete);

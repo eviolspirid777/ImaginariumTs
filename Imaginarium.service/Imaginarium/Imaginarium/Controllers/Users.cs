@@ -9,6 +9,8 @@ namespace Imaginarium.Controllers
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int id { get; set; }
 		public string name { get; set; }
+		[NotMapped]
+		public bool isReady { get; set; } = false;
 		public Room? Room { get; set; }
 	}
 }

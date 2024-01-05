@@ -10,10 +10,10 @@
 
   </header>
   <main class="main">
-    <AutorizationWindow v-show="autorizeWindow" @hideModal="autorizeComplete"/>
+    <AutorizationWindow v-if="autorizeWindow" @hideModal="autorizeComplete"/>
     <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
     <CardsWindow v-show="cardsWindow" @hide-modal="() => cardsWindow = false"/>
-    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="() => waitingRoomWindow = false" :selected-user="currentUser"/>
+    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="clearUser" :selected-user="currentUser"/>
       <!-- <div>
         <button @click="test">qweqwe</button>
       </div> -->
@@ -39,7 +39,7 @@ const helpWindow = ref(false);
 const cardsWindow = ref(false);
 const waitingRoomWindow = ref(false);
 
-const currentUser = ref ();
+const currentUser = ref([{}]);
 
 const helpMenu = ref([
   { key: "upload", value: "Загрузить", iconclass: "fa-regular fa-cards", fontsize: "17px" },
@@ -48,7 +48,16 @@ const helpMenu = ref([
 ]);
 
 
-
+const clearUser = (user: any) => {
+  if(Object.keys(user).length > 0){
+    currentUser.value = currentUser.value.filter(u => u.name !== user.name);
+    waitingRoomWindow.value = false;
+  }
+  else{
+    waitingRoomWindow.value = false;
+    return ;
+  }
+}
 
 const displaySwitcher = (val:string) => {
   if(val === "play" && helpWindow.value === false && cardsWindow.value === false)
@@ -74,6 +83,7 @@ const autorizeComplete = (user: any) => {
   else
   {
     autorizeWindow.value = false;
+    waitingRoomWindow.value = true;
   }
 
 }
