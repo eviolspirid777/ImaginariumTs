@@ -1,16 +1,18 @@
 <template>
   <header class="header">
-    <img class="header-logo" src="../icons/base-imaginarium-logo.png" alt="Имаджинариум" />
+    <!-- <img class="header-logo" src="../icons/base-imaginarium-logo.png" alt="Имаджинариум" /> --> 
     <span v-for="(val, key) in helpMenu" :key="key" class="header-menu">
-      <span class="header-menu-item" @click="displaySwitcher(val.key)">
-        <i :class="val.class" /> {{ val.value }}
+      <span :style="{ fontSize: val.fontsize }" 
+      class="header-menu-item" @click="displaySwitcher(val.key)">
+        <i :class="val.iconclass" /> {{ val.value }}
       </span>
-    </span>
+  </span>
+
   </header>
   <main class="main">
     <AutorizationWindow v-show="autorizeWindow" @hideModal="() => autorizeWindow = false"/>
-    <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
     <CardsWindow v-show="cardsWindow" @hide-modal="() => cardsWindow = false"/>
+    <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
       <!-- <div>
         <button @click="test">qweqwe</button>
       </div> -->
@@ -36,10 +38,13 @@ const helpWindow = ref(false);
 const cardsWindow = ref(false);
 
 const helpMenu = ref([
-{ key: "play", value: "Играть", class: "fa-sharp fa-regular fa-game-board"},
-{ key: "help", value: "Помощь", class: "fa-sharp fa-regular fa-question"},
-{ key: "upload", value: "Загрузить", class:"fa-regular fa-cards"}
-])
+  { key: "upload", value: "Загрузить", iconclass: "fa-regular fa-cards", fontsize: "17px" },
+  { key: "play", value: "Играть", iconclass: "fa-sharp fa-regular fa-game-board", fontsize: "36px" },
+  { key: "help", value: "Описание", iconclass: "fa-sharp fa-regular fa-question", fontsize: "17px" }
+]);
+
+
+
 
 const displaySwitcher = (val:string) => {
   if(val === "play" && helpWindow.value === false)
@@ -61,34 +66,43 @@ const displaySwitcher = (val:string) => {
 // :root{
 
 // }
-.header{
+.header {
   display: flex;
-  position: absolute;
-  width: 1875px;
-  height: 60px;
-  background-color: rgba(0,0,0,0.8);
+  position: fixed;
+  width: 100%;
+  height: 9%;
+  background-color: rgba(0, 0, 0, 0.8);
   align-items: center;
+  justify-content: center;
   user-select: none;
-  &-logo{
+
+  &-logo {
     color: white;
     margin-left: 20px;
     width: 100px;
     height: 60px;
   }
-  &-menu{
-    &-item{
-      margin-left: 30px;
+
+  &-menu {
+    transition: background-color 0.2s, transform 0.2s;
+    padding: 5px 30px; /* Верхние и нижние отступы */
+    margin: 0px 40px;
+    border-radius: 30px;
+    cursor: pointer;
+    &:hover {
+        transform: scale(1.5);
+        background-color: rgba(255, 166, 0, 0.37); /* Цвет текста при наведении на .header-menu */
+      }
+
+    &-item {
       color: white;
-      cursor: pointer;
       font-family: cursive;
-      font-size: 15px;
-      & i{
-        color: white;
+      font-size: 20px;
+      
+      & i {
+        color: rgb(129, 104, 58);
       }
-      &:hover{
-        color: wheat;
-        font-size: 18px;
-      }
+
     }
   }
 }
@@ -110,11 +124,13 @@ const displaySwitcher = (val:string) => {
 }
 
 .footer{
+  position: fixed;
+  bottom: 0;
   display: flex;
   align-items: center;
-  width: 1875px;
+  width: 100%;
   height: 40px;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   &-vk-tag{
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-weight: 800;
