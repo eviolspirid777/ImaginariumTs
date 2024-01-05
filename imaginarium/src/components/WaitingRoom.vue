@@ -14,9 +14,10 @@
 </template>
 <script lang="ts" setup>
 import axios from 'axios';
-import {ref, onMounted, onBeforeUnmount} from "vue";
+import { emit } from 'process';
+import {ref, onMounted, onBeforeUnmount, watch} from "vue";
 
-const emits = defineEmits(["hideModal"]);
+const emits = defineEmits(["hideModal","switch"]);
 
 const props = defineProps({
   selectedUser: {
@@ -27,15 +28,14 @@ const props = defineProps({
 
 const players = ref();
 const currentPlayer = ref(props.selectedUser);
-const interval = ref();
 
-// watch(() => currentPlayer, (newVal) => {
-//   currentPlayer.value = newVal;
-// })
+watch(() => players.value, (newVal) => {
+  players.value = newVal;
+})
 
 const isReadySwitcher = async () => {
   if(currentPlayer.value.name !== undefined)
-    await axios.get(`http://localhost:5276/api/Users/switchReady?name=${currentPlayer.value.name}`);
+    emits("switch");
   currentPlayer.value.isReady = !currentPlayer.value.isReady
   console.log(currentPlayer.value.isReady)
 }

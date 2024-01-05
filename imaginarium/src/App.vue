@@ -13,7 +13,7 @@
     <AutorizationWindow v-if="autorizeWindow" @hideModal="autorizeComplete" @close-window="() => autorizeWindow = false"/>
     <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
     <CardsWindow v-show="cardsWindow" @hide-modal="() => cardsWindow = false"/>
-    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="hideWaitingRoom" :selected-user="currentUser"/>
+    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="hideWaitingRoom" :selected-user="currentUser" @switch="validateSwitcher"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">
@@ -49,6 +49,10 @@ const hideWaitingRoom = async () => {
   waitingRoomWindow.value = false;
   if(currentUser.value.name != undefined)
     await axios.post(`https://localhost:7186/api/Users/sliceUser?name=${currentUser.value.name}`);
+};
+
+const validateSwitcher = async () => {
+  await axios.get(`http://localhost:5276/api/Users/switchReady?name=${currentUser.value.name}`);
 };
 
 const displaySwitcher = (val:string) => {
