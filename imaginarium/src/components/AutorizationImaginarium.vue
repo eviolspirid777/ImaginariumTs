@@ -8,14 +8,10 @@
       <span class="modal-wrapper-name">
         Имя <input v-model="playerName"/>
       </span>
-      <span class="modal-wrapper-password">
-        Пароль <input v-model="playerPassword"/>
-      </span>
       <span class="modal-wrapper-error" v-if="error.length > 0">
         {{ error }}
       </span>
       <div class="modal-wrapper-button">
-        <button type="button" @click="register">Reg</button>
         <button type="button" @click="login">Enter</button>
       </div>
     </div>
@@ -23,18 +19,16 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue"
-import { useRouter } from 'vue-router'
 import axios from "axios"
 
-const router = useRouter();
 const emits = defineEmits(["hideModal"]);
 
 const error = ref("")
 const playerName = ref("")
-const playerPassword = ref("")
+// const playerPassword = ref("")
 
 const hideModalWindow = () => {
-  emits("hideModal");
+  emits("hideModal", {});
 }
 
 // const translateText = async (text:string) => {
@@ -60,53 +54,23 @@ const hideModalWindow = () => {
 const login = async () => {
   // translateText('it is me');
   try{
-    if(playerName.value.length > 0 && playerPassword.value.length > 0){
-      let user = {name:playerName.value, password:playerPassword.value};
-      let response = (await axios.post(`http://localhost:5276/api/Users/autorize?name=${user.name}&password=${user.password}`));
-      if(response.status == 404){
-        error.value = "Неправильный пароль!";
-        throw new Error("Неправильный пароль!");
-      }
-      else if(response.status == 400){
+    if(playerName.value.length > 0){
+      let response = (await axios.post(`http://localhost:5276/api/Users/autorize?sendName=${playerName.value}`));
+      if(response.status == 400){
         error.value = "Такого пользователя нет!";
         throw new Error("Такого пользователя нет!");
       }
-      console.log(response);
-      router.push({ name: 'WaitingRoom'});
+      console.log(response.data);
       playerName.value = "";
-      playerPassword.value ="";
-      emits("hideModal");
+      emits("hideModal", response.data);
     }
     else {
-      error.value = "Имя или пароль не введены!";
-      throw new Error("Имя или пароль не введены!");
+      error.value = "Имя не введено!";
+      throw new Error("Имя не введено!");
     }
   }
   catch(ex){
     console.error(ex)
-  }
-}
-
-const register = async () => {
-  try{
-    if(playerName.value.length > 0 && playerPassword.value.length > 0) {
-      let user = {name:playerName.value, password:playerPassword.value};
-      let response = await axios.post(`http://localhost:5276/api/Users/register`, user);
-      if(response.status == 400){
-        error.value = "Такой пользователь уже есть!";
-        throw new Error("Такой пользователь уже есть!");
-      }
-      playerName.value = "";
-      playerPassword.value ="";
-      emits("hideModal");
-    }
-    else {
-      error.value = "Не ввели имя или пароль!";
-      throw new Error("Не ввели имя или пароль!");
-    }
-  }
-  catch(ex){
-    console.error(ex);
   }
 }
 </script>

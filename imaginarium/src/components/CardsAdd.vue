@@ -1,19 +1,19 @@
 <template>
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-          <span class="modal-container-header">Добавить карточки</span>
-          <span class="modal-container-exit" @click="hideModalWindow">x</span>
-        </div>
-        <div class="modal-wrapper-imageAdd">
-            <input type="file" accept="image/*" @change="selectFile" style="color: wheat;">
-            <button @click="uploadFile">
-                SaveFile
-            </button>
-        </div>
+  <div class="modal-mask">
+    <div class="modal-wrapper">
+      <div class="modal-container">
+        <span class="modal-container-header">Добавить карточки</span>
+        <span class="modal-container-exit" @click="hideModalWindow">x</span>
+      </div>
+      <div class="modal-wrapper-imageAdd">
+          <input type="file" accept="image/*" @change="selectFile" style="color: wheat;">
+          <button @click="uploadFile">
+              SaveFile
+          </button>
       </div>
     </div>
-  </template>
+  </div>
+</template>
 <script lang="ts" setup>
 import {ref} from "vue"
 import {saveAs} from "file-saver"

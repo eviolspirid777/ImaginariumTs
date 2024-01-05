@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Imaginarium.Controllers
 {
@@ -7,6 +8,7 @@ namespace Imaginarium.Controllers
 	public class UsersController : Controller
 	{
 		private ImaginariumContext _ImaginariumContext { get; set; } = null!;
+		private static List<Users> currentPlayers = new List<Users>();			//список текущих игроков на сервере
 
 
 		public UsersController(ImaginariumContext usersContext) 
@@ -16,37 +18,49 @@ namespace Imaginarium.Controllers
 		}
 
 		[HttpPost("autorize")]
-		public async Task<IActionResult> Get(string name, string password)
+		public async Task<IActionResult> Autorize(string sendName)
 		{
-			var user = _ImaginariumContext.Users.FirstOrDefault(u => u.name == name);
+			var user = _ImaginariumContext.Users.FirstOrDefault(u => u.name == sendName);
 			//Если пользователь не найден
 			if (user == null)
 			{
-				return NotFound();
+				_ImaginariumContext.Users.Add(new Users { name = sendName });
+				_ImaginariumContext.SaveChanges();
+				var temp = _ImaginariumContext.Users.FirstOrDefault(u => u.name == sendName);
+				currentPlayers.Add(temp);
+				return Ok();
 			}
-			if (user.password == password)
+			else if (user.name == sendName)
 			{
+				currentPlayers.Add(user);
 				return Ok(user);
 			}
 			return BadRequest();
 		}
-		[HttpGet("listCards")]
-		public async Task<IActionResult> ListAll()
+		[HttpPost("sliceUser")]
+		public async Task<IActionResult> sliceUser(Users user)
 		{
-			return Ok(_ImaginariumContext.Users.ToList());
+			var userToDelete = _ImaginariumContext.Users.FirstOrDefault(u => u.id == user.id);
+			if (userToDelete == null)
+				return BadRequest();
+			_ImaginariumContext.Users.Remove(userToDelete);
+			currentPlayers.RemoveAll(u => u.name == user.name);
+			await _ImaginariumContext.SaveChangesAsync();
+			return Ok();
 		}
 
-		[HttpPost("register")]
-		public async Task<IActionResult> register(Users user)
+		[HttpGet("getUsers")]
+		public async Task<IActionResult> getAllUsers()
 		{
-			//Проверка на наличие студента в бд
-			if (_ImaginariumContext.Users.Contains(user))
-			{
-				return BadRequest();
-			}
-			_ImaginariumContext.Users.Add(user);
-			_ImaginariumContext.SaveChanges();
-			return Ok();
+			if(currentPlayers.Count > 0)
+				return Ok(currentPlayers.ToList());
+			return BadRequest();
+		}
+
+		[HttpGet("listUsers")]
+		public async Task<IActionResult> listUsers()
+		{
+			return Ok(_ImaginariumContext.Users.ToList());
 		}
 	}
 }
