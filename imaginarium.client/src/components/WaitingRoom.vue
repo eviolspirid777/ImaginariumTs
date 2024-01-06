@@ -28,7 +28,8 @@ const props = defineProps({
 const players = ref();
 const isReady = ref();
 
-let intervalId:any;
+let checkUsers:any;
+let checkUserState:any;
 
 const checkState = async() => {
   isReady.value = (await axios.get(`http://localhost:5276/api/User/checkState?name=${props.selectedUser.name}`)).data;
@@ -53,17 +54,14 @@ const hideModalWindow = async () => {
 
 onMounted(() => {
   fetchPlayers();
-  intervalId = setInterval(fetchPlayers, 1000);
-  setInterval(checkState,1000)
+  checkUsers = setInterval(fetchPlayers, 1000);
+  checkUserState = setInterval(checkState,1000)
 });
 
 onBeforeUnmount(() => {
-  clearInterval(intervalId);
+  clearInterval(checkUsers);
+  clearInterval(checkUserState);
 });
-
-onUnmounted(() => {
-  emits("hideModal");
-})
 </script>
 <style scoped lang="scss">
 ul{
