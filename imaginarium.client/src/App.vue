@@ -16,7 +16,7 @@
   <footer class="footer">
     <div class="footer-vk">
       <i class="fa-brands fa-vk"></i>
-      <a class="footer-vk-tag" @click="redirectToVk">Вконтакте</a>
+      <a class="footer-vk-tag" @click="redirectToVk" href="https://vk.com/id252193795">Вконтакте</a>
     </div>
   </footer>
 </template>
@@ -76,7 +76,6 @@ const autorizeComplete = (user: any) => {
 
 const redirectToVk = ():void => {
   window.open('https://vk.com/avavictor');
-  window.open('https://vk.com/id252193795');
 }
 </script>
 
