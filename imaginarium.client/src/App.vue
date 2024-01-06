@@ -16,7 +16,7 @@
   <footer class="footer">
     <div class="footer-vk">
       <i class="fa-brands fa-vk"></i>
-      <a class="footer-vk-tag" href="https://vk.com/id252193795">Вконтакте</a>
+      <a class="footer-vk-tag" @click="redirectToVk">Вконтакте</a>
     </div>
   </footer>
 </template>
@@ -73,6 +73,11 @@ const autorizeComplete = (user: any) => {
   waitingRoomWindow.value = true;
   currentUser.value = user;
 }
+
+const redirectToVk = ():void => {
+  window.open('https://vk.com/avavictor');
+  window.open('https://vk.com/id252193795');
+}
 </script>
 
 <style scoped lang="scss">
@@ -98,13 +103,13 @@ const autorizeComplete = (user: any) => {
 
   &-menu {
     transition: background-color 0.2s, transform 0.2s;
-    padding: 5px 30px; /* Верхние и нижние отступы */
+    padding: 5px 30px; 
     margin: 0px 40px;
     border-radius: 30px;
     cursor: pointer;
     &:hover {
         transform: scale(1.5);
-        background-color: rgba(255, 166, 0, 0.37); /* Цвет текста при наведении на .header-menu */
+        background-color: rgba(255, 166, 0, 0.37); 
       }
 
     &-item {
