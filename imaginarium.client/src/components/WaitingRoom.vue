@@ -14,7 +14,7 @@
 </template>
 <script lang="ts" setup>
 import axios from 'axios';
-import { ref, onMounted, onBeforeUnmount, onUnmounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const emits = defineEmits(["hideModal", "switch"]);
 
@@ -54,8 +54,8 @@ const hideModalWindow = async () => {
 
 onMounted(() => {
   fetchPlayers();
-  checkUsers = setInterval(fetchPlayers, 1000);
-  checkUserState = setInterval(checkState,1000)
+  checkUsers = setInterval(fetchPlayers, 700);
+  checkUserState = setInterval(checkState, 700)
 });
 
 onBeforeUnmount(() => {

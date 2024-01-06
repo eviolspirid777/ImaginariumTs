@@ -1,6 +1,6 @@
 <template>
   <div class="modal-mask">
-    <div class="modal-wrapper">
+    <div :class="[error.length > 0 ? `modal-wrapper-error`: `modal-wrapper`]">
       <div class="modal-container">
         <span class="modal-container-header">Введите имя</span>
         <span class="modal-container-exit" @click="hideModalWindow"><i class="fa-solid fa-circle-xmark"></i></span>
@@ -8,7 +8,7 @@
       <span class="modal-wrapper-name">
         <input v-model="playerName" placeholder="Введите имя"/>
       </span>
-      <span class="modal-wrapper-error" v-if="error.length > 0">
+      <span class="modal-wrapper-error-text" v-if="error.length > 0">
         {{ error }}
       </span>
       <div class="modal-wrapper-button">
@@ -34,26 +34,41 @@ const hideModalWindow = () => {
 }
 
 const login = async () => {
-  try{
-    if(playerName.value.length > 0){
-      let response = (await axios.post(`http://localhost:5276/api/User/autorize?sendName=${playerName.value}`));
-      if(response.status == 400){
-        error.value = "Такого пользователя нет или он уже в игре!";
+  try {
+    if (playerName.value.length > 0) {
+      let response = await axios.post(`http://localhost:5276/api/User/autorize?sendName=${playerName.value}`);
+      if (response.status === 204) {
+        error.value = "Пользователь уже в игре!";
         throw new Error("Такого пользователя нет!");
       }
       emits("hideModal", response.data);
-    }
-    else {
+    } else {
       error.value = "Имя не введено!";
       throw new Error("Имя не введено!");
     }
+  } catch (ex) {
+    console.error(ex);
   }
-  catch(ex){
-    console.error(ex)
-  }
-}
+};
 </script>
 <style lang="scss" scoped>
+@keyframes pulseShadow {
+  from {
+    box-shadow: 0px 0px 15px wheat;
+  }
+  to {
+    box-shadow: 0px 0px 60px wheat;
+  }
+}
+
+@keyframes pulseError {
+  from {
+    box-shadow: 0px 0px 15px red;
+  }
+  to {
+    box-shadow: 0px 0px 60px red;
+  }
+}
 .main-modal{
   margin-top: -20px;
   width: 500px;
@@ -84,19 +99,10 @@ const login = async () => {
     align-items: center;
     flex-flow: column nowrap;
     border-radius: 10px;
-    box-shadow: 0px 0px 30px #dd1313;
+    box-shadow: 0px 0px 30px wheat;
     color: wheat;
     font-family: Arial, Helvetica, sans-serif;
-
     animation: pulseShadow 1.5s infinite alternate ease-in-out;
-    @keyframes pulseShadow {
-      from {
-        box-shadow: 0px 0px 15px #dd1313;
-      }
-      to {
-        box-shadow: 0px 0px 60px #dd1313;
-      }
-    }
 
     &-name{
       font-size: 20px;
@@ -106,10 +112,21 @@ const login = async () => {
         background-color: wheat;
       }
     }
+
     &-error{
-      color: red;
-      font-size: 16px;
+      height: 150px; 
+      background-color: #000000;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex-flow: column nowrap;
+      border-radius: 10px;
+      font-family: Arial, Helvetica, sans-serif;
+      animation: pulseError 1.5s infinite alternate ease-in-out;
+      color: #dd1313;
+      font-size: 14px;
     }
+
     &-button{
       display: flex;
         button{
@@ -149,14 +166,15 @@ const login = async () => {
   }
 
   &-exit {
-    color: red;
+    color: wheat;
     margin: 10px;
     right: 0;
     top: 0;
     user-select: none;
     position: absolute;
-
     &:hover {
+      border-radius: 10px;
+      box-shadow: 0px 0px 12px red;
       cursor: pointer;
     }
   }

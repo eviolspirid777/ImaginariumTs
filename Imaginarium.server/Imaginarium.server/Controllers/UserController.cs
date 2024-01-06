@@ -7,10 +7,14 @@ namespace Imaginarium.server.Controllers
 	public class UserController : Controller
 	{
 		private static List<User> currentPlayers = new List<User>();          //список текущих игроков на сервере
-		
+
 		[HttpPost("autorize")]
 		public async Task<IActionResult> Autorize(string sendName)
 		{
+			if (currentPlayers.Any(p => p.name == sendName))
+			{
+				return NoContent();
+			}
 			currentPlayers.Add(new User { name = sendName });
 			return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
 		}
