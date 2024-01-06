@@ -59,7 +59,7 @@
 
 const emits = defineEmits(["hideModal"]);
 
-const hideModalWindow = () => {
+const hideModalWindow = ():void => {
   emits("hideModal");
 }
 </script>

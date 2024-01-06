@@ -66,7 +66,13 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 ul{
   li{
-    width: 90px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 40px;
+    max-width: 120px;
     border: 1px solid wheat;
     margin-top: 10px;
     i {
@@ -92,6 +98,7 @@ ul{
     width: 40%;
     height: 40%;
     background-color: #000000;
+    display: flex;
     flex-flow: column wrap;
     border-radius: 10px;
     box-shadow: 1px 1px 10px #b8c952;
@@ -100,10 +107,10 @@ ul{
     padding-left: 20px;
     padding-right: 20px;
     &-ready{
+      height: 40px;
       width: 80px;
-      height: 50px;
       margin-left: 85%;
-      margin-top: 24%;
+      margin-top: 100px;
       color: black;
       background-color: wheat;
       border: 0px solid wheat;
@@ -129,6 +136,7 @@ ul{
     }
     &-exit{
       width: 20px;
+      height: 25px;
       background-color: wheat;
       color: black;
       user-select: none;

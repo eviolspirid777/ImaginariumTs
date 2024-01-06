@@ -20,17 +20,18 @@ import {saveAs} from "file-saver"
 
 const emits = defineEmits(["hideModal"]);
 
-const hideModalWindow = () => {
+const hideModalWindow = ():void => {
 emits("hideModal");
 }
 
-const selectedFile = ref();
+const selectedFile = ref<File | null>();
 
-const selectFile = async (event: any) => {
-  selectedFile.value = await event.target.files[0];
+const selectFile = async (event: Event):Promise<void> => {
+  const inputElement = event.target as HTMLInputElement;
+  selectedFile.value = inputElement.files ? inputElement.files[0] : null;
 }
 
-const uploadFile = async () => {
+const uploadFile = async ():Promise<void> => {
   const response = selectedFile.value 
   const fileName = `img_${Date.now()}.png`;
   saveAs(response, fileName);

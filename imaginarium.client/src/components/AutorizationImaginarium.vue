@@ -20,20 +20,20 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue"
+import { ref, type Ref } from "vue"
 import axios from "axios"
 
 const emits = defineEmits(["hideModal", "closeWindow"]);
 
-const hoverIcon = ref(false);
-const error = ref("")
-const playerName = ref("")
+const hoverIcon: Ref<boolean> = ref(false);
+const error: Ref<string> = ref("")
+const playerName: Ref<string> = ref("")
 
-const hideModalWindow = () => {
+const hideModalWindow = ():void => {
   emits("closeWindow");
 }
 
-const login = async () => {
+const login = async ():Promise<void> => {
   try {
     if (playerName.value.length > 0) {
       let response = await axios.post(`http://localhost:5276/api/User/autorize?sendName=${playerName.value}`);

@@ -22,22 +22,23 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue"
+import {ref, watch, type Ref} from "vue"
 import AutorizationWindow from "../src/components/AutorizationImaginarium.vue"
 import HelpWindow from "../src/components/HelpImaginarium.vue"
 import CardsWindow from "../src/components/CardsAdd.vue"
 import "../icons/main.scss"
 import WaitingRoom from "./components/WaitingRoom.vue"
 import axios from "axios"
+import {type User} from "../src/types/User"
 
 const autorizeWindow = ref(false);
 const helpWindow = ref(false);
 const cardsWindow = ref(false);
 const waitingRoomWindow = ref(false);
 
-const currentUser = ref([{}]);
+const currentUser = ref<User|undefined>();
 
-watch(currentUser.value, (newValue) => {
+watch(() => currentUser.value, (newValue) => {
   currentUser.value = newValue;
 })
 
@@ -49,11 +50,13 @@ const helpMenu = ref([
 
 const hideWaitingRoom = async () => {
   waitingRoomWindow.value = false;
-  await axios.post(`http://localhost:5276/api/User/sliceUser?name=${currentUser.value.name}`);
+  if(currentUser.value != undefined)
+    await axios.post(`http://localhost:5276/api/User/sliceUser?name=${currentUser.value.name}`);
 };
 
 const validateSwitcher = async () => {
-  await axios.post(`http://localhost:5276/api/User/switchReady?name=${currentUser.value.name}`);
+  if(currentUser.value != undefined)
+    await axios.post(`http://localhost:5276/api/User/switchReady?name=${currentUser.value.name}`);
 };
 
 const displaySwitcher = (val:string) => {
@@ -148,8 +151,9 @@ const autorizeComplete = (user: any) => {
     margin-left: 20px;
     text-decoration: none;
     user-select: none;
+    color: wheat;
     &:visited{
-      color: white;
+      color: wheat;
     }
     &:hover{
       font-size: 20px;

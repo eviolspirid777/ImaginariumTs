@@ -1,5 +1,5 @@
 export type User = {
-    id: number;
-    isReady: boolean;
-    name: string;
-}
+    id: number | undefined;
+    isReady: boolean | undefined;
+    name: string | undefined;
+} | undefined
