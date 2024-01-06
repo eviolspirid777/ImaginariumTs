@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\prjcts\\ImaginariumTS\\Imaginarium.service\\Imaginarium.server\\Imaginarium.server\\Imaginarium.server.csproj",
+      "projectUniqueName": "F:\\prjcts\\ImaginariumTS\\Imaginarium.server\\Imaginarium.server\\Imaginarium.server.csproj",
       "projectName": "Imaginarium.server",
-      "projectPath": "F:\\prjcts\\ImaginariumTS\\Imaginarium.service\\Imaginarium.server\\Imaginarium.server\\Imaginarium.server.csproj",
+      "projectPath": "F:\\prjcts\\ImaginariumTS\\Imaginarium.server\\Imaginarium.server\\Imaginarium.server.csproj",
       "packagesPath": "C:\\Users\\eviol\\.nuget\\packages\\",
-      "outputPath": "F:\\prjcts\\ImaginariumTS\\Imaginarium.service\\Imaginarium.server\\Imaginarium.server\\obj\\",
+      "outputPath": "F:\\prjcts\\ImaginariumTS\\Imaginarium.server\\Imaginarium.server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\eviol\\AppData\\Roaming\\NuGet\\NuGet.Config",

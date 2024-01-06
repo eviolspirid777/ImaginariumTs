@@ -14,7 +14,7 @@
 </template>
 <script lang="ts" setup>
 import axios from 'axios';
-import { ref, onMounted, onBeforeUnmount, onUnmounted, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, onUnmounted } from "vue";
 
 const emits = defineEmits(["hideModal", "switch"]);
 
@@ -25,14 +25,14 @@ const props = defineProps({
   }
 })
 
-watch(props.selectedUser, (newValue) => {
-  currentUser.value = newValue;
-})
-
 const players = ref();
-const currentUser = ref(props.selectedUser);
+const isReady = ref();
 
 let intervalId:any;
+
+const checkState = async() => {
+  isReady.value = (await axios.get(`http://localhost:5276/api/User/checkState?name=${props.selectedUser.name}`)).data;
+}
 
 const isReadySwitcher = () => {
   emits("switch");
@@ -54,6 +54,7 @@ const hideModalWindow = async () => {
 onMounted(() => {
   fetchPlayers();
   intervalId = setInterval(fetchPlayers, 1000);
+  setInterval(checkState,1000)
 });
 
 onBeforeUnmount(() => {

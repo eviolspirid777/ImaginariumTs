@@ -11,7 +11,7 @@
     <AutorizationWindow v-if="autorizeWindow" @hideModal="autorizeComplete" @close-window="() => autorizeWindow = false"/>
     <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
     <CardsWindow v-show="cardsWindow" @hide-modal="() => cardsWindow = false"/>
-    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="hideWaitingRoom" @switch="validateSwitcher"/>
+    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="hideWaitingRoom" @switch="validateSwitcher" :selected-user="currentUser"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">

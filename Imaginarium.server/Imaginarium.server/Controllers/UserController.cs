@@ -25,6 +25,13 @@ namespace Imaginarium.server.Controllers
 			return Ok();
 		}
 
+		[HttpGet("checkState")]
+
+		public async Task<IActionResult> CheckState(string name)
+		{
+			return Ok(currentPlayers.FirstOrDefault(u => u.name == name).isReady);
+		}
+
 		[HttpPost("switchReady")]
 		public async Task<IActionResult> SwitchReady(string name)
 		{
