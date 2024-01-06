@@ -14,10 +14,9 @@
 </template>
 <script lang="ts" setup>
 import axios from 'axios';
-import { emit } from 'process';
-import {ref, onMounted, onBeforeUnmount, watch} from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 
-const emits = defineEmits(["hideModal","switch"]);
+const emits = defineEmits(["hideModal", "switch"]);
 
 const props = defineProps({
   selectedUser: {
@@ -27,18 +26,20 @@ const props = defineProps({
 });
 
 const players = ref();
-const currentPlayer = ref(props.selectedUser);
+// const currentPlayer = ref(props.selectedUser);
+
+let intervalId:any;
 
 watch(() => players.value, (newVal) => {
   players.value = newVal;
-})
+});
 
 const isReadySwitcher = async () => {
-  if(currentPlayer.value.name !== undefined)
-    emits("switch");
-  currentPlayer.value.isReady = !currentPlayer.value.isReady
-  console.log(currentPlayer.value.isReady)
-}
+  // if (currentPlayer.value.name != undefined)
+  emits("switch");
+  // currentPlayer.value.isReady = !currentPlayer.value.isReady;
+  // console.log(currentPlayer.value.isReady);
+};
 
 const fetchPlayers = async () => {
   try {
@@ -49,18 +50,18 @@ const fetchPlayers = async () => {
   }
 };
 
+const hideModalWindow = async () => {
+  emits("hideModal");
+};
+
 onMounted(() => {
   fetchPlayers();
-  setInterval(fetchPlayers, 1000);
+  intervalId = setInterval(fetchPlayers, 1000);
 });
 
 onBeforeUnmount(() => {
-  // window.close();
-})
-
-const hideModalWindow = async () => {
-  emits("hideModal");
-}
+  clearInterval(intervalId);
+});
 </script>
 <style scoped lang="scss">
 ul{

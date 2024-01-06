@@ -1,6 +1,5 @@
 <template>
   <header class="header">
-    <!-- <img class="header-logo" src="../icons/base-imaginarium-logo.png" alt="Имаджинариум" /> --> 
     <span v-for="(val, key) in helpMenu" :key="key" class="header-menu">
       <span :style="{ fontSize: val.fontsize }" 
       class="header-menu-item" @click="displaySwitcher(val.key)">
@@ -52,7 +51,8 @@ const hideWaitingRoom = async () => {
 };
 
 const validateSwitcher = async () => {
-  await axios.get(`http://localhost:5276/api/Users/switchReady?name=${currentUser.value.name}`);
+  if(currentUser.value != null || currentUser.value != undefined)
+    await axios.get(`http://localhost:5276/api/Users/switchReady?name=${currentUser.value.name}`);
 };
 
 const displaySwitcher = (val:string) => {
