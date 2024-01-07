@@ -2,21 +2,22 @@
   <div class="modal-mask">
     <div class="modal-wrapper">
       <div class="modal-container">
-        <span class="modal-container-header">Комната ожидания</span>
+        <span class="modal-container-header">Комната ожидания: {{headerText}}</span>
         <span class="modal-container-exit" @click="hideModalWindow">x</span>
       </div>
       <ul v-for="(player,key) in players" :key="key">
-        <li>{{player.name}} <i :class="[player.isReady ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[player.isReady ? `color:green;`: `color:red;`]"/></li>
+        <li v-if="player">{{player.name}} <i :class="[player.isReady ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[player.isReady ? `color:green;`: `color:red;`]"/></li>
       </ul>
       <button class="modal-wrapper-ready" @click="isReadySwitcher">Ready</button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
+import type { User } from '@/types/User';
 import axios from 'axios';
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 
-const emits = defineEmits(["hideModal", "switch"]);
+const emits = defineEmits(["hideModal", "switch", "startGame"]);
 
 const props = defineProps({
   selectedUser: {
@@ -25,21 +26,32 @@ const props = defineProps({
   }
 })
 
-const players = ref();
-const isReady = ref();
+const players = ref<Array<User>>();
+const isReady = ref<boolean>();
 
 let checkUsers:any;
 let checkUserState:any;
 
-const checkState = async() => {
+watch(() => players.value, (newValue) => {
+  let cnt = 0;
+  newValue?.forEach( player => {
+    if(player?.isReady){
+      cnt++;
+      if(newValue.length == cnt)
+        emits("startGame");
+    }
+  })
+})
+
+const checkState = async():Promise<void> => {
   isReady.value = (await axios.get(`http://localhost:5276/api/User/checkState?name=${props.selectedUser.name}`)).data;
 }
 
-const isReadySwitcher = () => {
+const isReadySwitcher = ():void => {
   emits("switch");
 };
 
-const fetchPlayers = async () => {
+const fetchPlayers = async ():Promise<void> => {
   try {
     const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
     players.value = response.data;
@@ -48,7 +60,18 @@ const fetchPlayers = async () => {
   }
 };
 
-const hideModalWindow = async () => {
+const headerText = computed(() =>{
+  if(players.value){
+    if(players.value?.length == 1)
+      return `${players.value.length} игрок`;
+    else if(players.value && players.value?.length > 1 && players.value?.length < 5)
+      return `${players.value.length} игрока`;
+    return `${players.value.length} игроков`;
+  }
+  return "";
+})
+
+const hideModalWindow = async ():Promise<void> => {
   emits("hideModal");
 };
 
@@ -133,7 +156,7 @@ ul{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 22px;
     &-header{
-      padding-left: 35%;
+      padding-left: 25%;
       cursor: default;
       user-select: none;
     }
