@@ -48,6 +48,7 @@ const helpMenu = ref([
   { key: "help", value: "Описание", iconclass: "fa-sharp fa-regular fa-question", fontsize: "17px" }
 ]);
 
+
 const hideWaitingRoom = async () => {
   waitingRoomWindow.value = false;
   if(currentUser.value != undefined)

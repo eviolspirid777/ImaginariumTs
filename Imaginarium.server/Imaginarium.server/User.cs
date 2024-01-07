@@ -7,5 +7,6 @@ namespace Imaginarium.server
 		public int id { get; set; }
 		public string name { get; set; }
 		public bool isReady { get; set; }
+		public List<Card>? cards { get; set; } = null;
 	}
 }

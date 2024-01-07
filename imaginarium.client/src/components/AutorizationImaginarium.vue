@@ -3,7 +3,7 @@
     <div :class="[error.length > 0 ? `modal-wrapper-error`: `modal-wrapper`]">
       <div class="modal-container">
         <span class="modal-container-header">Введите имя</span>
-        <span class="modal-container-exit" @click="hideModalWindow"><i class="fa-solid fa-circle-xmark"></i></span>
+        <span class="modal-container-exit" @click="hideModalWindow" ><i class="fa-solid fa-circle-xmark"></i></span>
       </div>
       <span class="modal-wrapper-name">
         <input v-model="playerName" placeholder="Введите имя"/>
@@ -26,6 +26,7 @@ import axios from "axios"
 const emits = defineEmits(["hideModal", "closeWindow"]);
 
 const hoverIcon: Ref<boolean> = ref(false);
+const hoverExit: Ref<Boolean> = ref(false);
 const error: Ref<string> = ref("")
 const playerName: Ref<string> = ref("")
 

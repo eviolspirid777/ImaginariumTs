@@ -54,8 +54,8 @@ const hideModalWindow = async () => {
 
 onMounted(() => {
   fetchPlayers();
-  checkUsers = setInterval(fetchPlayers, 700);
-  checkUserState = setInterval(checkState, 700)
+  checkUsers = setInterval(fetchPlayers, 100);
+  checkUserState = setInterval(checkState, 100)
 });
 
 onBeforeUnmount(() => {
@@ -85,18 +85,20 @@ ul{
   &-mask{
     position: absolute;
     display: flex;
-    top: 140;
     left: 0;
+    margin-bottom: 16px;
     width: 100%;
-    height: 94%;
+    height: 87%;
     background-color: rgba(0, 0, 0, 0.6);
     align-items: center;
     justify-content: center;
   }
 
   &-wrapper{
-    width: 40%;
+    width: 37%;
     height: 40%;
+    max-width: 37%;
+    max-height: 40%;
     background-color: #000000;
     display: flex;
     flex-flow: column wrap;
@@ -109,8 +111,8 @@ ul{
     &-ready{
       height: 40px;
       width: 80px;
-      margin-left: 85%;
-      margin-top: 100px;
+      margin-left: 600px;
+      margin-top: 80px;
       color: black;
       background-color: wheat;
       border: 0px solid wheat;
@@ -121,6 +123,7 @@ ul{
   &-container{
     display: flex;
     justify-content: space-between;
+    width: 90%;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 1);
     padding: 20px;
@@ -135,9 +138,13 @@ ul{
       user-select: none;
     }
     &-exit{
-      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
       height: 25px;
       background-color: wheat;
+      border-radius: 2px;
       color: black;
       user-select: none;
       &:hover{

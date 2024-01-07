@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Imaginarium.server.Controllers
 {
@@ -7,6 +8,34 @@ namespace Imaginarium.server.Controllers
 	public class UserController : Controller
 	{
 		private static List<User> currentPlayers = new List<User>();          //список текущих игроков на сервере
+		private static List<Card> currentCards = new List<Card>();          //список всех Карточек на сервере
+
+		[HttpGet("randomCards")]
+		public async Task<IActionResult> RandomCards()
+		{
+			string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client\ImaginImag\");
+			Console.WriteLine(prop);
+			if (Directory.Exists(prop))
+			{
+				// Получение списка файлов с расширением jpg, png, и т.д. (можете настроить под свои нужды)
+				List<string> imageFiles = Directory.GetFiles(prop, "*.*", SearchOption.AllDirectories)
+											   .Where(s => s.EndsWith(".jpg") || s.EndsWith(".jpeg") || s.EndsWith(".png") || s.EndsWith(".gif"))
+											   .ToList();
+				Console.WriteLine("Список изображений в папке:");
+				//обрезаем путь к файлам и оставляем только их контент
+				for (int i = 0; i < imageFiles.Count; i++)
+				{
+					imageFiles[i] = imageFiles[i].Substring(prop.Length);  //обрезаем
+					Console.WriteLine($"img {i + 1}: {imageFiles[i]}");		//выводим кол-во изображений на экран
+					var newCard = new Card { cardUrl = @$"{prop}{imageFiles[i]}", id = i, cardName = imageFiles[i] };		//создаем экземпляр карточки
+					currentCards.Add(newCard);		//присваиваем экземпляр
+				}
+				return Ok(currentCards.ToList());
+			}
+			Console.WriteLine("Указанная папка не существует.");
+			return NoContent();
+		}
+
 
 		[HttpPost("autorize")]
 		public async Task<IActionResult> Autorize(string sendName)

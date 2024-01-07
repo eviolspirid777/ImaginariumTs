@@ -43,10 +43,10 @@ const uploadFile = async ():Promise<void> => {
   &-mask{
     position: absolute;
     display: flex;
-    top: 140;
     left: 0;
+    margin-bottom: 28px;
     width: 100%;
-    height: 89%;
+    height: 87%;
     background-color: rgba(0, 0, 0, 0.6);
     align-items: center;
     justify-content: center;
