@@ -8,10 +8,10 @@
     </span>
   </header>
   <main class="main">
-    <AutorizationWindow v-if="autorizeWindow" @hideModal="autorizeComplete" @close-window="() => autorizeWindow = false"/>
-    <HelpWindow v-show="helpWindow" @hideModal="() => helpWindow = false" />
-    <CardsWindow v-show="cardsWindow" @hide-modal="() => cardsWindow = false"/>
-    <WaitingRoom v-if="waitingRoomWindow" @hide-modal="hideWaitingRoom" @start-game="hideWaitingRoom" @switch="validateSwitcher" :selected-user="currentUser"/>
+    <AutorizationWindow v-if="windowsValid[windows.AUTORIZATION]" @hideModal="autorizeComplete" @close-window="() => windowsValid[windows.AUTORIZATION] = false"/>
+    <HelpWindow v-show="windowsValid[windows.HELP]" @hideModal="() => windowsValid[windows.HELP] = false" />
+    <CardsWindow v-show="windowsValid[windows.CARD]" @hide-modal="() => windowsValid[windows.CARD] = false"/>
+    <WaitingRoom v-if="windowsValid[windows.WAITING]" @hide-modal="hideWaitingRoom" @start-game="hideWaitingRoom" @switch="validateSwitcher" :selected-user="currentUser"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">
@@ -31,47 +31,56 @@ import WaitingRoom from "./components/WaitingRoom.vue"
 import axios from "axios"
 import {type User} from "../src/types/User"
 
-const autorizeWindow = ref(false);
-const helpWindow = ref(false);
-const cardsWindow = ref(false);
-const waitingRoomWindow = ref(false);
-
 const currentUser = ref<User|undefined>();
 
 watch(() => currentUser.value, (newValue) => {
   currentUser.value = newValue;
 })
 
-const helpMenu = ref([
+const helpMenu = ref<Array<any>>([
   { key: "upload", value: "Загрузить", iconclass: "fa-regular fa-cards", fontsize: "17px" },
   { key: "play", value: "Играть", iconclass: "fa-sharp fa-regular fa-game-board", fontsize: "36px" },
   { key: "help", value: "Описание", iconclass: "fa-sharp fa-regular fa-question", fontsize: "17px" }
 ]);
 
+const windows = {
+  AUTORIZATION: 0,
+  CARD: 1,
+  HELP: 2,
+  WAITING: 3
+}
 
-const hideWaitingRoom = async () => {
-  waitingRoomWindow.value = false;
+const windowsValid = ref({
+  [windows.AUTORIZATION]: false,
+  [windows.CARD]: false,
+  [windows.HELP]: false,
+  [windows.WAITING]: false
+})
+
+
+const hideWaitingRoom = async ():Promise<any> => {
+  windowsValid.value[windows.WAITING] = false;
   if(currentUser.value != undefined)
     await axios.post(`http://localhost:5276/api/User/sliceUser?name=${currentUser.value.name}`);
 };
 
-const validateSwitcher = async () => {
+const validateSwitcher = async ():Promise<any> => {
   if(currentUser.value != undefined)
     await axios.post(`http://localhost:5276/api/User/switchReady?name=${currentUser.value.name}`);
 };
 
-const displaySwitcher = (val:string) => {
-  if(val === "play" && helpWindow.value === false && cardsWindow.value === false)
-    autorizeWindow.value = true;
-  else if(val === "help"&& autorizeWindow.value === false && cardsWindow.value === false)
-    helpWindow.value = true;
-  else if( val === "upload" && autorizeWindow.value === false && helpWindow.value === false)
-    cardsWindow.value = true;
+const displaySwitcher = (val:string):any => {
+  if(val === "play" && windowsValid.value[windows.HELP] === false && windowsValid.value[windows.CARD] === false)
+    windowsValid.value[windows.AUTORIZATION] = true;
+  else if(val === "help"&& windowsValid.value[windows.AUTORIZATION] === false && windowsValid.value[windows.CARD] === false)
+    windowsValid.value[windows.HELP] = true;
+  else if( val === "upload" && windowsValid.value[windows.AUTORIZATION] === false && windowsValid.value[windows.HELP] === false)
+    windowsValid.value[windows.CARD] = true;
 }
 
 const autorizeComplete = (user: any) => {
-  autorizeWindow.value = false;
-  waitingRoomWindow.value = true;
+  windowsValid.value[windows.AUTORIZATION] = false;
+  windowsValid.value[windows.WAITING] = true;
   currentUser.value = user;
 }
 

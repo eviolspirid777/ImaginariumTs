@@ -1,5 +1,5 @@
 export type Card = {
-    id: number,
-    cardUrl: string,
-    cardName: string
-}
+    id: number|undefined,
+    cardUrl: string|undefined,
+    cardName: string|undefined
+} | undefined

@@ -78,7 +78,7 @@ const hideModalWindow = async ():Promise<void> => {
 onMounted(() => {
   fetchPlayers();
   checkUsers = setInterval(fetchPlayers, 100);
-  checkUserState = setInterval(checkState, 100)
+  checkUserState = setInterval(checkState, 100);
 });
 
 onBeforeUnmount(() => {
