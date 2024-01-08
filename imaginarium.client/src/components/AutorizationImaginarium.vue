@@ -26,7 +26,6 @@ import axios from "axios"
 const emits = defineEmits(["hideModal", "closeWindow"]);
 
 const hoverIcon: Ref<boolean> = ref(false);
-const hoverExit: Ref<Boolean> = ref(false);
 const error: Ref<string> = ref("")
 const playerName: Ref<string> = ref("")
 
@@ -51,7 +50,9 @@ const login = async ():Promise<void> => {
     console.error(ex);
   }
 };
+
 </script>
+
 <style lang="scss" scoped>
 @keyframes pulseShadow {
   from {

@@ -11,7 +11,8 @@
     <AutorizationWindow v-if="windowsValid[windows.AUTORIZATION]" @hideModal="autorizeComplete" @close-window="() => windowsValid[windows.AUTORIZATION] = false"/>
     <HelpWindow v-show="windowsValid[windows.HELP]" @hideModal="() => windowsValid[windows.HELP] = false" />
     <CardsWindow v-show="windowsValid[windows.CARD]" @hide-modal="() => windowsValid[windows.CARD] = false"/>
-    <WaitingRoom v-if="windowsValid[windows.WAITING]" @hide-modal="hideWaitingRoom" @start-game="hideWaitingRoom" @switch="validateSwitcher" :selected-user="currentUser"/>
+    <WaitingRoom v-if="windowsValid[windows.WAITING]" @hide-modal="hideWaitingRoom" @start-game="startGame" @switch="validateSwitcher" :selected-user="currentUser"/>
+    <GameWindow v-if="windowsValid[windows.GAME]" @hide-modal="() => windowsValid[windows.GAME] = false"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">
@@ -22,12 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch, type Ref} from "vue"
+import {ref, watch} from "vue"
 import AutorizationWindow from "../src/components/AutorizationImaginarium.vue"
 import HelpWindow from "../src/components/HelpImaginarium.vue"
 import CardsWindow from "../src/components/CardsAdd.vue"
-import "../icons/main.scss"
 import WaitingRoom from "./components/WaitingRoom.vue"
+import GameWindow from "../src/components/GameImaginarium.vue"
 import axios from "axios"
 import {type User} from "../src/types/User"
 
@@ -47,16 +48,22 @@ const windows = {
   AUTORIZATION: 0,
   CARD: 1,
   HELP: 2,
-  WAITING: 3
+  WAITING: 3,
+  GAME: 4
 }
 
 const windowsValid = ref({
   [windows.AUTORIZATION]: false,
   [windows.CARD]: false,
   [windows.HELP]: false,
-  [windows.WAITING]: false
+  [windows.WAITING]: false,
+  [windows.GAME]: false
 })
 
+const startGame = () =>{
+  windowsValid.value[windows.WAITING] = false
+  windowsValid.value[windows.GAME] = true
+}
 
 const hideWaitingRoom = async ():Promise<any> => {
   windowsValid.value[windows.WAITING] = false;
