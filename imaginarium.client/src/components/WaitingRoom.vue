@@ -35,7 +35,7 @@ let checkUserState:any;
 watch(() => players.value, (newValue) => {
   let cnt = 0;
   newValue?.forEach( player => {
-    if(player?.isReady){
+    if(player?.isReady && players.value.length > 1){
       cnt++;
       if(newValue.length == cnt)
         emits("startGame");
@@ -60,7 +60,7 @@ const fetchPlayers = async ():Promise<void> => {
   }
 };
 
-const headerText = computed(() =>{
+const headerText = computed(() => {
   if(players.value){
     if(players.value?.length == 1)
       return `${players.value.length} игрок`;

@@ -77,7 +77,6 @@ onBeforeUnmount(() => {
     align-items: center;
     justify-content: center;
   }
-
   &-wrapper{
     width: 90%;
     height: 90%;
@@ -90,46 +89,41 @@ onBeforeUnmount(() => {
     font-family: Arial, Helvetica, sans-serif;
     padding-left: 20px;
     padding-right: 20px;
-
     &-game{
+      display: flex;
+      flex-flow: row nowrap;
+      &-score{
         display: flex;
-        flex-flow: row nowrap;
-
-        &-score{
-            display: flex;
-            flex-flow: column nowrap;
-            max-width: 15%;
-            margin-top: 20px;
-            padding: 5px;
-            border: 1px solid wheat;
-            text-align: center;
-            
-            &-header{
-            color: rgb(218, 189, 136);
-            font-size: 20px;
-            }
-
-            & ul{
-                text-align: left;
-                margin-bottom: 5px;
-                margin-top: 20px;
-            }
+        flex-flow: column nowrap;
+        min-width: 9%;
+        max-width: 15%;
+        margin-top: 20px;
+        padding: 5px;
+        border: 1px solid wheat;
+        &-header{
+          align-self: center;
+          color: rgb(218, 189, 136);
+          font-size: 20px;
         }
-
-        &-cards{
-            display: flex;
-            margin: 20px;
-            width: 95%;
-            padding: 15px;
-            & ul{
-                & li{
-                    margin: 5px;
-                }
-            }
+        & ul{
+          text-align: left;
+          margin-bottom: 5px;
+          margin-top: 20px;
         }
+      }
+      &-cards{
+        display: flex;
+        margin: 20px;
+        width: 95%;
+        padding: 15px;
+        & ul{
+          & li{
+            margin: 5px;
+          }
+        }
+      }
     }
   }
-
   &-container{
     display: flex;
     justify-content: space-between;

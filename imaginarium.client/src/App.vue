@@ -60,11 +60,9 @@ const windowsValid = ref({
   [windows.GAME]: false
 })
 
-const startGame = async () =>{
+const startGame = async () => {
   windowsValid.value[windows.WAITING] = false;
   windowsValid.value[windows.GAME] = true;
-  let response = await axios.post("http://localhost:5276/api/User/startGame");
-  console.log(response.data)
 }
 
 const hideWaitingRoom = async ():Promise<any> => {
