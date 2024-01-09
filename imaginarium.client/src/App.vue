@@ -12,7 +12,7 @@
     <HelpWindow v-show="windowsValid[windows.HELP]" @hideModal="() => windowsValid[windows.HELP] = false" />
     <CardsWindow v-show="windowsValid[windows.CARD]" @hide-modal="() => windowsValid[windows.CARD] = false"/>
     <WaitingRoom v-if="windowsValid[windows.WAITING]" @hide-modal="hideWaitingRoom" @start-game="startGame" @switch="validateSwitcher" :selected-user="currentUser"/>
-    <GameWindow v-if="windowsValid[windows.GAME]" @hide-modal="() => windowsValid[windows.GAME] = false"/>
+    <GameWindow v-if="windowsValid[windows.GAME]" @hide-modal="hideGameRoom"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">
@@ -60,8 +60,9 @@ const windowsValid = ref({
   [windows.GAME]: false
 })
 
-const startGame = async () => {
+const startGame = async ():Promise<any> => {
   windowsValid.value[windows.WAITING] = false;
+  await axios.get("http://localhost:5276/api/User/randomCards");
   windowsValid.value[windows.GAME] = true;
 }
 
@@ -70,6 +71,12 @@ const hideWaitingRoom = async ():Promise<any> => {
   if(currentUser.value != undefined)
     await axios.post(`http://localhost:5276/api/User/sliceUser?name=${currentUser.value.name}`);
 };
+
+const hideGameRoom = async ():Promise<any> => {
+  windowsValid.value[windows.GAME] = false;
+  if(currentUser.value != undefined)
+    await axios.post(`http://localhost:5276/api/User/sliceUser?name=${currentUser.value.name}`);
+}
 
 const validateSwitcher = async ():Promise<any> => {
   if(currentUser.value != undefined)

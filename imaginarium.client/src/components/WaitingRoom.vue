@@ -35,7 +35,7 @@ let checkUserState:any;
 watch(() => players.value, (newValue) => {
   let cnt = 0;
   newValue?.forEach( player => {
-    if(players.value && player?.isReady && players.value.length > 1){
+    if(players.value && player?.isReady){
       cnt++;
       if(newValue.length == cnt)
         emits("startGame");

@@ -12,9 +12,9 @@
                 <li v-if="player">{{player.name}} : {{ player.score }}</li>
             </ul>
         </div>
-        <div v-for="(player,key) in players" :key="key" class="modal-wrapper-game-cards">
-            <ul v-for="(card,key) in player.cards" :key="key">
-                <li><img :src="card.cardUrl"></li>
+        <div v-for="(player,key1) in players" :key="key1" class="modal-wrapper-game-cards">
+            <ul v-for="(card,key2) in player.cards" :key="key2">
+                <li><img :src="`../../imaginImag/${card.cardName}`"></li>
             </ul>
         </div>
       </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted, onBeforeUnmount} from "vue"
+import {ref, onMounted, onBeforeUnmount, watch} from "vue"
 import axios from "axios";
 import type { User } from "@/types/User";
 
@@ -38,6 +38,10 @@ const hideModalWindow = () => {
     emits("hideModal");
 }
 
+watch(() => players.value, (newValue) => {
+  players.value = newValue;
+})
+
 const fetchPlayers = async ():Promise<void> => {
   try {
     const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
@@ -48,7 +52,7 @@ const fetchPlayers = async ():Promise<void> => {
 };
 
 const sortByScore = () => {
-    players.value?.sort((a,b) => b?.score - a?.score);
+  players.value?.sort((a,b) => b?.score - a?.score);
 }
 
 onMounted(() => {

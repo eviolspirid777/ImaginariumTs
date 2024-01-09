@@ -22,19 +22,19 @@ namespace Imaginarium.server.Controllers
 			return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
 		}
 
-		//[HttpPost("startGame")]
-		//public async Task<IActionResult> StartGame()
-		//{
-		//	currentPlayers = currentPlayers;
-		//	currentPlayers.RemoveAll(p => p.isReady);  //удаляем тех, кто готов
-  //          return Ok(currentPlayers.ToList());
-  //      }
+		[HttpPost("startGame")]
+		public async Task<IActionResult> StartGame()
+		{
+			//currentPlayers = currentPlayers;
+			//currentPlayers.RemoveAll(p => p.isReady);  //удаляем тех, кто готов
+			return Ok(currentPlayers.ToList());
+		}
 
 
-        [HttpGet("randomCards")]
+		[HttpGet("randomCards")]
         public async Task<IActionResult> RandomCards()
         {
-            string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client\ImaginImag\");
+            string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client/ImaginImag/");
             Console.WriteLine(prop);
             if (Directory.Exists(prop))
             {
@@ -51,6 +51,7 @@ namespace Imaginarium.server.Controllers
                     var newCard = new Card { cardUrl = @$"{prop}{imageFiles[i]}", id = i, cardName = imageFiles[i] };       //создаем экземпляр карточки
                     currentCards.Add(newCard);      //присваиваем экземпляр
                 }
+				currentPlayers[0].cards = currentCards;
                 return Ok(currentCards.ToList());
             }
             Console.WriteLine("Указанная папка не существует.");
