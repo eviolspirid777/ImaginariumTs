@@ -1,42 +1,43 @@
 <template>
   <div class="modal-mask">
-    <div :class="[error.length > 0 ? `modal-wrapper-error`: `modal-wrapper`]">
+    <div class="modal-wrapper">
       <div class="modal-container">
-        <span class="modal-container-header">Введите имя</span>
-        <span class="modal-container-exit" @click="hideModalWindow" ><i class="fa-solid fa-circle-xmark"></i></span>
+        <span class="modal-container-header">Введите имя...</span>
+        <span class="fa-solid fa-circle-xmark modal-container-exit" style="font-size: 30px;" @click="hideModalWindow"></span>
+        <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''"></ErrorModal>
       </div>
       <span class="modal-wrapper-name">
-        <input v-model="playerName" placeholder="Введите имя"/>
+        <input v-model="playerName"/>
       </span>
-      <span class="modal-wrapper-error-text" v-if="error.length > 0">
-        {{ error }}
-      </span>
+
       <div class="modal-wrapper-button">
-        <button type="button" @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
-          <i :class="{'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon}" style="color: green;"></i>
+        <button @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
+          <i :class="{ 'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon }" style="color: green;"></i>
         </button>
       </div>
     </div>
   </div>
 </template>
-<script lang="ts" setup>
-import { ref, type Ref } from "vue"
-import axios from "axios"
+
+<script setup lang="ts">
+import { ref, defineEmits, watch } from "vue";
+import axios from "axios";
+import ErrorModal from "../components/UI_elements/ErrorModal.vue";
 
 const emits = defineEmits(["hideModal", "closeWindow"]);
 
-const hoverIcon: Ref<boolean> = ref(false);
-const error: Ref<string> = ref("")
-const playerName: Ref<string> = ref("")
+const hoverIcon = ref(false);
+const error = ref("");
+const playerName = ref("");
 
-const hideModalWindow = ():void => {
+const hideModalWindow = (): void => {
   emits("closeWindow");
-}
+};
 
-const login = async ():Promise<void> => {
+const login = async (): Promise<void> => {
   try {
     if (playerName.value.length > 0) {
-      let response = await axios.post(`http://localhost:5276/api/User/autorize?sendName=${playerName.value}`);
+      const response = await axios.post(`http://localhost:5276/api/User/autorize?sendName=${playerName.value}`);
       if (response.status === 204) {
         error.value = "Пользователь уже в игре!";
         throw new Error("Такого пользователя нет!");
@@ -50,137 +51,67 @@ const login = async ():Promise<void> => {
     console.error(ex);
   }
 };
-
 </script>
 
 <style lang="scss" scoped>
-@keyframes pulseShadow {
-  from {
-    box-shadow: 0px 0px 15px wheat;
-  }
-  to {
-    box-shadow: 0px 0px 60px wheat;
-  }
-}
 
-@keyframes pulseError {
-  from {
-    box-shadow: 0px 0px 15px red;
+.i {
+    top: 30px;
   }
-  to {
-    box-shadow: 0px 0px 60px red;
-  }
-}
-.main-modal{
-  margin-top: -20px;
-  width: 500px;
-  height: 230px;
-  background-color: black;
-  border-radius: 10px;
-}
+
 .modal {
-  &-mask{
-    position: absolute;
-    display: flex;
-    top: 0px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    align-items: center;
-    justify-content: center;
-  }
-
-  &-wrapper{
+  &-wrapper {
     width: 400px;
     height: 150px;
-    position: relative; 
-    background-color: #000000;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-flow: column nowrap;
-    border-radius: 10px;
-    box-shadow: 0px 0px 30px wheat;
-    color: wheat;
-    font-family: Arial, Helvetica, sans-serif;
-    animation: pulseShadow 1.5s infinite alternate ease-in-out;
 
-    &-name{
+    &-name {
       font-size: 20px;
       cursor: default;
       user-select: none;
-      & input{
-        background-color: wheat;
+
+      & input {
+        width: 250px;
+        background-color: #fff;
       }
     }
-
-    &-error{
-      height: 150px; 
-      background-color: #000000;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      flex-flow: column nowrap;
-      border-radius: 10px;
-      font-family: Arial, Helvetica, sans-serif;
-      animation: pulseError 1.5s infinite alternate ease-in-out;
-      color: #dd1313;
-      font-size: 14px;
+    &-errorText{
+      font-size: 55px;
+      position: absolute;
+      color: red;
+      font-style: italic;
+      font-weight: bold;
     }
-
-    &-button{
+    &-button {
       display: flex;
-        button{
+
+      button {
         margin-top: 10px;
         min-height: 30px;
         width: 80px;
         background-color: wheat;
         font-weight: 800;
-        border: 0 solid;
+        border: 0;
         border-radius: 6px;
-        &:hover{
-          background-color: rgb(218, 195, 151);
-          box-shadow: 0px 0px 12px #0ffc22;
+
+        &:hover {
+          background-color: #dac397;
+          box-shadow: 0 0 12px #0ffc22;
         }
       }
     }
   }
 
   &-container {
-  position: relative;
-  display: flex;
-  width: 360px;
-  justify-content: space-between;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 1);
-  padding: 20px;
-  padding-bottom: 20px;
-  text-align: center;
-  color: wheat;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 22px;
-
-  &-header {
-    margin: 0 auto; // Центрируем текст
-    cursor: default;
-    user-select: none;
-  }
-
-  &-exit {
+    background-color: rgba(0, 0, 0, 1);
+    padding: 20px;
     color: wheat;
-    margin: 10px;
-    right: 0;
-    top: 0;
-    user-select: none;
-    position: absolute;
-    &:hover {
-      border-radius: 10px;
-      box-shadow: 0px 0px 12px red;
-      cursor: pointer;
+    font-size: 30px;
+
+    &-header {
+      margin: 0 auto; // Центрируем текст
+      user-select: none;
     }
   }
 }
 
-}
 </style>

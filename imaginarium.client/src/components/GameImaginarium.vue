@@ -12,9 +12,9 @@
                 <li v-if="player">{{player.name}} : {{ player.score }}</li>
             </ul>
         </div>
-        <div v-for="(player,key) in players" :key="key" class="modal-wrapper-game-cards">
-            <ul v-for="(card,key) in player.cards" :key="key">
-                <li><img :src="card.cardUrl"></li>
+        <div v-for="(player,key1) in players" :key="key1" class="modal-wrapper-game-cards">
+            <ul v-for="(card,key2) in player.cards" :key="key2">
+                <li><img :src="`../../imaginImag/${card.cardName}`"></li>
             </ul>
         </div>
       </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted, onBeforeUnmount} from "vue"
+import {ref, onMounted, onBeforeUnmount, watch} from "vue"
 import axios from "axios";
 import type { User } from "@/types/User";
 
@@ -38,9 +38,15 @@ const hideModalWindow = () => {
     emits("hideModal");
 }
 
+<<<<<<< HEAD
 /** 
 Реализовать watch за players, чтобы можно было отслеживать текущее кол-во очков 
 **/
+=======
+watch(() => players.value, (newValue) => {
+  players.value = newValue;
+})
+>>>>>>> 04cba4d7fbef1d3ef56ddf9689bf18678fba6707
 
 const fetchPlayers = async ():Promise<void> => {
   try {
@@ -52,7 +58,7 @@ const fetchPlayers = async ():Promise<void> => {
 };
 
 const sortByScore = () => {
-    players.value?.sort((a,b) => b?.score - a?.score);
+  players.value?.sort((a,b) => b?.score - a?.score);
 }
 
 onMounted(() => {
@@ -70,18 +76,6 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .modal {
-  &-mask{
-    position: absolute;
-    display: flex;
-    left: 0;
-    margin-bottom: 16px;
-    width: 100%;
-    height: 87%;
-    background-color: rgba(0, 0, 0, 0.6);
-    align-items: center;
-    justify-content: center;
-  }
-
   &-wrapper{
     width: 95%;
     height: 98%;
@@ -91,49 +85,43 @@ onBeforeUnmount(() => {
     border-radius: 10px;
     box-shadow: 1px 1px 10px #b8c952;
     color: wheat;
-    font-family: Arial, Helvetica, sans-serif;
     padding-left: 20px;
     padding-right: 20px;
-
     &-game{
+      display: flex;
+      flex-flow: row nowrap;
+      &-score{
         display: flex;
-        flex-flow: row nowrap;
-
-        &-score{
-            display: flex;
-            flex-flow: column nowrap;
-            max-width: 15%;
-            margin-top: 20px;
-            padding: 5px;
-            border: 1px solid wheat;
-            text-align: center;
-            
-            &-header{
-            color: rgb(218, 189, 136);
-            font-size: 20px;
-            }
-
-            & ul{
-                text-align: left;
-                margin-bottom: 5px;
-                margin-top: 20px;
-            }
+        flex-flow: column nowrap;
+        min-width: 9%;
+        max-width: 15%;
+        margin-top: 20px;
+        padding: 5px;
+        border: 1px solid wheat;
+        &-header{
+          align-self: center;
+          color: rgb(218, 189, 136);
+          font-size: 20px;
         }
-
-        &-cards{
-            display: flex;
-            margin: 20px;
-            width: 95%;
-            padding: 15px;
-            & ul{
-                & li{
-                    margin: 5px;
-                }
-            }
+        & ul{
+          text-align: left;
+          margin-bottom: 5px;
+          margin-top: 20px;
         }
+      }
+      &-cards{
+        display: flex;
+        margin: 20px;
+        width: 95%;
+        padding: 15px;
+        & ul{
+          & li{
+            margin: 5px;
+          }
+        }
+      }
     }
   }
-
   &-container{
     display: flex;
     justify-content: space-between;
@@ -145,14 +133,17 @@ onBeforeUnmount(() => {
     color: wheat;
     font-size: 22px;
     &-header{
+<<<<<<< HEAD
       padding-left: 46%;
       font-family: Apple Chancery, cursive;
+=======
+      padding-left: 43%;
+>>>>>>> 04cba4d7fbef1d3ef56ddf9689bf18678fba6707
       cursor: default;
       user-select: none;
     }
     &-exit{
       width: 20px;
-      font-family: Arial, Helvetica, sans-serif;
       background-color: wheat;
       color: black;
       user-select: none;
