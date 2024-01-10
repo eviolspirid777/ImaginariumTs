@@ -2,7 +2,7 @@
   <div class="modal-mask">
     <div class="modal-wrapper">
       <div class="modal-container">
-        <span class="modal-container-header">Помощь</span>
+        <span class="modal-container-header">Правила</span>
         <span class="fa-solid fa-circle-xmark modal-container-exit" style="font-size: 30px;" @click="hideModalWindow"></span>
       </div>
       <span class="modal-wrapper-text">
@@ -68,13 +68,13 @@ const hideModalWindow = ():void => {
   &-wrapper{
     width: 1000px;
     height: 700px;
-
     padding-left: 20px;
     padding-right: 20px;
-
+    font-size: 18px;
     &-list{
       padding-left: 20px;
       padding-top: 10px;
+      line-height: 1.1;
       & li{
         padding-left: 15px;
         padding-top: 4px;
@@ -86,6 +86,7 @@ const hideModalWindow = ():void => {
   &-container{
     display: flex;
     justify-content: space-between;
+    margin-bottom: 40px;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 1);
     padding: 20px;
@@ -93,7 +94,7 @@ const hideModalWindow = ():void => {
     text-align: center;
     color: wheat;
     &-header{
-      padding-left: 45%;
+      font-size: 28px;
       cursor: default;
       user-select: none;
     }

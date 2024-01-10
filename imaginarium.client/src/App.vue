@@ -41,7 +41,7 @@ watch(() => currentUser.value, (newValue) => {
 const helpMenu = ref<Array<any>>([
   { key: "upload", value: "Загрузить", iconclass: "fa-regular fa-cards", fontsize: "17px" },
   { key: "play", value: "Играть", iconclass: "fa-sharp fa-regular fa-game-board", fontsize: "36px" },
-  { key: "help", value: "Описание", iconclass: "fa-sharp fa-regular fa-question", fontsize: "17px" }
+  { key: "help", value: "Правила", iconclass: "fa-sharp fa-regular fa-question", fontsize: "17px" }
 ]);
 
 const windows = {
