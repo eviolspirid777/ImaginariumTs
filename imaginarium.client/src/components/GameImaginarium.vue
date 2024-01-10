@@ -70,17 +70,6 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .modal {
-  &-mask{
-    position: absolute;
-    display: flex;
-    left: 0;
-    margin-bottom: 16px;
-    width: 100%;
-    height: 87%;
-    background-color: rgba(0, 0, 0, 0.6);
-    align-items: center;
-    justify-content: center;
-  }
   &-wrapper{
     width: 90%;
     height: 90%;
@@ -90,7 +79,6 @@ onBeforeUnmount(() => {
     border-radius: 10px;
     box-shadow: 1px 1px 10px #b8c952;
     color: wheat;
-    font-family: Arial, Helvetica, sans-serif;
     padding-left: 20px;
     padding-right: 20px;
     &-game{
@@ -140,13 +128,11 @@ onBeforeUnmount(() => {
     font-size: 22px;
     &-header{
       padding-left: 43%;
-      font-family: Apple Chancery, cursive;
       cursor: default;
       user-select: none;
     }
     &-exit{
       width: 20px;
-      font-family: Arial, Helvetica, sans-serif;
       background-color: wheat;
       color: black;
       user-select: none;

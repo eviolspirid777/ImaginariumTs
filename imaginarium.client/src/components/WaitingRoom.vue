@@ -105,18 +105,6 @@ ul{
   }
 }
 .modal {
-  &-mask{
-    position: absolute;
-    display: flex;
-    left: 0;
-    margin-bottom: 16px;
-    width: 100%;
-    height: 87%;
-    background-color: rgba(0, 0, 0, 0.6);
-    align-items: center;
-    justify-content: center;
-  }
-
   &-wrapper{
     width: 37%;
     height: 40%;
@@ -128,7 +116,6 @@ ul{
     border-radius: 10px;
     box-shadow: 1px 1px 10px #b8c952;
     color: wheat;
-    font-family: Arial, Helvetica, sans-serif;
     padding-left: 20px;
     padding-right: 20px;
     &-ready{
@@ -153,7 +140,6 @@ ul{
     padding-bottom: 20px;
     text-align: center;
     color: wheat;
-    font-family: Arial, Helvetica, sans-serif;
     font-size: 22px;
     &-header{
       padding-left: 25%;
