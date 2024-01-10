@@ -29,10 +29,14 @@ import HelpWindow from "../src/components/HelpImaginarium.vue"
 import CardsWindow from "../src/components/CardsAdd.vue"
 import WaitingRoom from "./components/WaitingRoom.vue"
 import GameWindow from "../src/components/GameImaginarium.vue"
+import {usePlayersStore} from "../src/stores/playersStore.ts"
 import axios from "axios"
 import {type User} from "../src/types/User"
 
 const currentUser = ref<User|undefined>();
+
+//Store создаем для хранения данных в одном месте
+const playersStore = usePlayersStore();
 
 watch(() => currentUser.value, (newValue) => {
   currentUser.value = newValue;
