@@ -38,6 +38,10 @@ const hideModalWindow = () => {
     emits("hideModal");
 }
 
+/** 
+Реализовать watch за players, чтобы можно было отслеживать текущее кол-во очков 
+**/
+
 const fetchPlayers = async ():Promise<void> => {
   try {
     const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
@@ -79,8 +83,8 @@ onBeforeUnmount(() => {
   }
 
   &-wrapper{
-    width: 90%;
-    height: 90%;
+    width: 95%;
+    height: 98%;
     display: flex;
     flex-flow: column nowrap;
     background-color: #000000;
@@ -141,7 +145,7 @@ onBeforeUnmount(() => {
     color: wheat;
     font-size: 22px;
     &-header{
-      padding-left: 43%;
+      padding-left: 46%;
       font-family: Apple Chancery, cursive;
       cursor: default;
       user-select: none;
