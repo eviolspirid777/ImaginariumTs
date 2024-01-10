@@ -29,6 +29,7 @@ const selectedFile = ref<File | null>();
 const selectFile = async (event: Event):Promise<void> => {
   const inputElement = event.target as HTMLInputElement;
   selectedFile.value = inputElement.files ? inputElement.files[0] : null;
+  // let b = this.$refs.fileInput.file[0];
 }
 
 const uploadFile = async ():Promise<void> => {

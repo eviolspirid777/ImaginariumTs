@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace Imaginarium.server.Controllers
 {
@@ -7,35 +6,35 @@ namespace Imaginarium.server.Controllers
 	[Route("api/[controller]")]
 	public class UserController : Controller
 	{
-		private static List<User> waitingPlayers = new List<User>();          //список текущих игроков на сервере
+		//private static List<User> currentPlayers = new List<User>();          //список текущих игроков в комнате ожидания
 
-		private static List<User> currentPlayers = new List<User>();
+		private static List<User> currentPlayers = new List<User>();		//список текущих игроков в сессии
 		private static List<Card> currentCards = new List<Card>();          //список всех Карточек на сервере
 
 		[HttpPost("autorize")]
 		public async Task<IActionResult> Autorize(string sendName)
 		{
-			if (waitingPlayers.Any(p => p.name == sendName))
+			if (currentPlayers.Any(p => p.name == sendName))
 			{
 				return NoContent();
 			}
-			waitingPlayers.Add(new User { name = sendName });
-			return Ok(waitingPlayers.FirstOrDefault(u => u.name == sendName));
+			currentPlayers.Add(new User { name = sendName });
+			return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
 		}
 
 		[HttpPost("startGame")]
-		public IActionResult StartGame()
+		public async Task<IActionResult> StartGame()
 		{
-			currentPlayers = waitingPlayers;
-			waitingPlayers.RemoveAll(p => p.isReady);  //удаляем тех, кто готов
-			return Ok(currentPlayers);
+			//currentPlayers = currentPlayers;
+			//currentPlayers.RemoveAll(p => p.isReady);  //удаляем тех, кто готов
+			return Ok(currentPlayers.ToList());
 		}
 
 
-        [HttpGet("randomCards")]
+		[HttpGet("randomCards")]
         public async Task<IActionResult> RandomCards()
         {
-            string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client\ImaginImag\");
+            string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client/ImaginImag/");
             Console.WriteLine(prop);
             if (Directory.Exists(prop))
             {
@@ -52,6 +51,7 @@ namespace Imaginarium.server.Controllers
                     var newCard = new Card { cardUrl = @$"{prop}{imageFiles[i]}", id = i, cardName = imageFiles[i] };       //создаем экземпляр карточки
                     currentCards.Add(newCard);      //присваиваем экземпляр
                 }
+				currentPlayers[0].cards = currentCards;
                 return Ok(currentCards.ToList());
             }
             Console.WriteLine("Указанная папка не существует.");
@@ -61,10 +61,10 @@ namespace Imaginarium.server.Controllers
         [HttpPost("sliceUser")]
 		public async Task<IActionResult> SliceUser(string name)
 		{
-			var userToDelete = waitingPlayers.FirstOrDefault(u => u.name == name);
+			var userToDelete = currentPlayers.FirstOrDefault(u => u.name == name);
 			if (userToDelete == null)
 				return BadRequest();
-			waitingPlayers.Remove(userToDelete);
+			currentPlayers.Remove(userToDelete);
 			return Ok();
 		}
 
@@ -72,13 +72,13 @@ namespace Imaginarium.server.Controllers
 
 		public async Task<IActionResult> CheckState(string name)
 		{
-			return Ok(waitingPlayers.FirstOrDefault(u => u.name == name).isReady);
+			return Ok(currentPlayers.FirstOrDefault(u => u.name == name).isReady);
 		}
 
 		[HttpPost("switchReady")]
 		public async Task<IActionResult> SwitchReady(string name)
 		{
-			var userToSwitch = waitingPlayers.FirstOrDefault(u => u.name == name);
+			var userToSwitch = currentPlayers.FirstOrDefault(u => u.name == name);
 			if (userToSwitch != null)
 			{
 				userToSwitch.isReady = !userToSwitch.isReady;
@@ -90,10 +90,10 @@ namespace Imaginarium.server.Controllers
 		[HttpGet("getUsers")]
 		public async Task<IActionResult> getAllUsers()
 		{
-			if (waitingPlayers.Count > 0)
-				return Ok(waitingPlayers.ToList());
-			else if (currentPlayers.Count > 0)
+			if (currentPlayers.Count > 0)
 				return Ok(currentPlayers.ToList());
+			//else if (currentPlayers.Count > 0)
+			//	return Ok(currentPlayers.ToList());
 			return BadRequest();
 		}
 	}
