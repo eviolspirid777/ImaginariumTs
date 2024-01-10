@@ -6,10 +6,10 @@ namespace Imaginarium.server.Controllers
 	[Route("api/[controller]")]
 	public class UserController : Controller
 	{
-		//private static List<User> currentPlayers = new List<User>();          //список текущих игроков в комнате ожидания
-
 		private static List<User> currentPlayers = new List<User>();		//список текущих игроков в сессии
 		private static List<Card> currentCards = new List<Card>();          //список всех Карточек на сервере
+
+		private static bool isLiquid = true;						//позволяет замешивать карты один раз
 
 		[HttpPost("autorize")]
 		public async Task<IActionResult> Autorize(string sendName)
@@ -22,12 +22,28 @@ namespace Imaginarium.server.Controllers
 			return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
 		}
 
-		[HttpPost("startGame")]
+		[HttpGet("startGame")]
 		public async Task<IActionResult> StartGame()
 		{
-			//currentPlayers = currentPlayers;
-			//currentPlayers.RemoveAll(p => p.isReady);  //удаляем тех, кто готов
-			return Ok(currentPlayers.ToList());
+			//Для того, чтобы замешало один раз, а не несколько!
+			if (isLiquid == true)
+			{
+				Random rng = new Random();
+				var shuffledCards = currentCards.OrderBy(x => rng.Next()).ToList();
+				foreach (var player in currentPlayers)
+				{
+					player.cards = shuffledCards.Take(2).ToList();
+					shuffledCards = shuffledCards.Skip(2).ToList();
+				}
+				isLiquid = false;
+				/*			Console.WriteLine("Раздача карточек:");
+							foreach (var player in currentPlayers)
+							{
+								Console.WriteLine($"{player.name}: {string.Join(", ", player.cards.Select(card => card.cardName))}");
+							}*/
+				return Ok(currentPlayers);
+			}
+			return Ok();
 		}
 
 
@@ -51,9 +67,26 @@ namespace Imaginarium.server.Controllers
                     var newCard = new Card { cardUrl = @$"{prop}{imageFiles[i]}", id = i, cardName = imageFiles[i] };       //создаем экземпляр карточки
                     currentCards.Add(newCard);      //присваиваем экземпляр
                 }
-				currentPlayers[0].cards = currentCards;
-                return Ok(currentCards.ToList());
-            }
+				//Для того, чтобы замешало один раз, а не несколько!
+				if (isLiquid == true)
+				{
+					Random rng = new Random();
+					var shuffledCards = currentCards.OrderBy(x => rng.Next()).ToList();
+					foreach (var player in currentPlayers)
+					{
+						player.cards = shuffledCards.Take(2).ToList();
+						shuffledCards = shuffledCards.Skip(2).ToList();
+					}
+					isLiquid = false;
+					/*			Console.WriteLine("Раздача карточек:");
+								foreach (var player in currentPlayers)
+								{
+									Console.WriteLine($"{player.name}: {string.Join(", ", player.cards.Select(card => card.cardName))}");
+								}*/
+					return Ok(currentPlayers);
+				}
+				return Ok();
+			}
             Console.WriteLine("Указанная папка не существует.");
             return NoContent();
         }
@@ -92,9 +125,10 @@ namespace Imaginarium.server.Controllers
 		{
 			if (currentPlayers.Count > 0)
 				return Ok(currentPlayers.ToList());
-			//else if (currentPlayers.Count > 0)
-			//	return Ok(currentPlayers.ToList());
 			return BadRequest();
 		}
+
+		[HttpGet("getUser")]
+		public async Task<IActionResult> getUser(string user) => Ok(currentPlayers.Find(u => u.name == user));
 	}
 }

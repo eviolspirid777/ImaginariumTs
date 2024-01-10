@@ -12,7 +12,7 @@
     <HelpWindow v-show="windowsValid[windows.HELP]" @hideModal="() => windowsValid[windows.HELP] = false" />
     <CardsWindow v-show="windowsValid[windows.CARD]" @hide-modal="() => windowsValid[windows.CARD] = false"/>
     <WaitingRoom v-if="windowsValid[windows.WAITING]" @hide-modal="hideWaitingRoom" @start-game="startGame" @switch="validateSwitcher" :selected-user="currentUser"/>
-    <GameWindow v-if="windowsValid[windows.GAME]" @hide-modal="hideGameRoom"/>
+    <GameWindow v-if="windowsValid[windows.GAME]" @hide-modal="hideGameRoom" :currentPlayerName="currentUser?.name"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">

@@ -13,9 +13,9 @@
             </ul>
         </div>
         <div v-for="(player,key1) in players" :key="key1" class="modal-wrapper-game-cards">
-            <ul v-for="(card,key2) in player.cards" :key="key2">
-                <li><img :src="`../../imaginImag/${card.cardName}`"></li>
-            </ul>
+          <ul v-if="player && player.name == props.currentPlayerName" >
+            <li v-for="(card,key2) in player.cards" :key="key2"><img :src="`../../imaginImag/${card.cardName}`"></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted, onBeforeUnmount, watch} from "vue"
+import {ref, onMounted, onBeforeUnmount, watch, onBeforeMount} from "vue"
 import axios from "axios";
 import type { User } from "@/types/User";
 
@@ -35,18 +35,19 @@ let checkUsers:any;
 let fetchScore:any;
 
 const hideModalWindow = () => {
-    emits("hideModal");
+  emits("hideModal");
 }
 
-<<<<<<< HEAD
-/** 
-Реализовать watch за players, чтобы можно было отслеживать текущее кол-во очков 
-**/
-=======
+const props = defineProps({
+  currentPlayerName: {
+    type: String,
+    default:() => {}
+  }
+})
+
 watch(() => players.value, (newValue) => {
   players.value = newValue;
 })
->>>>>>> 04cba4d7fbef1d3ef56ddf9689bf18678fba6707
 
 const fetchPlayers = async ():Promise<void> => {
   try {
@@ -60,6 +61,10 @@ const fetchPlayers = async ():Promise<void> => {
 const sortByScore = () => {
   players.value?.sort((a,b) => b?.score - a?.score);
 }
+
+onBeforeMount(async() => {
+  axios.get("http://localhost:5276/api/User/startGame")
+})
 
 onMounted(() => {
   fetchPlayers();
@@ -77,8 +82,8 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .modal {
   &-wrapper{
-    width: 95%;
-    height: 98%;
+    width: 90%;
+    height: 90%;
     display: flex;
     flex-flow: column nowrap;
     background-color: #000000;
@@ -133,12 +138,7 @@ onBeforeUnmount(() => {
     color: wheat;
     font-size: 22px;
     &-header{
-<<<<<<< HEAD
-      padding-left: 46%;
-      font-family: Apple Chancery, cursive;
-=======
       padding-left: 43%;
->>>>>>> 04cba4d7fbef1d3ef56ddf9689bf18678fba6707
       cursor: default;
       user-select: none;
     }

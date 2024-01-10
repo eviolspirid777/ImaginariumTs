@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "2AISHJXTB+trj2US++qIbr/6zNqBjvfFMqVoLg6vBcjGefzsuDssBixQzZgnEjpPYHAxcRcCz7eUT+MbgvekVA==",
+  "dgSpecHash": "SqGxZRhuTPqesOYMli9JywNSfxD+xwsr8Hx618DwXWpLpEv8nhleTKapy0Oy9aAXyn7Z6DKVTEJPxpVidSuvBw==",
   "success": true,
-  "projectFilePath": "/Users/eviolspirid/Projects/Imaginarium/ImaginariumTs/Imaginarium.server/Imaginarium.server/Imaginarium.server.csproj",
+  "projectFilePath": "F:\\prjcts\\ImaginariumTS\\Imaginarium.server\\Imaginarium.server\\Imaginarium.server.csproj",
   "expectedPackageFiles": [
-    "/Users/eviolspirid/.nuget/packages/serilog/3.1.1/serilog.3.1.1.nupkg.sha512"
+    "C:\\Users\\eviol\\.nuget\\packages\\serilog\\3.1.1\\serilog.3.1.1.nupkg.sha512"
   ],
   "logs": []
 }
