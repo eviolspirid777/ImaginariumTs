@@ -102,6 +102,7 @@ const redirectToVk = ():void => {
 // :root{
 
 // }
+
 .header {
   display: flex;
   position: fixed;
@@ -132,7 +133,6 @@ const redirectToVk = ():void => {
 
     &-item {
       color: white;
-      font-family: cursive;
       font-size: 20px;
       
       & i {
@@ -168,7 +168,6 @@ const redirectToVk = ():void => {
   height: 40px;
   background-color: rgba(0, 0, 0, 0.6);
   &-vk-tag{
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-weight: 800;
     font-size: 18px;
     margin-left: 20px;

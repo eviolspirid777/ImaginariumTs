@@ -97,6 +97,14 @@ video {
   outline: 0;
 }
 
+@font-face {
+  font-family: 'ComicoroRu';
+  src: url('./tovari-sans.woff2') format('woff2'),
+       url('./tovari-sans.woff2') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* HTML5 display-role reset for older browsers */
 article,
 aside,
@@ -120,6 +128,11 @@ body {
   background-image: url("../images/imaginarium-bg.png");
   background-repeat: no-repeat;
   background-size: cover;
+  font-family: 'ComicoroRu', sans-serif;
+}
+
+* { /* Устанавливает шрифт для абсолютно всех элементов интерфейса */
+  font-family: 'ComicoroRu', sans-serif;
 }
 
 ::-webkit-scrollbar{

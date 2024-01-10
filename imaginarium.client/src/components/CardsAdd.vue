@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <span class="modal-container-header">Добавить карточки</span>
-        <span class="modal-container-exit" @click="hideModalWindow">x</span>
+        <span class="fa-solid fa-circle-xmark modal-container-exit" style="font-size: 30px;" @click="hideModalWindow"></span>
       </div>
       <div class="modal-wrapper-imageAdd">
           <input type="file" accept="image/*" @change="selectFile" style="color: wheat;">
@@ -40,29 +40,10 @@ const uploadFile = async ():Promise<void> => {
 </script>
 <style lang="scss" scoped>
 .modal {
-  &-mask{
-    position: absolute;
-    display: flex;
-    left: 0;
-    margin-bottom: 28px;
-    width: 100%;
-    height: 87%;
-    background-color: rgba(0, 0, 0, 0.6);
-    align-items: center;
-    justify-content: center;
-  }
-
   &-wrapper{
     width: 300px;
     height: 140px;
-    background-color: #000000;
-    flex-flow: column wrap;
-    border-radius: 10px;
-    box-shadow: 1px 1px 10px #b8c952;
-    color: wheat;
-    font-family: Arial, Helvetica, sans-serif;
-    padding-left: 20px;
-    padding-right: 20px;
+
     &-text{
       font-size: 18px;
       cursor: default;
@@ -101,24 +82,13 @@ const uploadFile = async ():Promise<void> => {
     padding-bottom: 20px;
     text-align: center;
     color: wheat;
-    font-family: Arial, Helvetica, sans-serif;
     font-size: 22px;
     &-header{
       padding-left: 10%;
       cursor: default;
       user-select: none;
     }
-    &-exit{
-      width: 20px;
-      background-color: wheat;
-      color: black;
-      user-select: none;
-      &:hover{
-        background-color: rgb(218, 195, 151);
-        cursor: pointer;
-        box-shadow: 1px 1px 10px #b8c952;
-      }
-    }
+    
   }
 }
 </style>
