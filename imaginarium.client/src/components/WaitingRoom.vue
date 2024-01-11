@@ -5,8 +5,8 @@
         <span class="modal-container-header">Комната ожидания: {{headerText}}</span>
         <span class="modal-container-exit" @click="hideModalWindow">x</span>
       </div>
-      <ul>
-        <li v-for="(player,key) in players" :key="key">{{player.name}} <i :class="[player.isReady ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[player.isReady ? `color:green;`: `color:red;`]"/></li>
+      <ul v-for="(player,key) in players" :key="key">
+        <li v-if="player">{{player.name}} <i :class="[player.isReady ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[player.isReady ? `color:green;`: `color:red;`]"/></li>
       </ul>
       <button class="modal-wrapper-ready" @click="isReadySwitcher">Ready</button>
     </div>
@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import type { User } from '@/types/User';
 import axios from 'axios';
-import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 
 const emits = defineEmits(["hideModal", "switch", "startGame"]);
 
@@ -23,6 +23,7 @@ const props = defineProps({
   selectedUser: {
     type: Object,
     default:() => {}
+    
   }
 })
 
@@ -59,6 +60,17 @@ const fetchPlayers = async ():Promise<void> => {
     console.error('Error fetching players:', error);
   }
 };
+
+const headerText = computed(() => {
+  if(players.value){
+    if(players.value?.length == 1)
+      return `${players.value.length} игрок`;
+    else if(players.value && players.value?.length > 1 && players.value?.length < 5)
+      return `${players.value.length} игрока`;
+    return `${players.value.length} игроков`;
+  }
+  return "";
+})
 
 const hideModalWindow = async ():Promise<void> => {
   emits("hideModal");
@@ -134,6 +146,9 @@ ul{
       padding-left: 25%;
       cursor: default;
       user-select: none;
+      &.-active{
+        
+      }
     }
     &-exit{
       display: flex;
