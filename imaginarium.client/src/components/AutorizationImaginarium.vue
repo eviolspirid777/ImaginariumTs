@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue";
 import { playersRequest } from "@/http/httpRequests";
 

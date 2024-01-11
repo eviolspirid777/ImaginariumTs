@@ -13,7 +13,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import axios from 'axios';
 import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import { usePlayersStore } from '@/stores/playersStore';
 import { playersRequest } from "../http/httpRequests"
@@ -139,9 +138,6 @@ ul{
       padding-left: 25%;
       cursor: default;
       user-select: none;
-      &.-active{
-        
-      }
     }
     &-exit{
       display: flex;
