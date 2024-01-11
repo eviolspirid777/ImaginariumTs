@@ -21,8 +21,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import axios from "axios";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue";
+import { playersRequest } from "@/http/httpRequests";
 
 const emits = defineEmits(["hideModal", "closeWindow"]);
 
@@ -37,7 +37,7 @@ const hideModalWindow = (): void => {
 const login = async (): Promise<void> => {
   try {
     if (playerName.value.length > 0) {
-      const response = await axios.post(`http://localhost:5276/api/User/autorize?sendName=${playerName.value}`);
+      const response = await playersRequest.userPostResponse(`autorize?sendName=${playerName.value}`)
       if (response.status === 204) {
         error.value = "Пользователь уже в игре!";
         throw new Error("Такого пользователя нет!");
@@ -54,10 +54,9 @@ const login = async (): Promise<void> => {
 </script>
 
 <style lang="scss" scoped>
-
 .i {
-    top: 30px;
-  }
+  top: 30px;
+}
 
 .modal {
   &-wrapper {

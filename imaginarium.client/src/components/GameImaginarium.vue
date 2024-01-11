@@ -24,8 +24,8 @@
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, onBeforeMount} from "vue"
-import axios from "axios";
 import { usePlayersStore } from "@/stores/playersStore";
+import { playersRequest } from "@/http/httpRequests";
 
 const emits = defineEmits(["hideModal"]);
 
@@ -40,8 +40,7 @@ const hideModalWindow = () => {
 
 const fetchPlayers = async ():Promise<void> => {
   try {
-    const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
-    store.players = response.data;
+    store.players = await playersRequest.userGet(`getUsers`)
   } catch (error) {
     console.error('Error fetching players:', error);
   }
@@ -57,7 +56,7 @@ const sortByScore = () => {
 };
 
 onBeforeMount(async() => {
-  axios.get("http://localhost:5276/api/User/startGame")
+  await playersRequest.userGet(`startGame`)
 })
 
 onMounted(() => {

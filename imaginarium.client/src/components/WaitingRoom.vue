@@ -16,6 +16,7 @@
 import axios from 'axios';
 import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 import { usePlayersStore } from '@/stores/playersStore';
+import { playersRequest } from "../http/httpRequests"
 
 const emits = defineEmits(["hideModal", "switch", "startGame"]);
 
@@ -38,7 +39,7 @@ watch(() => store.players, (newValue) => {
 })
 
 const checkState = async():Promise<void> => {
-  isReady.value = (await axios.get(`http://localhost:5276/api/User/checkState?name=${store.currentPlayer?.name}`)).data;
+  isReady.value = await playersRequest.userGet(`checkState?name=${store.currentPlayer?.name}`)
 }
 
 const isReadySwitcher = ():void => {
@@ -47,8 +48,7 @@ const isReadySwitcher = ():void => {
 
 const fetchPlayers = async ():Promise<void> => {
   try {
-    const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
-    store.players = response.data;
+    store.players = await playersRequest.userGet(`getUsers`);
   } catch (error) {
     console.error('Error fetching players:', error);
   }
