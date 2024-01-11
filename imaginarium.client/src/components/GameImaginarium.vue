@@ -8,13 +8,13 @@
       <div class="modal-wrapper-game">
         <div class="modal-wrapper-game-score">
             <span class="modal-wrapper-game-score-header">Очки:</span>
-            <ul v-for="(player,key) in players" :key="key">
-                <li v-if="player">{{player.name}} : {{ player.score }}</li>
+            <ul>
+              <li v-for="(player,key) in store.players" :key="key">{{player?.name}} : {{ player?.score }}</li>
             </ul>
         </div>
-        <div v-for="(player,key1) in players" :key="key1" class="modal-wrapper-game-cards">
-          <ul v-if="player && player.name == props.currentPlayerName" >
-            <li v-for="(card,key2) in player.cards" :key="key2"><img :src="`../../imaginImag/${card.cardName}`"></li>
+        <div v-for="(player,key) in store.players" :key="key" class="modal-wrapper-game-cards">
+          <ul v-if="player && player.name == store.currentPlayer?.name" >
+            <li v-for="(card,key2) in player.cards" :key="key2"><img :src="`../../imaginImag/${card?.cardName}`"></li>
           </ul>
         </div>
       </div>
@@ -23,57 +23,32 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted, onBeforeUnmount, watch, onBeforeMount} from "vue"
+import { onMounted, onBeforeUnmount, onBeforeMount} from "vue"
 import axios from "axios";
-import type { User } from "@/types/User";
-import * as signalR from '@microsoft/signalr';
+import { usePlayersStore } from "@/stores/playersStore";
 
 const emits = defineEmits(["hideModal"]);
 
-const players = ref<Array<User>>();
+const store = usePlayersStore();
 
 let checkUsers:any;
 let fetchScore:any;
-// let hubConnection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5276/Users").build();
-
-// //запускаем signalR
-// hubConnection.start()
-
-// //прослушиваем событие(ожидаем данные) метода 'listen'
-// hubConnection.on('listen', () => {
-//   //event
-// })
-
-// //отправляем на сервер данные о студенте
-// hubConnection.invoke('send', players.value)
-
 
 const hideModalWindow = () => {
   emits("hideModal");
 }
 
-const props = defineProps({
-  currentPlayerName: {
-    type: String,
-    default:() => {}
-  }
-})
-
-watch(() => players.value, (newValue) => {
-  players.value = newValue;
-})
-
 const fetchPlayers = async ():Promise<void> => {
   try {
     const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
-    players.value = response.data;
+    store.players = response.data;
   } catch (error) {
     console.error('Error fetching players:', error);
   }
 };
 
 const sortByScore = () => {
-  players.value?.sort((a,b) => b?.score - a?.score);
+  store.players?.sort((a,b) => b?.score - a?.score);
 }
 
 onBeforeMount(async() => {
@@ -112,7 +87,7 @@ onBeforeUnmount(() => {
       &-score{
         display: flex;
         flex-flow: column nowrap;
-        min-width: 9%;
+        min-width: 30%;
         max-width: 15%;
         margin-top: 20px;
         padding: 5px;

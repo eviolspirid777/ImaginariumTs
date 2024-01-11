@@ -11,8 +11,8 @@
     <AutorizationWindow v-if="windowsValid[windows.AUTORIZATION]" @hideModal="autorizeComplete" @close-window="() => windowsValid[windows.AUTORIZATION] = false"/>
     <HelpWindow v-show="windowsValid[windows.HELP]" @hideModal="() => windowsValid[windows.HELP] = false" />
     <CardsWindow v-show="windowsValid[windows.CARD]" @hide-modal="() => windowsValid[windows.CARD] = false"/>
-    <WaitingRoom v-if="windowsValid[windows.WAITING]" @hide-modal="hideWaitingRoom" @start-game="startGame" @switch="validateSwitcher" :selected-user="currentUser"/>
-    <GameWindow v-if="windowsValid[windows.GAME]" @hide-modal="hideGameRoom" :currentPlayerName="currentUser?.name"/>
+    <WaitingRoom v-if="windowsValid[windows.WAITING]" @hide-modal="hideWaitingRoom" @start-game="startGame" @switch="validateSwitcher"/>
+    <GameWindow v-if="windowsValid[windows.GAME]" @hide-modal="hideGameRoom"/>
   </main>
   <footer class="footer">
     <div class="footer-vk">
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue"
+import {ref} from "vue"
 import AutorizationWindow from "../src/components/AutorizationImaginarium.vue"
 import HelpWindow from "../src/components/HelpImaginarium.vue"
 import CardsWindow from "../src/components/CardsAdd.vue"
@@ -31,16 +31,8 @@ import WaitingRoom from "./components/WaitingRoom.vue"
 import GameWindow from "../src/components/GameImaginarium.vue"
 import {usePlayersStore} from "../src/stores/playersStore.ts"
 import axios from "axios"
-import {type User} from "../src/types/User"
 
-const currentUser = ref<User|undefined>();
-
-//Store создаем для хранения данных в одном месте
 const playersStore = usePlayersStore();
-
-watch(() => currentUser.value, (newValue) => {
-  currentUser.value = newValue;
-})
 
 const helpMenu = ref<Array<any>>([
   { key: "upload", value: "Загрузить", iconclass: "fa-regular fa-cards", fontsize: "17px" },
@@ -72,19 +64,19 @@ const startGame = async ():Promise<any> => {
 
 const hideWaitingRoom = async ():Promise<any> => {
   windowsValid.value[windows.WAITING] = false;
-  if(currentUser.value != undefined)
-    await axios.post(`http://localhost:5276/api/User/sliceUser?name=${currentUser.value.name}`);
+  if(playersStore.currentPlayer != undefined)
+    await axios.post(`http://localhost:5276/api/User/sliceUser?name=${playersStore.currentPlayer.name}`);
 };
 
 const hideGameRoom = async ():Promise<any> => {
   windowsValid.value[windows.GAME] = false;
-  if(currentUser.value != undefined)
-    await axios.post(`http://localhost:5276/api/User/sliceUser?name=${currentUser.value.name}`);
+  if(playersStore.currentPlayer != undefined)
+    await axios.post(`http://localhost:5276/api/User/sliceUser?name=${playersStore.currentPlayer.name}`);
 }
 
 const validateSwitcher = async ():Promise<any> => {
-  if(currentUser.value != undefined)
-    await axios.post(`http://localhost:5276/api/User/switchReady?name=${currentUser.value.name}`);
+  if(playersStore.currentPlayer != undefined)
+    await axios.post(`http://localhost:5276/api/User/switchReady?name=${playersStore.currentPlayer.name}`);
 };
 
 const displaySwitcher = (val:string):any => {
@@ -99,7 +91,7 @@ const displaySwitcher = (val:string):any => {
 const autorizeComplete = (user: any) => {
   windowsValid.value[windows.AUTORIZATION] = false;
   windowsValid.value[windows.WAITING] = true;
-  currentUser.value = user;
+  playersStore.currentPlayer = user;
 }
 
 const redirectToVk = ():void => {
@@ -108,10 +100,6 @@ const redirectToVk = ():void => {
 </script>
 
 <style scoped lang="scss">
-// :root{
-
-// }
-
 .header {
   display: flex;
   position: fixed;
@@ -176,6 +164,7 @@ const redirectToVk = ():void => {
   width: 100%;
   height: 40px;
   background-color: rgba(0, 0, 0, 0.6);
+  z-index: 10;
   &-vk-tag{
     font-weight: 800;
     font-size: 18px;

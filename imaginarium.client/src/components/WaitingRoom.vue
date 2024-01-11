@@ -5,7 +5,7 @@
         <span class="modal-container-header">Комната ожидания: {{headerText}}</span>
         <span class="modal-container-exit" @click="hideModalWindow">x</span>
       </div>
-      <ul v-for="(player,key) in players" :key="key">
+      <ul v-for="(player,key) in store.players" :key="key">
         <li v-if="player">{{player.name}} <i :class="[player.isReady ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[player.isReady ? `color:green;`: `color:red;`]"/></li>
       </ul>
       <button class="modal-wrapper-ready" @click="isReadySwitcher">Ready</button>
@@ -13,30 +13,23 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { User } from '@/types/User';
 import axios from 'axios';
 import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { usePlayersStore } from '@/stores/playersStore';
 
 const emits = defineEmits(["hideModal", "switch", "startGame"]);
 
-const props = defineProps({
-  selectedUser: {
-    type: Object,
-    default:() => {}
-    
-  }
-})
+const store = usePlayersStore();
 
-const players = ref<Array<User>>();
 const isReady = ref<boolean>();
 
 let checkUsers:any;
 let checkUserState:any;
 
-watch(() => players.value, (newValue) => {
+watch(() => store.players, (newValue) => {
   let cnt = 0;
   newValue?.forEach( player => {
-    if(players.value && player?.isReady){
+    if(store.players && player?.isReady){
       cnt++;
       if(newValue.length == cnt)
         emits("startGame");
@@ -45,7 +38,7 @@ watch(() => players.value, (newValue) => {
 })
 
 const checkState = async():Promise<void> => {
-  isReady.value = (await axios.get(`http://localhost:5276/api/User/checkState?name=${props.selectedUser.name}`)).data;
+  isReady.value = (await axios.get(`http://localhost:5276/api/User/checkState?name=${store.currentPlayer?.name}`)).data;
 }
 
 const isReadySwitcher = ():void => {
@@ -55,19 +48,19 @@ const isReadySwitcher = ():void => {
 const fetchPlayers = async ():Promise<void> => {
   try {
     const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
-    players.value = response.data;
+    store.players = response.data;
   } catch (error) {
     console.error('Error fetching players:', error);
   }
 };
 
 const headerText = computed(() => {
-  if(players.value){
-    if(players.value?.length == 1)
-      return `${players.value.length} игрок`;
-    else if(players.value && players.value?.length > 1 && players.value?.length < 5)
-      return `${players.value.length} игрока`;
-    return `${players.value.length} игроков`;
+  if(store.players){
+    if(store.players?.length == 1)
+      return `${store.players.length} игрок`;
+    else if(store.players && store.players?.length > 1 && store.players?.length < 5)
+      return `${store.players.length} игрока`;
+    return `${store.players.length} игроков`;
   }
   return "";
 })

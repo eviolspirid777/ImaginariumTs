@@ -108,13 +108,5 @@ F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\r
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\Imaginarium.server.pdb
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\Imaginarium.server.genruntimeconfig.cache
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\ref\Imaginarium.server.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Microsoft.AspNet.SignalR.Core.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Microsoft.AspNetCore.Connections.Abstractions.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Microsoft.AspNetCore.SignalR.Common.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Microsoft.Extensions.Features.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Microsoft.Owin.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Microsoft.Owin.Security.dll
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Newtonsoft.Json.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Owin.dll
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\System.Net.WebSockets.WebSocketProtocol.dll

@@ -8,38 +8,24 @@
     ".NETCoreApp,Version=v7.0": {
       "Imaginarium.server/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNet.SignalR.Core": "2.4.3",
           "Microsoft.AspNetCore.SignalR": "1.1.0",
-          "Microsoft.AspNetCore.SignalR.Common": "7.0.15",
           "Serilog": "3.1.1"
         },
         "runtime": {
           "Imaginarium.server.dll": {}
         }
       },
-      "Microsoft.AspNet.SignalR.Core/2.4.3": {
-        "dependencies": {
-          "Microsoft.Owin.Security": "2.1.0",
-          "Newtonsoft.Json": "11.0.2"
-        },
-        "runtime": {
-          "lib/net45/Microsoft.AspNet.SignalR.Core.dll": {
-            "assemblyVersion": "2.4.3.0",
-            "fileVersion": "2.4.3.22014"
-          }
-        }
-      },
       "Microsoft.AspNetCore.Authentication.Abstractions/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Http.Abstractions": "2.2.0",
           "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
-          "Microsoft.Extensions.Options": "7.0.1"
+          "Microsoft.Extensions.Options": "2.2.0"
         }
       },
       "Microsoft.AspNetCore.Authorization/2.2.0": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
-          "Microsoft.Extensions.Options": "7.0.1"
+          "Microsoft.Extensions.Options": "2.2.0"
         }
       },
       "Microsoft.AspNetCore.Authorization.Policy/2.2.0": {
@@ -48,16 +34,10 @@
           "Microsoft.AspNetCore.Authorization": "2.2.0"
         }
       },
-      "Microsoft.AspNetCore.Connections.Abstractions/7.0.15": {
+      "Microsoft.AspNetCore.Connections.Abstractions/2.2.0": {
         "dependencies": {
-          "Microsoft.Extensions.Features": "7.0.15",
-          "System.IO.Pipelines": "7.0.0"
-        },
-        "runtime": {
-          "lib/net7.0/Microsoft.AspNetCore.Connections.Abstractions.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.1523.60110"
-          }
+          "Microsoft.AspNetCore.Http.Features": "2.2.0",
+          "System.IO.Pipelines": "4.5.2"
         }
       },
       "Microsoft.AspNetCore.Hosting.Abstractions/2.2.0": {
@@ -78,7 +58,7 @@
           "Microsoft.AspNetCore.Http.Abstractions": "2.2.0",
           "Microsoft.AspNetCore.WebUtilities": "2.2.0",
           "Microsoft.Extensions.ObjectPool": "2.2.0",
-          "Microsoft.Extensions.Options": "7.0.1",
+          "Microsoft.Extensions.Options": "2.2.0",
           "Microsoft.Net.Http.Headers": "2.2.0"
         }
       },
@@ -102,7 +82,7 @@
       },
       "Microsoft.AspNetCore.Http.Connections.Common/1.1.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Connections.Abstractions": "7.0.15",
+          "Microsoft.AspNetCore.Connections.Abstractions": "2.2.0",
           "Newtonsoft.Json": "11.0.2",
           "System.Buffers": "4.5.0"
         }
@@ -117,7 +97,7 @@
       },
       "Microsoft.AspNetCore.Http.Features/2.2.0": {
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "7.0.0"
+          "Microsoft.Extensions.Primitives": "2.2.0"
         }
       },
       "Microsoft.AspNetCore.Routing/2.2.0": {
@@ -126,7 +106,7 @@
           "Microsoft.AspNetCore.Routing.Abstractions": "2.2.0",
           "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
           "Microsoft.Extensions.ObjectPool": "2.2.0",
-          "Microsoft.Extensions.Options": "7.0.1"
+          "Microsoft.Extensions.Options": "2.2.0"
         }
       },
       "Microsoft.AspNetCore.Routing.Abstractions/2.2.0": {
@@ -140,24 +120,20 @@
           "Microsoft.AspNetCore.SignalR.Core": "1.1.0"
         }
       },
-      "Microsoft.AspNetCore.SignalR.Common/7.0.15": {
+      "Microsoft.AspNetCore.SignalR.Common/1.1.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Connections.Abstractions": "7.0.15",
-          "Microsoft.Extensions.Options": "7.0.1"
-        },
-        "runtime": {
-          "lib/net7.0/Microsoft.AspNetCore.SignalR.Common.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.1523.60110"
-          }
+          "Microsoft.AspNetCore.Connections.Abstractions": "2.2.0",
+          "Microsoft.Extensions.Options": "2.2.0",
+          "Newtonsoft.Json": "11.0.2",
+          "System.Buffers": "4.5.0"
         }
       },
       "Microsoft.AspNetCore.SignalR.Core/1.1.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Authorization": "2.2.0",
-          "Microsoft.AspNetCore.SignalR.Common": "7.0.15",
+          "Microsoft.AspNetCore.SignalR.Common": "1.1.0",
           "Microsoft.AspNetCore.SignalR.Protocols.Json": "1.1.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.2.0",
           "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
           "System.Reflection.Emit": "4.3.0",
           "System.Threading.Channels": "4.5.0"
@@ -165,7 +141,7 @@
       },
       "Microsoft.AspNetCore.SignalR.Protocols.Json/1.1.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.SignalR.Common": "7.0.15",
+          "Microsoft.AspNetCore.SignalR.Common": "1.1.0",
           "Newtonsoft.Json": "11.0.2"
         }
       },
@@ -173,7 +149,7 @@
         "dependencies": {
           "Microsoft.AspNetCore.Http.Extensions": "2.2.0",
           "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
-          "Microsoft.Extensions.Options": "7.0.1",
+          "Microsoft.Extensions.Options": "2.2.0",
           "System.Net.WebSockets.WebSocketProtocol": "4.5.1"
         }
       },
@@ -185,90 +161,51 @@
       },
       "Microsoft.Extensions.Configuration.Abstractions/2.2.0": {
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "7.0.0"
+          "Microsoft.Extensions.Primitives": "2.2.0"
         }
       },
-      "Microsoft.Extensions.DependencyInjection.Abstractions/7.0.0": {},
-      "Microsoft.Extensions.Features/7.0.15": {
-        "runtime": {
-          "lib/net7.0/Microsoft.Extensions.Features.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.1523.60110"
-          }
-        }
-      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/2.2.0": {},
       "Microsoft.Extensions.FileProviders.Abstractions/2.2.0": {
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "7.0.0"
+          "Microsoft.Extensions.Primitives": "2.2.0"
         }
       },
       "Microsoft.Extensions.Hosting.Abstractions/2.2.0": {
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "2.2.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.2.0",
           "Microsoft.Extensions.FileProviders.Abstractions": "2.2.0",
           "Microsoft.Extensions.Logging.Abstractions": "2.2.0"
         }
       },
       "Microsoft.Extensions.Logging.Abstractions/2.2.0": {},
       "Microsoft.Extensions.ObjectPool/2.2.0": {},
-      "Microsoft.Extensions.Options/7.0.1": {
+      "Microsoft.Extensions.Options/2.2.0": {
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
-          "Microsoft.Extensions.Primitives": "7.0.0"
-        },
-        "runtime": {
-          "lib/net7.0/Microsoft.Extensions.Options.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.323.6910"
-          }
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.2.0",
+          "Microsoft.Extensions.Primitives": "2.2.0",
+          "System.ComponentModel.Annotations": "4.5.0"
         }
       },
-      "Microsoft.Extensions.Primitives/7.0.0": {},
+      "Microsoft.Extensions.Primitives/2.2.0": {
+        "dependencies": {
+          "System.Memory": "4.5.1",
+          "System.Runtime.CompilerServices.Unsafe": "4.5.1"
+        }
+      },
       "Microsoft.Net.Http.Headers/2.2.0": {
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "7.0.0",
+          "Microsoft.Extensions.Primitives": "2.2.0",
           "System.Buffers": "4.5.0"
         }
       },
       "Microsoft.NETCore.Platforms/2.0.0": {},
       "Microsoft.NETCore.Targets/1.1.0": {},
-      "Microsoft.Owin/2.1.0": {
-        "dependencies": {
-          "Owin": "1.0.0"
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.dll": {
-            "assemblyVersion": "2.1.0.0",
-            "fileVersion": "2.1.30113.529"
-          }
-        }
-      },
-      "Microsoft.Owin.Security/2.1.0": {
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Owin": "1.0.0"
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Security.dll": {
-            "assemblyVersion": "2.1.0.0",
-            "fileVersion": "2.1.30113.529"
-          }
-        }
-      },
       "Newtonsoft.Json/11.0.2": {
         "runtime": {
           "lib/netstandard2.0/Newtonsoft.Json.dll": {
             "assemblyVersion": "11.0.0.0",
             "fileVersion": "11.0.2.21924"
-          }
-        }
-      },
-      "Owin/1.0.0": {
-        "runtime": {
-          "lib/net40/Owin.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -281,6 +218,7 @@
         }
       },
       "System.Buffers/4.5.0": {},
+      "System.ComponentModel.Annotations/4.5.0": {},
       "System.IO/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.0.0",
@@ -290,7 +228,8 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
-      "System.IO.Pipelines/7.0.0": {},
+      "System.IO.Pipelines/4.5.2": {},
+      "System.Memory/4.5.1": {},
       "System.Net.WebSockets.WebSocketProtocol/4.5.1": {
         "runtime": {
           "lib/netcoreapp2.1/System.Net.WebSockets.WebSocketProtocol.dll": {
@@ -337,6 +276,7 @@
           "Microsoft.NETCore.Targets": "1.1.0"
         }
       },
+      "System.Runtime.CompilerServices.Unsafe/4.5.1": {},
       "System.Security.Principal.Windows/4.5.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.0.0"
@@ -366,13 +306,6 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Microsoft.AspNet.SignalR.Core/2.4.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-zxvv9HhsUa3nfyC7rIwFxHVcGffyQrjqNUO6pBKLyv3eFigkEy3N+6KbbSedzIyCfthglTbvU+m4sg8tawRlvA==",
-      "path": "microsoft.aspnet.signalr.core/2.4.3",
-      "hashPath": "microsoft.aspnet.signalr.core.2.4.3.nupkg.sha512"
-    },
     "Microsoft.AspNetCore.Authentication.Abstractions/2.2.0": {
       "type": "package",
       "serviceable": true,
@@ -394,12 +327,12 @@
       "path": "microsoft.aspnetcore.authorization.policy/2.2.0",
       "hashPath": "microsoft.aspnetcore.authorization.policy.2.2.0.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.Connections.Abstractions/7.0.15": {
+    "Microsoft.AspNetCore.Connections.Abstractions/2.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-uBX5A/RXmCkQQqSEYZw5zY5L+Vt5WWBtxMc5FzTzgH/Yb4nhThA7BuhpAiGUHsmkpAnim04CjagoGJfBWHApLQ==",
-      "path": "microsoft.aspnetcore.connections.abstractions/7.0.15",
-      "hashPath": "microsoft.aspnetcore.connections.abstractions.7.0.15.nupkg.sha512"
+      "sha512": "sha512-Aqr/16Cu5XmGv7mLKJvXRxhhd05UJ7cTTSaUV4MZ3ynAzfgWjsAdpIU8FWuxwAjmVdmI8oOWuVDrbs+sRkhKnA==",
+      "path": "microsoft.aspnetcore.connections.abstractions/2.2.0",
+      "hashPath": "microsoft.aspnetcore.connections.abstractions.2.2.0.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Hosting.Abstractions/2.2.0": {
       "type": "package",
@@ -478,12 +411,12 @@
       "path": "microsoft.aspnetcore.signalr/1.1.0",
       "hashPath": "microsoft.aspnetcore.signalr.1.1.0.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.SignalR.Common/7.0.15": {
+    "Microsoft.AspNetCore.SignalR.Common/1.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-9BQCed14pyFaB+a8ysAymrpuQEp0YqqTmyXuFkWp//NAaTisScwGJtfBIVWhNWqT2JzHV5p3pHQRlTM0lRvmyw==",
-      "path": "microsoft.aspnetcore.signalr.common/7.0.15",
-      "hashPath": "microsoft.aspnetcore.signalr.common.7.0.15.nupkg.sha512"
+      "sha512": "sha512-TyLgQ4y4RVUIxiYFnHT181/rJ33/tL/NcBWC9BwLpulDt5/yGCG4EvsToZ49EBQ7256zj+R6OGw6JF+jj6MdPQ==",
+      "path": "microsoft.aspnetcore.signalr.common/1.1.0",
+      "hashPath": "microsoft.aspnetcore.signalr.common.1.1.0.nupkg.sha512"
     },
     "Microsoft.AspNetCore.SignalR.Core/1.1.0": {
       "type": "package",
@@ -520,19 +453,12 @@
       "path": "microsoft.extensions.configuration.abstractions/2.2.0",
       "hashPath": "microsoft.extensions.configuration.abstractions.2.2.0.nupkg.sha512"
     },
-    "Microsoft.Extensions.DependencyInjection.Abstractions/7.0.0": {
+    "Microsoft.Extensions.DependencyInjection.Abstractions/2.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-h3j/QfmFN4S0w4C2A6X7arXij/M/OVw3uQHSOFxnND4DyAzO1F9eMX7Eti7lU/OkSthEE0WzRsfT/Dmx86jzCw==",
-      "path": "microsoft.extensions.dependencyinjection.abstractions/7.0.0",
-      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512"
-    },
-    "Microsoft.Extensions.Features/7.0.15": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-yumrDkzMWca8vDKjv4d5E+emRRooxsQ+17r84/n/4yuwwdHu4a9ne3U6uef/06aOoyrRnnNVopMiBwuWlpaRoA==",
-      "path": "microsoft.extensions.features/7.0.15",
-      "hashPath": "microsoft.extensions.features.7.0.15.nupkg.sha512"
+      "sha512": "sha512-f9hstgjVmr6rmrfGSpfsVOl2irKAgr1QjrSi3FgnS7kulxband50f2brRLwySAQTADPZeTdow0mpSMcoAdadCw==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/2.2.0",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.2.2.0.nupkg.sha512"
     },
     "Microsoft.Extensions.FileProviders.Abstractions/2.2.0": {
       "type": "package",
@@ -562,19 +488,19 @@
       "path": "microsoft.extensions.objectpool/2.2.0",
       "hashPath": "microsoft.extensions.objectpool.2.2.0.nupkg.sha512"
     },
-    "Microsoft.Extensions.Options/7.0.1": {
+    "Microsoft.Extensions.Options/2.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-pZRDYdN1FpepOIfHU62QoBQ6zdAoTvnjxFfqAzEd9Jhb2dfhA5i6jeTdgGgcgTWFRC7oT0+3XrbQu4LjvgX1Nw==",
-      "path": "microsoft.extensions.options/7.0.1",
-      "hashPath": "microsoft.extensions.options.7.0.1.nupkg.sha512"
+      "sha512": "sha512-UpZLNLBpIZ0GTebShui7xXYh6DmBHjWM8NxGxZbdQh/bPZ5e6YswqI+bru6BnEL5eWiOdodsXtEz3FROcgi/qg==",
+      "path": "microsoft.extensions.options/2.2.0",
+      "hashPath": "microsoft.extensions.options.2.2.0.nupkg.sha512"
     },
-    "Microsoft.Extensions.Primitives/7.0.0": {
+    "Microsoft.Extensions.Primitives/2.2.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-um1KU5kxcRp3CNuI8o/GrZtD4AIOXDk+RLsytjZ9QPok3ttLUelLKpilVPuaFT3TFjOhSibUAso0odbOaCDj3Q==",
-      "path": "microsoft.extensions.primitives/7.0.0",
-      "hashPath": "microsoft.extensions.primitives.7.0.0.nupkg.sha512"
+      "sha512": "sha512-azyQtqbm4fSaDzZHD/J+V6oWMFaf2tWP4WEGIYePLCMw3+b2RQdj9ybgbQyjCshcitQKQ4lEDOZjmSlTTrHxUg==",
+      "path": "microsoft.extensions.primitives/2.2.0",
+      "hashPath": "microsoft.extensions.primitives.2.2.0.nupkg.sha512"
     },
     "Microsoft.Net.Http.Headers/2.2.0": {
       "type": "package",
@@ -597,33 +523,12 @@
       "path": "microsoft.netcore.targets/1.1.0",
       "hashPath": "microsoft.netcore.targets.1.1.0.nupkg.sha512"
     },
-    "Microsoft.Owin/2.1.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-lk0kK64mlmcmtWX8YOYkZsnZKDoGEzMZhe8e1bcP+FFcgD4f2QfKwvu5Z8Bh8WS0VO7Rgk+DJ0hwW0k+S/UGMg==",
-      "path": "microsoft.owin/2.1.0",
-      "hashPath": "microsoft.owin.2.1.0.nupkg.sha512"
-    },
-    "Microsoft.Owin.Security/2.1.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-4n1V0p+O6W1L0xHUM8Cjp2Y+MmmUkiCZv6PvRNIDCJD9zlerBJa2HECo9lUiWC+KuasQJ3QxB1FmipNBxdXXIQ==",
-      "path": "microsoft.owin.security/2.1.0",
-      "hashPath": "microsoft.owin.security.2.1.0.nupkg.sha512"
-    },
     "Newtonsoft.Json/11.0.2": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-IvJe1pj7JHEsP8B8J8DwlMEx8UInrs/x+9oVY+oCD13jpLu4JbJU2WCIsMRn5C4yW9+DgkaO8uiVE5VHKjpmdQ==",
       "path": "newtonsoft.json/11.0.2",
       "hashPath": "newtonsoft.json.11.0.2.nupkg.sha512"
-    },
-    "Owin/1.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-OseTFniKmyp76mEzOBwIKGBRS5eMoYNkMKaMXOpxx9jv88+b6mh1rSaw43vjBOItNhaLFG3d0a20PfHyibH5sw==",
-      "path": "owin/1.0.0",
-      "hashPath": "owin.1.0.0.nupkg.sha512"
     },
     "Serilog/3.1.1": {
       "type": "package",
@@ -639,6 +544,13 @@
       "path": "system.buffers/4.5.0",
       "hashPath": "system.buffers.4.5.0.nupkg.sha512"
     },
+    "System.ComponentModel.Annotations/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UxYQ3FGUOtzJ7LfSdnYSFd7+oEv6M8NgUatatIN2HxNtDdlcvFAf+VIq4Of9cDMJEJC0aSRv/x898RYhB4Yppg==",
+      "path": "system.componentmodel.annotations/4.5.0",
+      "hashPath": "system.componentmodel.annotations.4.5.0.nupkg.sha512"
+    },
     "System.IO/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -646,12 +558,19 @@
       "path": "system.io/4.3.0",
       "hashPath": "system.io.4.3.0.nupkg.sha512"
     },
-    "System.IO.Pipelines/7.0.0": {
+    "System.IO.Pipelines/4.5.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-jRn6JYnNPW6xgQazROBLSfpdoczRw694vO5kKvMcNnpXuolEixUyw6IBuBs2Y2mlSX/LdLvyyWmfXhaI3ND1Yg==",
-      "path": "system.io.pipelines/7.0.0",
-      "hashPath": "system.io.pipelines.7.0.0.nupkg.sha512"
+      "sha512": "sha512-NOC/SO4gSX6t0tB25xxDPqPEzkksuzW7NVFBTQGAkjXXUPQl7ZtyE83T7tUCP2huFBbPombfCKvq1Ox1aG8D9w==",
+      "path": "system.io.pipelines/4.5.2",
+      "hashPath": "system.io.pipelines.4.5.2.nupkg.sha512"
+    },
+    "System.Memory/4.5.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sDJYJpGtTgx+23Ayu5euxG5mAXWdkDb4+b0rD0Cab0M1oQS9H0HXGPriKcqpXuiJDTV7fTp/d+fMDJmnr6sNvA==",
+      "path": "system.memory/4.5.1",
+      "hashPath": "system.memory.4.5.1.nupkg.sha512"
     },
     "System.Net.WebSockets.WebSocketProtocol/4.5.1": {
       "type": "package",
@@ -694,6 +613,13 @@
       "sha512": "sha512-JufQi0vPQ0xGnAczR13AUFglDyVYt4Kqnz1AZaiKZ5+GICq0/1MH/mO/eAJHt/mHW1zjKBJd7kV26SrxddAhiw==",
       "path": "system.runtime/4.3.0",
       "hashPath": "system.runtime.4.3.0.nupkg.sha512"
+    },
+    "System.Runtime.CompilerServices.Unsafe/4.5.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Zh8t8oqolRaFa9vmOZfdQm/qKejdqz0J9kr7o2Fu0vPeoH3BL1EOXipKWwkWtLT1JPzjByrF19fGuFlNbmPpiw==",
+      "path": "system.runtime.compilerservices.unsafe/4.5.1",
+      "hashPath": "system.runtime.compilerservices.unsafe.4.5.1.nupkg.sha512"
     },
     "System.Security.Principal.Windows/4.5.0": {
       "type": "package",

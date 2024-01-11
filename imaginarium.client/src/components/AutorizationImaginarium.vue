@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, watch } from "vue";
+import { ref, watch } from "vue";
 import axios from "axios";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue";
 
