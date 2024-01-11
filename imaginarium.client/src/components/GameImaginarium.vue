@@ -26,6 +26,7 @@
 import {ref, onMounted, onBeforeUnmount, watch, onBeforeMount} from "vue"
 import axios from "axios";
 import type { User } from "@/types/User";
+import * as signalR from '@microsoft/signalr';
 
 const emits = defineEmits(["hideModal"]);
 
@@ -33,6 +34,19 @@ const players = ref<Array<User>>();
 
 let checkUsers:any;
 let fetchScore:any;
+// let hubConnection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5276/Users").build();
+
+// //запускаем signalR
+// hubConnection.start()
+
+// //прослушиваем событие(ожидаем данные) метода 'listen'
+// hubConnection.on('listen', () => {
+//   //event
+// })
+
+// //отправляем на сервер данные о студенте
+// hubConnection.invoke('send', players.value)
+
 
 const hideModalWindow = () => {
   emits("hideModal");

@@ -23,6 +23,7 @@ const props = defineProps({
   selectedUser: {
     type: Object,
     default:() => {}
+    
   }
 })
 
