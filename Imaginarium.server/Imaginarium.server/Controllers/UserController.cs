@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Imaginarium.server.Hubs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Imaginarium.server.Controllers
 {
@@ -6,6 +8,13 @@ namespace Imaginarium.server.Controllers
 	[Route("api/[controller]")]
 	public class UserController : Controller
 	{
+		private readonly IHubContext<UsersHub> _hubContext;
+
+		public UserController(IHubContext<UsersHub> hubContext)
+		{
+			_hubContext = hubContext;	
+		}
+
 		private static List<User> currentPlayers = new List<User>();		//список текущих игроков в сессии
 		private static List<Card> currentCards = new List<Card>();          //список всех Карточек на сервере
 
@@ -20,6 +29,13 @@ namespace Imaginarium.server.Controllers
 			}
 			currentPlayers.Add(new User { name = sendName });
 			return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
+		}
+
+		[HttpGet("sendSignal")]
+		public async Task<IActionResult> SendSignal()
+		{
+			await _hubContext.Clients.All.SendAsync("ReceiveMessage", currentPlayers);
+			return Ok();
 		}
 
 		[HttpGet("startGame")]
