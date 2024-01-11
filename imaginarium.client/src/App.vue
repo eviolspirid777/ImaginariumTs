@@ -29,7 +29,7 @@ import HelpWindow from "../src/components/HelpImaginarium.vue"
 import CardsWindow from "../src/components/CardsAdd.vue"
 import WaitingRoom from "./components/WaitingRoom.vue"
 import GameWindow from "../src/components/GameImaginarium.vue"
-import {usePlayersStore} from "../src/stores/playersStore.ts"
+import {usePlayersStore} from "../src/stores/playersStore"
 import axios from "axios"
 
 const playersStore = usePlayersStore();

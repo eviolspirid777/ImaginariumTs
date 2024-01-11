@@ -5,5 +5,5 @@ export type User = {
     isReady: boolean | undefined;
     name: string | undefined;
     score: number | undefined;
-    cards: Card | undefined
+    cards: Card[] | undefined
 } | undefined

@@ -48,8 +48,13 @@ const fetchPlayers = async ():Promise<void> => {
 };
 
 const sortByScore = () => {
-  store.players?.sort((a,b) => b?.score - a?.score);
-}
+  store.players?.sort((a, b) => {
+    if (a && b && a.score !== undefined && b.score !== undefined) {
+      return b.score - a.score;
+    }
+    return 0;
+  });
+};
 
 onBeforeMount(async() => {
   axios.get("http://localhost:5276/api/User/startGame")
