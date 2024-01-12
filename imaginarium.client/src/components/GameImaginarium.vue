@@ -4,7 +4,7 @@
       <div class="modal-container">
         <span class="modal-container-header">Имаджинариум</span>
         <span class="modal-container-exit" @click="hideModalWindow">x</span>
-        <!-- <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''"></ErrorModal> -->
+        <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''" />
       </div>
       <div class="modal-wrapper-game">
         <div class="modal-wrapper-game-score">
@@ -27,7 +27,7 @@
 import { onMounted, onBeforeUnmount, onBeforeMount, ref} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
-// import ErrorModal from "@/UI_elements/ErrorModal.vue"
+import ErrorModal from "../components/UI_elements/ErrorModal.vue"
 import axios from "axios"
 import {type Card} from "../types/Card.ts"
 
