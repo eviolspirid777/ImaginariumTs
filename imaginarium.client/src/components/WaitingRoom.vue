@@ -2,12 +2,11 @@
   <div class="modal-mask">
     <div class="modal-wrapper">
       <span class="modal-container-header">
-        Игроков в лобби: <span style="color:forestgreen"> {{ players?.length }}</span>
+        Игроков в лобби: <span style="color:forestgreen"> {{ store.players?.length }}</span>
       </span>
       <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
       <ul>
-        <li v-for="(player, key) in players" :key="key"> {{player?.name}} <i :class="[player?.isReady ? `ready-containter fa-solid fa-check fa-beat`: `ready-containter fa-solid fa-xmark fa-beat`]" :style="[player?.isReady ? `color:green;`: `color:red;`]"/></li>
-
+        <li v-for="(player, key) in store.players" :key="key"> {{player?.name}} <i :class="[player?.isReady ? `ready-containter fa-solid fa-check fa-beat`: `ready-containter fa-solid fa-xmark fa-beat`]" :style="[player?.isReady ? `color:green;`: `color:red;`]"/></li>
       </ul>
       <div class="modal-wrapper-button">
       <button class="centered ready" @click="isReadySwitcher" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
@@ -18,7 +17,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { usePlayersStore } from '@/stores/playersStore';
 import { playersRequest } from "../http/httpRequests"
 

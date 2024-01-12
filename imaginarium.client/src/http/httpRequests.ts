@@ -11,5 +11,8 @@ export const playersRequest = {
     },
     userPostResponse: async(req: String) => {
         return (await axios.post(`${baseURL}/${req}`))
+    },
+    userGetResponse: async (req:String) => {
+        return (await axios.get(`${baseURL}/${req}`))
     }
 }
