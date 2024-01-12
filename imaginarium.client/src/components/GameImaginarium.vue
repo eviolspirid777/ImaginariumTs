@@ -28,8 +28,9 @@ import { onMounted, onBeforeUnmount, onBeforeMount, ref} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue"
+import _ from "lodash"
 import axios from "axios"
-import {type Card} from "../types/Card.ts"
+import {type Card} from "../types/Card"
 
 const emits = defineEmits(["hideModal"]);
 
@@ -37,6 +38,7 @@ const store = usePlayersStore();
 
 const isSelect = ref<Boolean>(false);
 const error = ref<String>("")
+const arrayOfUsersGroupByLeader = ref();
 
 let checkUsers:any;
 let fetchScore:any;
@@ -59,13 +61,18 @@ const selectCard = async(card: Card) => {
 }
 
 const sortByScore = () => {
-  store.players?.sort((a, b) => {
-    if (a && b && a.score !== undefined && b.score !== undefined) {
-      return b.score - a.score;
-    }
-    return 0;
-  });
+  // store.players?.sort((a, b) => {
+  //   if (a && b && a.score !== undefined && b.score !== undefined) {
+  //     return b.score - a.score;
+  //   }
+  //   return 0;
+  // });
+  _.sortBy(store.players, 'score', 'desc'); //сортировка по полю score
 };
+
+const sortByIsLeader = () => {
+  arrayOfUsersGroupByLeader.value = _.groupBy(store.players, 'isLeader')
+}
 
 onBeforeMount(async() => {
   await playersRequest.userGet(`startGame`)
