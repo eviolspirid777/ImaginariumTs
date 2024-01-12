@@ -7,6 +7,7 @@
       <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
       <ul>
         <li v-for="(player, key) in players" :key="key"> {{player?.name}} <i :class="[player?.isReady ? `ready-containter fa-solid fa-check fa-beat`: `ready-containter fa-solid fa-xmark fa-beat`]" :style="[player?.isReady ? `color:green;`: `color:red;`]"/></li>
+
       </ul>
       <div class="modal-wrapper-button">
       <button class="centered ready" @click="isReadySwitcher" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
@@ -17,30 +18,24 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { User } from '@/types/User';
-import axios from 'axios';
 import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { usePlayersStore } from '@/stores/playersStore';
+import { playersRequest } from "../http/httpRequests"
 
 const emits = defineEmits(["hideModal", "switch", "startGame"]);
 const hoverIcon = ref(false);
 
-const props = defineProps({
-  selectedUser: {
-    type: Object,
-    default:() => {}
-  }
-})
+const store = usePlayersStore();
 
-const players = ref<Array<User>>();
 const isReady = ref<boolean>();
 
 let checkUsers:any;
 let checkUserState:any;
 
-watch(() => players.value, (newValue) => {
+watch(() => store.players, (newValue) => {
   let cnt = 0;
   newValue?.forEach( player => {
-    if(players.value && player?.isReady){
+    if(store.players && player?.isReady){
       cnt++;
       if(newValue.length == cnt)
         emits("startGame");
@@ -49,7 +44,7 @@ watch(() => players.value, (newValue) => {
 })
 
 const checkState = async():Promise<void> => {
-  isReady.value = (await axios.get(`http://localhost:5276/api/User/checkState?name=${props.selectedUser.name}`)).data;
+  isReady.value = await playersRequest.userGet(`checkState?name=${store.currentPlayer?.name}`)
 }
 
 const isReadySwitcher = ():void => {
@@ -58,12 +53,12 @@ const isReadySwitcher = ():void => {
 
 const fetchPlayers = async ():Promise<void> => {
   try {
-    const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
-    players.value = response.data;
+    store.players = await playersRequest.userGet(`getUsers`);
   } catch (error) {
     console.error('Error fetching players:', error);
   }
 };
+
 
 const hideModalWindow = async ():Promise<void> => {
   emits("hideModal");

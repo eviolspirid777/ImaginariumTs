@@ -8,14 +8,14 @@
       <div class="modal-wrapper-game">
         <div class="modal-wrapper-game-score">
             <span class="modal-wrapper-game-score-header">Очки:</span>
-            <ul v-for="(player,key) in players" :key="key">
-                <li v-if="player">{{player.name}} : {{ player.score }}</li>
+            <ul>
+              <li v-for="(player,key) in store.players" :key="key">{{player?.name}} : {{ player?.score }}</li>
             </ul>
         </div>
-        <div v-for="(player,key1) in players" :key="key1" class="modal-wrapper-game-cards">
-            <ul v-for="(card,key2) in player.cards" :key="key2">
-                <li><img :src="`../../imaginImag/${card.cardName}`"></li>
-            </ul>
+        <div v-for="(player,key) in store.players" :key="key" class="modal-wrapper-game-cards">
+          <ul v-if="player && player.name == store.currentPlayer?.name" >
+            <li v-for="(card,key2) in player.cards" :key="key2"><img :src="`../../imaginImag/${card?.cardName}`"></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -23,37 +23,41 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted, onBeforeUnmount, watch} from "vue"
-import axios from "axios";
-import type { User } from "@/types/User";
+import { onMounted, onBeforeUnmount, onBeforeMount} from "vue"
+import { usePlayersStore } from "@/stores/playersStore";
+import { playersRequest } from "@/http/httpRequests";
 
 const emits = defineEmits(["hideModal"]);
 
-const players = ref<Array<User>>();
+const store = usePlayersStore();
 
 let checkUsers:any;
 let fetchScore:any;
 
 const hideModalWindow = () => {
-    emits("hideModal");
+  emits("hideModal");
 }
-
-watch(() => players.value, (newValue) => {
-  players.value = newValue;
-})
 
 const fetchPlayers = async ():Promise<void> => {
   try {
-    const response = await axios.get(`http://localhost:5276/api/User/getUsers`);
-    players.value = response.data;
+    store.players = await playersRequest.userGet(`getUsers`)
   } catch (error) {
     console.error('Error fetching players:', error);
   }
 };
 
 const sortByScore = () => {
-  players.value?.sort((a,b) => b?.score - a?.score);
-}
+  store.players?.sort((a, b) => {
+    if (a && b && a.score !== undefined && b.score !== undefined) {
+      return b.score - a.score;
+    }
+    return 0;
+  });
+};
+
+onBeforeMount(async() => {
+  await playersRequest.userGet(`startGame`)
+})
 
 onMounted(() => {
   fetchPlayers();
@@ -87,7 +91,7 @@ onBeforeUnmount(() => {
       &-score{
         display: flex;
         flex-flow: column nowrap;
-        min-width: 9%;
+        min-width: 30%;
         max-width: 15%;
         margin-top: 20px;
         padding: 5px;
