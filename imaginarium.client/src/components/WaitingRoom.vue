@@ -1,14 +1,18 @@
 <template>
   <div class="modal-mask">
     <div class="modal-wrapper">
-      <div class="modal-container">
-        <span class="modal-container-header">Комната ожидания: {{headerText}}</span>
-        <span class="modal-container-exit" @click="hideModalWindow">x</span>
-      </div>
-      <ul v-for="(player,key) in players" :key="key">
-        <li v-if="player">{{player.name}} <i :class="[player.isReady ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[player.isReady ? `color:green;`: `color:red;`]"/></li>
+      <span class="modal-container-header">
+        Игроков в лобби: <span style="color:forestgreen"> {{ players?.length }}</span>
+      </span>
+      <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
+      <ul>
+        <li v-for="(player, key) in players" :key="key"> {{player?.name}} <i :class="[player?.isReady ? `ready-containter fa-solid fa-check fa-beat`: `ready-containter fa-solid fa-xmark fa-beat`]" :style="[player?.isReady ? `color:green;`: `color:red;`]"/></li>
       </ul>
-      <button class="modal-wrapper-ready" @click="isReadySwitcher">Ready</button>
+      <div class="modal-wrapper-button">
+      <button class="centered ready" @click="isReadySwitcher" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
+          <i :class="{ 'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon }" position: absolute style="color: green;"></i>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -18,6 +22,7 @@ import axios from 'axios';
 import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
 
 const emits = defineEmits(["hideModal", "switch", "startGame"]);
+const hoverIcon = ref(false);
 
 const props = defineProps({
   selectedUser: {
@@ -60,17 +65,6 @@ const fetchPlayers = async ():Promise<void> => {
   }
 };
 
-const headerText = computed(() => {
-  if(players.value){
-    if(players.value?.length == 1)
-      return `${players.value.length} игрок`;
-    else if(players.value && players.value?.length > 1 && players.value?.length < 5)
-      return `${players.value.length} игрока`;
-    return `${players.value.length} игроков`;
-  }
-  return "";
-})
-
 const hideModalWindow = async ():Promise<void> => {
   emits("hideModal");
 };
@@ -87,81 +81,83 @@ onBeforeUnmount(() => {
 });
 </script>
 <style scoped lang="scss">
-ul{
-  li{
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    height: 40px;
-    max-width: 120px;
-    border: 1px solid wheat;
-    margin-top: 10px;
+
+.centered {
+  position: absolute;
+  bottom: 40px;
+  right: 60px;
+}
+
+ul {
+  position: absolute;
+  width: 100%;
+  height: 70%;
+  top: 100px;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: stretch;
+
+    font-size: 30px;
+  li {
+    // position: relative;
+    // display: flex;
+    // flex-flow: column wrap;
+    // align-items: center;
+    // justify-content: center; /* Выравнивание по горизонтали */
+    // width: 130px;
+    // height: 40px;
+    // font-size: 30px;
+
+    padding: 5px 20px;
+    position: relative;
+    text-align: center;
+    max-width: 200px;
+    border: 3px solid brown;
+    border-radius: 10px;
+    background-color: rgb(146, 106, 6);
+    margin: 10px 50px;
+
     i {
+      position: absolute;
       color: green;
-      margin-left: 18px;
+      left: -35px;
+      top: 50%;
+
     }
   }
 }
+
+
+
 .modal {
   &-wrapper{
-    width: 37%;
-    height: 40%;
-    max-width: 37%;
-    max-height: 40%;
-    background-color: #000000;
-    display: flex;
-    flex-flow: column wrap;
-    border-radius: 10px;
-    box-shadow: 1px 1px 10px #b8c952;
-    color: wheat;
-    padding-left: 20px;
-    padding-right: 20px;
-    &-ready{
-      height: 40px;
-      width: 80px;
-      margin-left: 600px;
-      margin-top: 80px;
-      color: black;
-      background-color: wheat;
-      border: 0px solid wheat;
-      border-radius: 2px;
+    width: 700px;
+    height: 600px;
     }
-  }
-
+  
   &-container{
     display: flex;
     justify-content: space-between;
-    width: 90%;
-    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+
     background-color: rgba(0, 0, 0, 1);
-    padding: 20px;
-    padding-bottom: 20px;
     text-align: center;
     color: wheat;
     font-size: 22px;
     &-header{
-      padding-left: 25%;
+      font-size: 40px;
       cursor: default;
       user-select: none;
     }
-    &-exit{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 25px;
-      background-color: wheat;
-      border-radius: 2px;
-      color: black;
-      user-select: none;
-      &:hover{
-        background-color: rgb(218, 195, 151);
-        cursor: pointer;
-        box-shadow: 1px 1px 10px #b8c952;
-      }
-    }
   }
 }
+
+.ready-containter {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  background-color: aqua;
+}
+
 </style>

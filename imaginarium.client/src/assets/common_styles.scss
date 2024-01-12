@@ -11,8 +11,6 @@
     padding: 40px;
     width: 400px;
     height: 300px;
-
-
 }
 
 @keyframes pulseShadow {
@@ -52,12 +50,32 @@
     right: 0px; top: 0px;
     user-select: none;
     position: absolute;
+    font-size: 35px;
     &:hover {
         background-color: red;
         border-radius: 100%;
         box-shadow: 0px 0px 12px red;
         cursor: pointer;
     }
+}
+
+.modal-wrapper-button {
+  display: flex;
+
+  .ready {
+    margin-top: 10px;
+    min-height: 30px;
+    width: 80px;
+    background-color: wheat;
+    font-weight: 800;
+    border: 0;
+    border-radius: 6px;
+
+    &:hover {
+      background-color: #dac397;
+      box-shadow: 0 0 12px #0ffc22;
+    }
+  }
 }
 
 .error-container {

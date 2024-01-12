@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <span class="modal-container-header">Добавить карточки</span>
-        <span class="fa-solid fa-circle-xmark modal-container-exit" style="font-size: 30px;" @click="hideModalWindow"></span>
+        <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
       </div>
       <div class="modal-wrapper-imageAdd">
           <input type="file" accept="image/*" @change="selectFile" style="color: wheat;">

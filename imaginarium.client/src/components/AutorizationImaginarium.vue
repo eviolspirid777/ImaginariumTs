@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <span class="modal-container-header">Введите имя...</span>
-        <span class="fa-solid fa-circle-xmark modal-container-exit" style="font-size: 30px;" @click="hideModalWindow"></span>
+        <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
         <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''"></ErrorModal>
       </div>
       <span class="modal-wrapper-name">
@@ -11,7 +11,7 @@
       </span>
 
       <div class="modal-wrapper-button">
-        <button @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
+        <button class="ready" @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
           <i :class="{ 'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon }" style="color: green;"></i>
         </button>
       </div>
@@ -81,24 +81,7 @@ const login = async (): Promise<void> => {
       font-style: italic;
       font-weight: bold;
     }
-    &-button {
-      display: flex;
 
-      button {
-        margin-top: 10px;
-        min-height: 30px;
-        width: 80px;
-        background-color: wheat;
-        font-weight: 800;
-        border: 0;
-        border-radius: 6px;
-
-        &:hover {
-          background-color: #dac397;
-          box-shadow: 0 0 12px #0ffc22;
-        }
-      }
-    }
   }
 
   &-container {
