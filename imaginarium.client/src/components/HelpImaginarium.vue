@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <span class="modal-container-header">Правила</span>
-        <span class="fa-solid fa-circle-xmark modal-container-exit" style="font-size: 30px;" @click="hideModalWindow"></span>
+        <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
       </div>
       <span class="modal-wrapper-text">
         Добро пожаловать в игру "Имаджинариум"! Это захватывающая настольная игра, где вы окунетесь в мир воображения,
