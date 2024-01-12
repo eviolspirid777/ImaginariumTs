@@ -4,6 +4,7 @@
       <div class="modal-container">
         <span class="modal-container-header">Имаджинариум</span>
         <span class="modal-container-exit" @click="hideModalWindow">x</span>
+        <!-- <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''"></ErrorModal> -->
       </div>
       <div class="modal-wrapper-game">
         <div class="modal-wrapper-game-score">
@@ -14,7 +15,7 @@
         </div>
         <div v-for="(player,key) in store.players" :key="key" class="modal-wrapper-game-cards">
           <ul v-if="player && player.name == store.currentPlayer?.name" >
-            <li v-for="(card,key2) in player.cards" :key="key2"><img :src="`../../imaginImag/${card?.cardName}`"></li>
+            <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
           </ul>
         </div>
       </div>
@@ -23,28 +24,39 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, onBeforeMount} from "vue"
+import { onMounted, onBeforeUnmount, onBeforeMount, ref} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
+// import ErrorModal from "@/UI_elements/ErrorModal.vue"
+import axios from "axios"
+import {type Card} from "../types/Card.ts"
 
 const emits = defineEmits(["hideModal"]);
 
 const store = usePlayersStore();
 
+const isSelect = ref<Boolean>(false);
+const error = ref<String>("")
+
 let checkUsers:any;
 let fetchScore:any;
 
-const hideModalWindow = () => {
+const hideModalWindow = async () => {
+  await playersRequest.userPost('endGame');
   emits("hideModal");
 }
 
-const fetchPlayers = async ():Promise<void> => {
-  try {
-    store.players = await playersRequest.userGet(`getUsers`)
-  } catch (error) {
-    console.error('Error fetching players:', error);
+const selectCard = async(card: Card) => {
+  if(!isSelect.value){
+    console.log(card);
+    //отправляем выбранную карточку на сервак
+    await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${card?.id}&name=${store.currentPlayer?.name}`);
+    isSelect.value = true;
   }
-};
+  else{
+    error.value = "Вы уже выбрали карточку!"
+  }
+}
 
 const sortByScore = () => {
   store.players?.sort((a, b) => {
@@ -60,9 +72,9 @@ onBeforeMount(async() => {
 })
 
 onMounted(() => {
-  fetchPlayers();
+  store.fetchPlayers()
   sortByScore();
-  checkUsers = setInterval(fetchPlayers, 100);
+  checkUsers = setInterval(store.fetchPlayers, 100);
   fetchScore = setInterval(sortByScore, 100);
 });
 

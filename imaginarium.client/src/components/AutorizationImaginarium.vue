@@ -26,9 +26,9 @@ import { playersRequest } from "@/http/httpRequests";
 
 const emits = defineEmits(["hideModal", "closeWindow"]);
 
-const hoverIcon = ref(false);
-const error = ref("");
-const playerName = ref("");
+const hoverIcon = ref<Boolean>(false);
+const error = ref<String>("");
+const playerName = ref<String>("");
 
 const hideModalWindow = (): void => {
   emits("closeWindow");
