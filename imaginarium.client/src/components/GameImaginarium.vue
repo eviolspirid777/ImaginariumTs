@@ -4,7 +4,7 @@
       <div class="modal-container">
         <span class="modal-container-header">Имаджинариум</span>
         <span class="modal-container-exit" @click="hideModalWindow">x</span>
-        <!-- <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''"></ErrorModal> -->
+        <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''" />
       </div>
       <div class="modal-wrapper-game">
         <div class="modal-wrapper-game-score">
@@ -27,9 +27,10 @@
 import { onMounted, onBeforeUnmount, onBeforeMount, ref} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
-// import ErrorModal from "@/UI_elements/ErrorModal.vue"
+import ErrorModal from "../components/UI_elements/ErrorModal.vue"
+import _ from "lodash"
 import axios from "axios"
-import {type Card} from "../types/Card.ts"
+import {type Card} from "../types/Card"
 
 const emits = defineEmits(["hideModal"]);
 
@@ -37,6 +38,7 @@ const store = usePlayersStore();
 
 const isSelect = ref<Boolean>(false);
 const error = ref<String>("")
+const arrayOfUsersGroupByLeader = ref();
 
 let checkUsers:any;
 let fetchScore:any;
@@ -59,13 +61,18 @@ const selectCard = async(card: Card) => {
 }
 
 const sortByScore = () => {
-  store.players?.sort((a, b) => {
-    if (a && b && a.score !== undefined && b.score !== undefined) {
-      return b.score - a.score;
-    }
-    return 0;
-  });
+  // store.players?.sort((a, b) => {
+  //   if (a && b && a.score !== undefined && b.score !== undefined) {
+  //     return b.score - a.score;
+  //   }
+  //   return 0;
+  // });
+  _.sortBy(store.players, 'score', 'desc'); //сортировка по полю score
 };
+
+const sortByIsLeader = () => {
+  arrayOfUsersGroupByLeader.value = _.groupBy(store.players, 'isLeader')
+}
 
 onBeforeMount(async() => {
   await playersRequest.userGet(`startGame`)
