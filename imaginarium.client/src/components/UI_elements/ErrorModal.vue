@@ -15,7 +15,7 @@ const props = defineProps({
   }
 })
 
-const error = ref(props.errorText);
+const error = ref<String>(props.errorText);
 
 watch(() => error.value, (newValue) => {
   error.value = newValue

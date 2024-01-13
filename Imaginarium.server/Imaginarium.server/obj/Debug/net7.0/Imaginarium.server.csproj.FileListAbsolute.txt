@@ -80,6 +80,10 @@ F:/prjcts/ImaginariumTS/Imaginarium.server/Imaginarium.server/obj/Debug/net7.0/I
 /Users/eviolspirid/Projects/Imaginarium/ImaginariumTs/Imaginarium.server/Imaginarium.server/obj/Debug/net7.0/Imaginarium.server.pdb
 /Users/eviolspirid/Projects/Imaginarium/ImaginariumTs/Imaginarium.server/Imaginarium.server/obj/Debug/net7.0/Imaginarium.server.genruntimeconfig.cache
 /Users/eviolspirid/Projects/Imaginarium/ImaginariumTs/Imaginarium.server/Imaginarium.server/obj/Debug/net7.0/ref/Imaginarium.server.dll
+F:/prjcts/ImaginariumTS/Imaginarium.server/Imaginarium.server/bin/Debug/net7.0/Newtonsoft.Json.dll
+F:/prjcts/ImaginariumTS/Imaginarium.server/Imaginarium.server/bin/Debug/net7.0/System.Net.WebSockets.WebSocketProtocol.dll
+/Users/eviolspirid/Projects/Imaginarium/ImaginariumTs/Imaginarium.server/Imaginarium.server/bin/Debug/net7.0/Newtonsoft.Json.dll
+/Users/eviolspirid/Projects/Imaginarium/ImaginariumTs/Imaginarium.server/Imaginarium.server/bin/Debug/net7.0/System.Net.WebSockets.WebSocketProtocol.dll
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\appsettings.Development.json
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\appsettings.json
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Imaginarium.server.exe
@@ -87,7 +91,9 @@ F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\I
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Imaginarium.server.runtimeconfig.json
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Imaginarium.server.dll
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Imaginarium.server.pdb
+F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Newtonsoft.Json.dll
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Serilog.dll
+F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\System.Net.WebSockets.WebSocketProtocol.dll
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\Imaginarium.server.csproj.AssemblyReference.cache
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\Imaginarium.server.GeneratedMSBuildEditorConfig.editorconfig
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\Imaginarium.server.AssemblyInfoInputs.cache
@@ -108,5 +114,3 @@ F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\r
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\Imaginarium.server.pdb
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\Imaginarium.server.genruntimeconfig.cache
 F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\obj\Debug\net7.0\ref\Imaginarium.server.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\Newtonsoft.Json.dll
-F:\prjcts\ImaginariumTS\Imaginarium.server\Imaginarium.server\bin\Debug\net7.0\System.Net.WebSockets.WebSocketProtocol.dll

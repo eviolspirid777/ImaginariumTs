@@ -3,17 +3,15 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <span class="modal-container-header">Введите имя...</span>
-        <span class="fa-solid fa-circle-xmark modal-container-exit" style="font-size: 30px;" @click="hideModalWindow"></span>
+        <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
         <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''"></ErrorModal>
       </div>
       <span class="modal-wrapper-name">
         <input v-model="playerName"/>
       </span>
-      <div class="modal-wrapper-button">
-        <button @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
+        <button class="modal-wrapper-button-ready-small" @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
           <i :class="{ 'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon }" style="color: green;"></i>
         </button>
-      </div>
     </div>
   </div>
 </template>
@@ -25,9 +23,9 @@ import { playersRequest } from "@/http/httpRequests";
 
 const emits = defineEmits(["hideModal", "closeWindow"]);
 
-const hoverIcon = ref(false);
-const error = ref("");
-const playerName = ref("");
+const hoverIcon = ref<Boolean>(false);
+const error = ref<String>("");
+const playerName = ref<String>("");
 
 const hideModalWindow = (): void => {
   emits("closeWindow");
@@ -64,7 +62,7 @@ const login = async (): Promise<void> => {
 .modal {
   &-wrapper {
     width: 400px;
-    height: 150px;
+    height: 170px;
 
     &-name {
       font-size: 20px;
@@ -83,24 +81,7 @@ const login = async (): Promise<void> => {
       font-style: italic;
       font-weight: bold;
     }
-    &-button {
-      display: flex;
 
-      button {
-        margin-top: 10px;
-        min-height: 30px;
-        width: 80px;
-        background-color: wheat;
-        font-weight: 800;
-        border: 0;
-        border-radius: 6px;
-
-        &:hover {
-          background-color: #dac397;
-          box-shadow: 0 0 12px #0ffc22;
-        }
-      }
-    }
   }
 
   &-container {

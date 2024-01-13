@@ -1,23 +1,28 @@
 <template>
   <div class="modal-mask">
     <div class="modal-wrapper">
-      <div class="modal-container">
-        <span class="modal-container-header">Комната ожидания: {{headerText}}</span>
-        <span class="modal-container-exit" @click="hideModalWindow">x</span>
-      </div>
-      <ul v-for="(player,key) in store.players" :key="key">
-        <li v-if="player">{{player.name}} <i :class="[player.isReady ? `fa-solid fa-check fa-beat`: `fa-solid fa-xmark fa-beat`]" :style="[player.isReady ? `color:green;`: `color:red;`]"/></li>
+      <span class="modal-container-header">
+        Игроков в лобби: <span style="color:forestgreen"> {{ store.players?.length }}</span>
+      </span>
+      <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
+      <ul>
+        <li v-for="(player, key) in store.players" :key="key"> {{player?.name}} 
+          <div :class="[player?.isReady ? `readiness-circle-check fa-solid fa-check`: `readiness-circle-xmark fa-solid fa-xmark`]"/>
+        </li>
       </ul>
-      <button class="modal-wrapper-ready" @click="isReadySwitcher">Ready</button>
+      <button class="modal-wrapper-button-ready centered" @click="isReadySwitcher" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
+          <i :class="{ 'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon }" position: absolute style="color: green;"></i>
+        </button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { usePlayersStore } from '@/stores/playersStore';
 import { playersRequest } from "../http/httpRequests"
 
 const emits = defineEmits(["hideModal", "switch", "startGame"]);
+const hoverIcon = ref(false);
 
 const store = usePlayersStore();
 
@@ -53,17 +58,6 @@ const fetchPlayers = async ():Promise<void> => {
   }
 };
 
-const headerText = computed(() => {
-  if(store.players){
-    if(store.players?.length == 1)
-      return `${store.players.length} игрок`;
-    else if(store.players && store.players?.length > 1 && store.players?.length < 5)
-      return `${store.players.length} игрока`;
-    return `${store.players.length} игроков`;
-  }
-  return "";
-})
-
 const hideModalWindow = async ():Promise<void> => {
   emits("hideModal");
 };
@@ -80,81 +74,83 @@ onBeforeUnmount(() => {
 });
 </script>
 <style scoped lang="scss">
-ul{
-  li{
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    height: 40px;
-    max-width: 120px;
-    border: 1px solid wheat;
-    margin-top: 10px;
-    i {
-      color: green;
-      margin-left: 18px;
-    }
-  }
-}
-.modal {
-  &-wrapper{
-    width: 37%;
-    height: 40%;
-    max-width: 37%;
-    max-height: 40%;
-    background-color: #000000;
-    display: flex;
-    flex-flow: column wrap;
-    border-radius: 10px;
-    box-shadow: 1px 1px 10px #b8c952;
-    color: wheat;
-    padding-left: 20px;
-    padding-right: 20px;
-    &-ready{
-      height: 40px;
-      width: 80px;
-      margin-left: 600px;
-      margin-top: 80px;
-      color: black;
-      background-color: wheat;
-      border: 0px solid wheat;
-      border-radius: 2px;
-    }
-  }
 
-  &-container{
+.centered {
+  position: absolute;
+  bottom: 40px;
+  right: 60px;
+}
+
+ul {
+  position: absolute;
+  width: 100%;
+  height: 70%;
+  top: 100px;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  font-size: 30px;
+
+  li {
     display: flex;
     justify-content: space-between;
-    width: 90%;
+    align-items: center;
+    padding: 8px;
+    position: relative;
+    background-color: darkslateblue;
+    width: 260px;
+    overflow: hidden;
+    border: 3px solid brown;
     border-radius: 10px;
+    margin: 10px;
+  }
+}
+
+.modal {
+  &-wrapper{
+    width: 700px;
+    height: 600px;
+    }
+  
+  &-container{
     background-color: rgba(0, 0, 0, 1);
-    padding: 20px;
-    padding-bottom: 20px;
     text-align: center;
     color: wheat;
     font-size: 22px;
+    
     &-header{
-      padding-left: 25%;
+      font-size: 40px;
       cursor: default;
       user-select: none;
     }
-    &-exit{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 25px;
-      background-color: wheat;
-      border-radius: 2px;
-      color: black;
-      user-select: none;
-      &:hover{
-        background-color: rgb(218, 195, 151);
-        cursor: pointer;
-        box-shadow: 1px 1px 10px #b8c952;
-      }
-    }
   }
 }
+
+.readiness-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  background-color: rgb(125, 216, 22);
+  color:red; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  margin-left: 15px;
+  right: 0;
+  justify-self: right;
+  position: absolute;
+  margin-right: 5px;
+
+  &-check{
+    @extend .readiness-circle;
+    background-color: green;
+    color: rgb(0, 230, 0);
+  }
+  &-xmark{
+    @extend .readiness-circle;
+    background-color: rgb(131, 40, 40);
+    color: red;
+  }
+}
+
 </style>

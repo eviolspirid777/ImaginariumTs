@@ -25,7 +25,7 @@ namespace Imaginarium.server.Controllers
 				currentPlayers.Add(new User { name = sendName });
 				return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
 			}
-			return Ok();
+			return NotFound();
 		}
 
 		[HttpGet("startGame")]
@@ -84,6 +84,7 @@ namespace Imaginarium.server.Controllers
 						shuffledCards = shuffledCards.Skip(2).ToList();
 					}
 					isLiquid = false;
+					isStart = true;
 					/*			Console.WriteLine("Раздача карточек:");
 								foreach (var player in currentPlayers)
 								{
