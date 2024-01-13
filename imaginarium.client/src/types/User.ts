@@ -6,5 +6,6 @@ export type User = {
     isLeader: boolean | undefined;
     name: string | undefined;
     score: number | undefined;
-    cards: Card[] | undefined
+    cards: Card[] | undefined;
+    selectedCard: Card | undefined;
 } | undefined

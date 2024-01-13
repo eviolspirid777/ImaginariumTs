@@ -2,8 +2,10 @@
   <div class="modal-mask">
     <div class="modal-wrapper">
       <div class="modal-container">
-        <span class="modal-container-header">Имаджинариум:</span>
-        <span class="modal-container-exit" @click="hideModalWindow">x</span>
+        <div>
+          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}</span>
+          <span class="modal-container-exit" @click="hideModalWindow">x</span>
+        </div>
         <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''" />
       </div>
       <div class="modal-wrapper-game">
@@ -18,13 +20,16 @@
             <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
           </ul>
         </div>
+        <div class="selected-card" v-if="store.currentPlayer?.selectedCard" style="height: 400px; widows: 400px;">
+          <img :src="`../../ImaginImag/${store.currentPlayer?.selectedCard?.cardName}`">
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, onBeforeMount, ref} from "vue"
+import { onMounted, onBeforeUnmount, ref} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue"
@@ -39,6 +44,18 @@ const store = usePlayersStore();
 const isSelect = ref<Boolean>(false);
 const error = ref<String>("")
 const arrayOfUsersGroupByLeader = ref();
+
+let valid = {
+  chooseCard: 1,
+  chooseCardAdmin: 2,
+  wait: 3
+}
+
+const currentMove = ref({
+  [valid.chooseCard]:"Выберите карту",
+  [valid.chooseCardAdmin]: "Выберите карту и ассоциацию",
+  [valid.wait]:"Ждите"
+});
 
 let checkUsers:any;
 let fetchScore:any;
@@ -74,9 +91,9 @@ const sortByIsLeader = () => {
   arrayOfUsersGroupByLeader.value = _.groupBy(store.players, 'isLeader')
 }
 
-onBeforeMount(async() => {
-  await playersRequest.userGet(`startGame`)
-})
+// onBeforeMount(async() => {
+//   await playersRequest.userGet(`startGame`)
+// })
 
 onMounted(() => {
   store.fetchPlayers()
@@ -110,8 +127,9 @@ onBeforeUnmount(() => {
       &-score{
         display: flex;
         flex-flow: column nowrap;
-        min-width: 30%;
+        min-width: 8%;
         max-width: 15%;
+        max-height: 40%;
         margin-top: 20px;
         padding: 5px;
         border: 1px solid wheat;
@@ -132,6 +150,8 @@ onBeforeUnmount(() => {
         width: 95%;
         padding: 15px;
         & ul{
+          display: flex;
+          flex-flow: row wrap;
           & li{
             margin: 5px;
           }
@@ -150,7 +170,6 @@ onBeforeUnmount(() => {
     color: wheat;
     font-size: 22px;
     &-header{
-      padding-left: 43%;
       cursor: default;
       user-select: none;
     }

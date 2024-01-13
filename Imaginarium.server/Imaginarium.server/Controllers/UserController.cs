@@ -28,36 +28,39 @@ namespace Imaginarium.server.Controllers
 		[HttpPost("selectCard")]
 		public async Task<IActionResult> SelectCard(int cardId, string name)
 		{
+			//не работает присваивание карточки на стороне клиента
 			var newCard = new ScoreCards { card = currentPlayers.Find(p => p.name == name).cards.Find(c => c.id == cardId), isLeader = currentPlayers.Find(p => p.name == name).isLeader, score = 0 };
 			currentCards.Add(newCard);
 			//удаляет выбранную карточку из карточек пользователя
-			currentPlayers.Find(p => p.name == name).cards.RemoveAll(p => p.id == cardId);
+            var tmpCard = currentPlayers.Find(p => p.name == name).cards.Find(p => p.id == cardId);
+			currentPlayers.Find(p => p.name == name).selectedCard = new Card(tmpCard);
+            currentPlayers.Find(p => p.name == name).cards.RemoveAll(p => p.id == cardId);
             return Ok();
 		}
 
-		[HttpGet("startGame")]
-		public async Task<IActionResult> StartGame()
-		{
-			//Для того, чтобы замешало один раз, а не несколько!
-			if (isLiquid == true)
-			{
-				Random rng = new Random();
-				var shuffledCards = cards.OrderBy(x => rng.Next()).ToList();
-				foreach (var player in currentPlayers)
-				{
-					player.cards = shuffledCards.Take(2).ToList();
-					shuffledCards = shuffledCards.Skip(2).ToList();
-				}
-				isLiquid = false;
-				/*			Console.WriteLine("Раздача карточек:");
-							foreach (var player in currentPlayers)
-							{
-								Console.WriteLine($"{player.name}: {string.Join(", ", player.cards.Select(card => card.cardName))}");
-							}*/
-				return Ok(currentPlayers);
-			}
-			return Ok();
-		}
+		//[HttpGet("startGame")]
+		//public async Task<IActionResult> StartGame()
+		//{
+		//	//Для того, чтобы замешало один раз, а не несколько!
+		//	if (isLiquid == true)
+		//	{
+		//		Random rng = new Random();
+		//		var shuffledCards = cards.OrderBy(x => rng.Next()).ToList();
+		//		foreach (var player in currentPlayers)
+		//		{
+		//			player.cards = shuffledCards.Take(2).ToList();
+		//			shuffledCards = shuffledCards.Skip(2).ToList();
+		//		}
+		//		isLiquid = false;
+		//		/*			Console.WriteLine("Раздача карточек:");
+		//					foreach (var player in currentPlayers)
+		//					{
+		//						Console.WriteLine($"{player.name}: {string.Join(", ", player.cards.Select(card => card.cardName))}");
+		//					}*/
+		//		return Ok(currentPlayers);
+		//	}
+		//	return Ok();
+		//}
 
 
 		[HttpGet("randomCards")]
@@ -87,8 +90,8 @@ namespace Imaginarium.server.Controllers
 					var shuffledCards = cards.OrderBy(x => rng.Next()).ToList();
 					foreach (var player in currentPlayers)
 					{
-						player.cards = shuffledCards.Take(2).ToList();
-						shuffledCards = shuffledCards.Skip(2).ToList();
+						player.cards = shuffledCards.Take(10).ToList();
+						shuffledCards = shuffledCards.Skip(10).ToList();
 					}
 					isLiquid = false;
 					/*			Console.WriteLine("Раздача карточек:");
