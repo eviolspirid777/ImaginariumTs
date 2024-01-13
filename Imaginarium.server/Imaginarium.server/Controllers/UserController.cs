@@ -12,56 +12,69 @@ namespace Imaginarium.server.Controllers
 
 		private static List<ScoreCards> currentCards = new List<ScoreCards>();  //список всех выбранных карточек
 
-		private static bool isLiquid = true;						//позволяет замешивать карты один раз
+		private static bool isLiquid = true;                        //позволяет замешивать карты один раз
+		private static bool isStart = false;							//запрещает стартовать игру, если сессия уже началась
+
+		private void NextAdmin()
+		{
+			if (currentPlayers.Count > 0)
+			{
+				User currentAdmin = currentPlayers.FirstOrDefault(player => player.isLeader == true)!;
+				if (currentAdmin == null || currentPlayers.IndexOf(currentAdmin) == currentPlayers.Count - 1)
+				{
+					currentPlayers[0].isLeader = true;
+				}
+				else
+				{
+					int currentIndex = currentPlayers.IndexOf(currentAdmin);
+					currentPlayers[currentIndex + 1].isLeader = true;
+				}
+				if (currentAdmin != null)
+				{
+					currentAdmin.isLeader = false;
+				}
+			}
+		}
 
 		[HttpPost("autorize")]
 		public async Task<IActionResult> Autorize(string sendName)
 		{
-			if (currentPlayers.Any(p => p.name == sendName))
+			if (isStart == false)
 			{
-				return NoContent();
+				if (currentPlayers.Any(p => p.name == sendName))
+				{
+					return NoContent();
+				}
+				currentPlayers.Add(new User { name = sendName });
+				return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
 			}
-			currentPlayers.Add(new User { name = sendName });
-			return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
+			return NotFound();
+		}
+		[HttpPost("playersReady")]
+		public async Task<IActionResult> PlayersReady()
+		{
+			if(isLiquid == false)
+			{
+				currentPlayers.ForEach(p => p.isReady = false);
+				NextAdmin();
+				isLiquid = true;
+			}
+			return Ok(currentCards);
 		}
 
 		[HttpPost("selectCard")]
 		public async Task<IActionResult> SelectCard(int cardId, string name)
 		{
 			//не работает присваивание карточки на стороне клиента
-			var newCard = new ScoreCards { card = currentPlayers.Find(p => p.name == name).cards.Find(c => c.id == cardId), isLeader = currentPlayers.Find(p => p.name == name).isLeader, score = 0 };
+			var newCard = new ScoreCards { card = currentPlayers.Find(p => p.name == name)!.cards!.Find(c => c.id == cardId)!, isLeader = currentPlayers.Find(p => p.name == name)!.isLeader, score = 0 };
 			currentCards.Add(newCard);
+			currentPlayers.Find(p => p.name == name)!.isReady = true;
 			//удаляет выбранную карточку из карточек пользователя
-            var tmpCard = currentPlayers.Find(p => p.name == name).cards.Find(p => p.id == cardId);
-			currentPlayers.Find(p => p.name == name).selectedCard = new Card(tmpCard);
-            currentPlayers.Find(p => p.name == name).cards.RemoveAll(p => p.id == cardId);
+			var tmpCard = currentPlayers.Find(p => p.name == name)!.cards!.Find(p => p.id == cardId);
+			currentPlayers.Find(p => p.name == name)!.selectedCard = new Card(tmpCard!);
+            currentPlayers.Find(p => p.name == name)!.cards!.RemoveAll(p => p.id == cardId);
             return Ok();
 		}
-
-		//[HttpGet("startGame")]
-		//public async Task<IActionResult> StartGame()
-		//{
-		//	//Для того, чтобы замешало один раз, а не несколько!
-		//	if (isLiquid == true)
-		//	{
-		//		Random rng = new Random();
-		//		var shuffledCards = cards.OrderBy(x => rng.Next()).ToList();
-		//		foreach (var player in currentPlayers)
-		//		{
-		//			player.cards = shuffledCards.Take(2).ToList();
-		//			shuffledCards = shuffledCards.Skip(2).ToList();
-		//		}
-		//		isLiquid = false;
-		//		/*			Console.WriteLine("Раздача карточек:");
-		//					foreach (var player in currentPlayers)
-		//					{
-		//						Console.WriteLine($"{player.name}: {string.Join(", ", player.cards.Select(card => card.cardName))}");
-		//					}*/
-		//		return Ok(currentPlayers);
-		//	}
-		//	return Ok();
-		//}
-
 
 		[HttpGet("randomCards")]
         public async Task<IActionResult> RandomCards()
@@ -94,6 +107,8 @@ namespace Imaginarium.server.Controllers
 						shuffledCards = shuffledCards.Skip(10).ToList();
 					}
 					isLiquid = false;
+					isStart = true;
+					NextAdmin();
 					/*			Console.WriteLine("Раздача карточек:");
 								foreach (var player in currentPlayers)
 								{
@@ -130,7 +145,7 @@ namespace Imaginarium.server.Controllers
 
 		public async Task<IActionResult> CheckState(string name)
 		{
-			return Ok(currentPlayers.FirstOrDefault(u => u.name == name).isReady);
+			return Ok(currentPlayers.FirstOrDefault(u => u.name == name)!.isReady);
 		}
 
 		[HttpPost("switchReady")]
@@ -152,6 +167,8 @@ namespace Imaginarium.server.Controllers
 				return Ok(currentPlayers.ToList());
 			return BadRequest();
 		}
+		[HttpGet("getCurrentCards")]
+		public async Task<IActionResult> GetCurrentCards() => Ok(currentCards.ToList());
 
 		[HttpGet("getUser")]
 		public async Task<IActionResult> getUser(string user) => Ok(currentPlayers.Find(u => u.name == user));

@@ -15,13 +15,21 @@
               <li v-for="(player,key) in store.players" :key="key">{{player?.name}} : {{ player?.score }}</li>
             </ul>
         </div>
+        <div class="modal-wrapper-game-code-word" v-if="store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader == true">
+          <span for="me">Ассоциация:</span>
+          <input type="text" id="me" placeholder="Введите ассоциацию" v-model="codeWord">
+        </div>
         <div v-for="(player,key) in store.players" :key="key" class="modal-wrapper-game-cards">
           <ul v-if="player && player.name == store.currentPlayer?.name" >
             <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
           </ul>
         </div>
-        <div class="selected-card" v-if="store.currentPlayer?.selectedCard" style="height: 400px; widows: 400px;">
+        <!-- <div class="selected-card" v-if="store.currentPlayer?.selectedCard" style="height: 400px; widows: 400px;">
           <img :src="`../../ImaginImag/${store.currentPlayer?.selectedCard?.cardName}`">
+        </div> -->
+        <div class="modal-wrapper-game-submit">
+          <button class="modal-wrapper-game-button" type="button" @click="submit" :disabled="isDisabled">Отправить</button>
+          <!--Тут будет компонента ожидания(кружок крутящийся), для ожидания других игроков-->
         </div>
       </div>
     </div>
@@ -29,21 +37,26 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref} from "vue"
+import { onMounted, onBeforeUnmount, ref, watch} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue"
 import _ from "lodash"
 import axios from "axios"
 import {type Card} from "../types/Card"
+import {type ScoreCard} from "../types/ScoreCard" 
 
-const emits = defineEmits(["hideModal"]);
+const emits = defineEmits(["hideModal", "startVoting"]);
 
 const store = usePlayersStore();
 
-const isSelect = ref<Boolean>(false);
+const isSelect = ref<boolean>(false);
+const isDisabled = ref<boolean>(false);
+
 const error = ref<String>("")
-const arrayOfUsersGroupByLeader = ref();
+
+const codeWord = ref<String>("");
+const currentCard = ref<Card>();
 
 let valid = {
   chooseCard: 1,
@@ -59,22 +72,41 @@ const currentMove = ref({
 
 let checkUsers:any;
 let fetchScore:any;
+let checkCards:any;
 
-const hideModalWindow = async () => {
+const hideModalWindow = async ():Promise<void> => {
   await playersRequest.userPost('endGame');
   emits("hideModal");
 }
 
-const selectCard = async(card: Card) => {
+//Срабатывает, когда все нажмут на кнопку ГОТОВО
+const playersReady = async ():Promise<void> => {
+  let cnt = 0;
+  store.players?.forEach( async(player) => {
+    if(store.players && player?.isReady){
+      cnt++;
+      if(store.players.length == cnt){
+        const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
+        store.cards = response.data as Array<ScoreCard>;
+      }
+    }
+  })
+}
+
+const submit = async():Promise<void> => {
   if(!isSelect.value){
-    console.log(card);
-    //отправляем выбранную карточку на сервак
-    await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${card?.id}&name=${store.currentPlayer?.name}`);
+    await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
+    playersReady();
     isSelect.value = true;
+    isDisabled.value = true
   }
   else{
     error.value = "Вы уже выбрали карточку!"
   }
+}
+
+const selectCard = async(card: Card) => {
+  currentCard.value = card;
 }
 
 const sortByScore = () => {
@@ -87,24 +119,24 @@ const sortByScore = () => {
   _.sortBy(store.players, 'score', 'desc'); //сортировка по полю score
 };
 
-const sortByIsLeader = () => {
-  arrayOfUsersGroupByLeader.value = _.groupBy(store.players, 'isLeader')
-}
+watch(() => store.cards, (newValue) => {
+  if(newValue?.length == store.players?.length){
+    emits("startVoting")
+  }
+})
 
-// onBeforeMount(async() => {
-//   await playersRequest.userGet(`startGame`)
-// })
-
-onMounted(() => {
-  store.fetchPlayers()
+onMounted(async() => {
+  store.fetchPlayers();
   sortByScore();
   checkUsers = setInterval(store.fetchPlayers, 100);
+  checkCards = setInterval(store.fetchCards, 300);
   fetchScore = setInterval(sortByScore, 100);
 });
 
 onBeforeUnmount(() => {
   clearInterval(checkUsers);
   clearInterval(fetchScore);
+  clearInterval(checkCards);
 });
 </script>
 
@@ -123,13 +155,12 @@ onBeforeUnmount(() => {
     padding-right: 20px;
     &-game{
       display: flex;
-      flex-flow: row nowrap;
+      flex-flow: column nowrap;
       &-score{
         display: flex;
         flex-flow: column nowrap;
         min-width: 8%;
         max-width: 15%;
-        max-height: 40%;
         margin-top: 20px;
         padding: 5px;
         border: 1px solid wheat;
@@ -153,9 +184,29 @@ onBeforeUnmount(() => {
           display: flex;
           flex-flow: row wrap;
           & li{
-            margin: 5px;
+            margin: 15px;
+            &:active{
+              border: 4px solid yellow;
+            }
           }
         }
+      }
+      &-code-word{
+        margin-top: 20px;
+        font-size: x-large;
+        & span{
+          margin-right: 10px;
+        }
+      }
+      &-submit{
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: center;
+      }
+      &-button{
+        font-size: 24px;
+        width: 120px;
       }
     }
   }
