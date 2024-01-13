@@ -9,7 +9,6 @@
       <span class="modal-wrapper-name">
         <input v-model="playerName"/>
       </span>
-
       <div class="modal-wrapper-button">
         <button @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
           <i :class="{ 'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon }" style="color: green;"></i>
@@ -41,6 +40,10 @@ const login = async (): Promise<void> => {
       if (response.status === 204) {
         error.value = "Пользователь уже в игре!";
         throw new Error("Такого пользователя нет!");
+      }
+      if (response.status === 404){
+        error.value = "Игра уже началась!";
+        throw new Error("Игра началась");
       }
       emits("hideModal", response.data);
     } else {

@@ -2,7 +2,7 @@
   <div class="modal-mask">
     <div class="modal-wrapper">
       <div class="modal-container">
-        <span class="modal-container-header">Имаджинариум</span>
+        <span class="modal-container-header">Имаджинариум:</span>
         <span class="modal-container-exit" @click="hideModalWindow">x</span>
       </div>
       <div class="modal-wrapper-game">

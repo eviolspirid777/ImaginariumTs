@@ -10,17 +10,22 @@ namespace Imaginarium.server.Controllers
 		private static List<User> currentPlayers = new List<User>();		//список текущих игроков в сессии
 		private static List<Card> currentCards = new List<Card>();          //список всех Карточек на сервере
 
-		private static bool isLiquid = true;						//позволяет замешивать карты один раз
+		private static bool isLiquid = true;                        //позволяет замешивать карты один раз
+		private static bool isStart = false;
 
 		[HttpPost("autorize")]
 		public async Task<IActionResult> Autorize(string sendName)
 		{
-			if (currentPlayers.Any(p => p.name == sendName))
+			if (isStart == false)
 			{
-				return NoContent();
+				if (currentPlayers.Any(p => p.name == sendName))
+				{
+					return NoContent();
+				}
+				currentPlayers.Add(new User { name = sendName });
+				return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
 			}
-			currentPlayers.Add(new User { name = sendName });
-			return Ok(currentPlayers.FirstOrDefault(u => u.name == sendName));
+			return Ok();
 		}
 
 		[HttpGet("startGame")]
@@ -36,6 +41,7 @@ namespace Imaginarium.server.Controllers
 					player.cards = shuffledCards.Take(2).ToList();
 					shuffledCards = shuffledCards.Skip(2).ToList();
 				}
+				isStart = true;
 				isLiquid = false;
 				/*			Console.WriteLine("Раздача карточек:");
 							foreach (var player in currentPlayers)
@@ -46,7 +52,6 @@ namespace Imaginarium.server.Controllers
 			}
 			return Ok();
 		}
-
 
 		[HttpGet("randomCards")]
         public async Task<IActionResult> RandomCards()
@@ -103,7 +108,6 @@ namespace Imaginarium.server.Controllers
 		}
 
 		[HttpGet("checkState")]
-
 		public async Task<IActionResult> CheckState(string name)
 		{
 			return Ok(currentPlayers.FirstOrDefault(u => u.name == name).isReady);
