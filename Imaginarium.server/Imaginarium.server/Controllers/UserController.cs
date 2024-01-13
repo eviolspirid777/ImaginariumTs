@@ -12,6 +12,8 @@ namespace Imaginarium.server.Controllers
 
 		private static List<ScoreCards> currentCards = new List<ScoreCards>();  //список всех выбранных карточек
 
+		private static string codeWord = "";
+
 		private static bool isLiquid = true;                        //позволяет замешивать карты один раз
 		private static bool isStart = false;							//запрещает стартовать игру, если сессия уже началась
 
@@ -50,6 +52,14 @@ namespace Imaginarium.server.Controllers
 			}
 			return NotFound();
 		}
+
+		[HttpPost("postWord")]
+		public async Task<IActionResult> PostWord(string word)
+		{
+			codeWord = word;
+			return Ok();
+		}
+
 		[HttpPost("playersReady")]
 		public async Task<IActionResult> PlayersReady()
 		{
@@ -58,6 +68,7 @@ namespace Imaginarium.server.Controllers
 				currentPlayers.ForEach(p => p.isReady = false);
 				NextAdmin();
 				isLiquid = true;
+				codeWord = "";
 			}
 			return Ok(currentCards);
 		}
@@ -171,6 +182,9 @@ namespace Imaginarium.server.Controllers
 		public async Task<IActionResult> GetCurrentCards() => Ok(currentCards.ToList());
 
 		[HttpGet("getUser")]
-		public async Task<IActionResult> getUser(string user) => Ok(currentPlayers.Find(u => u.name == user));
+		public async Task<IActionResult> GetUser(string user) => Ok(currentPlayers.Find(u => u.name == user));
+
+		[HttpGet("getWord")]
+		public async Task<IActionResult> GetWord() => Ok(codeWord);
 	}
 }

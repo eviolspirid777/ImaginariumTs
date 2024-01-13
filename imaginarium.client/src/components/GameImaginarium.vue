@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div>
-          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}</span>
+          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}:{{ store.codeWord }}</span>
           <span class="modal-container-exit" @click="hideModalWindow">x</span>
         </div>
         <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''" />
@@ -19,10 +19,12 @@
           <span for="me">Ассоциация:</span>
           <input type="text" id="me" placeholder="Введите ассоциацию" v-model="codeWord">
         </div>
-        <div v-for="(player,key) in store.players" :key="key" class="modal-wrapper-game-cards">
-          <ul v-if="player && player.name == store.currentPlayer?.name" >
-            <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
-          </ul>
+        <div v-for="(player,key) in store.players" :key="key">
+          <div v-if="store.codeWord || player?.isLeader" class="modal-wrapper-game-cards">
+            <ul v-if="player && player.name == store.currentPlayer?.name" >
+              <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
+            </ul>
+          </div>
         </div>
         <!-- <div class="selected-card" v-if="store.currentPlayer?.selectedCard" style="height: 400px; widows: 400px;">
           <img :src="`../../ImaginImag/${store.currentPlayer?.selectedCard?.cardName}`">
@@ -73,6 +75,7 @@ const currentMove = ref({
 let checkUsers:any;
 let fetchScore:any;
 let checkCards:any;
+let checkWord:any;
 
 const hideModalWindow = async ():Promise<void> => {
   await playersRequest.userPost('endGame');
@@ -87,7 +90,7 @@ const playersReady = async ():Promise<void> => {
       cnt++;
       if(store.players.length == cnt){
         const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
-        store.cards = response.data as Array<ScoreCard>;
+        store.cards = response.data as Array<ScoreCard>;  //добавляет в стор карточки, которые сейчас в игровой сессии
       }
     }
   })
@@ -95,10 +98,15 @@ const playersReady = async ():Promise<void> => {
 
 const submit = async():Promise<void> => {
   if(!isSelect.value){
+    if(codeWord.value !== ""){
+      await axios.post(`http://localhost:5276/api/User/postWord?word=${codeWord.value}`);
+      store.codeWord = codeWord.value;
+    }
     await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
     playersReady();
     isSelect.value = true;
     isDisabled.value = true
+    codeWord.value = "";    //обнуляет значение кодового слова
   }
   else{
     error.value = "Вы уже выбрали карточку!"
@@ -125,11 +133,16 @@ watch(() => store.cards, (newValue) => {
   }
 })
 
+watch(() => store.codeWord, (newValue) => {
+  store.codeWord = newValue;
+})
+
 onMounted(async() => {
   store.fetchPlayers();
   sortByScore();
   checkUsers = setInterval(store.fetchPlayers, 100);
   checkCards = setInterval(store.fetchCards, 300);
+  checkWord = setInterval(store.fetchWord, 300);
   fetchScore = setInterval(sortByScore, 100);
 });
 
@@ -137,6 +150,7 @@ onBeforeUnmount(() => {
   clearInterval(checkUsers);
   clearInterval(fetchScore);
   clearInterval(checkCards);
+  clearInterval(checkWord);
 });
 </script>
 
