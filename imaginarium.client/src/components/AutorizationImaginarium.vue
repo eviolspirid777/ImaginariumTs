@@ -9,12 +9,9 @@
       <span class="modal-wrapper-name">
         <input v-model="playerName"/>
       </span>
-
-      <div class="modal-wrapper-button">
-        <button class="ready" @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
+        <button class="modal-wrapper-button-ready-small" @click="login" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
           <i :class="{ 'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon }" style="color: green;"></i>
         </button>
-      </div>
     </div>
   </div>
 </template>
@@ -61,7 +58,7 @@ const login = async (): Promise<void> => {
 .modal {
   &-wrapper {
     width: 400px;
-    height: 150px;
+    height: 170px;
 
     &-name {
       font-size: 20px;
