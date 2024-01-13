@@ -6,13 +6,13 @@
       </span>
       <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
       <ul>
-        <li v-for="(player, key) in store.players" :key="key"> {{player?.name}} <i :class="[player?.isReady ? `ready-containter fa-solid fa-check fa-beat`: `ready-containter fa-solid fa-xmark fa-beat`]" :style="[player?.isReady ? `color:green;`: `color:red;`]"/></li>
+        <li v-for="(player, key) in store.players" :key="key"> {{player?.name}} 
+          <div :class="[player?.isReady ? `readiness-circle-check fa-solid fa-check`: `readiness-circle-xmark fa-solid fa-xmark`]"/>
+        </li>
       </ul>
-      <div class="modal-wrapper-button">
-      <button class="centered ready" @click="isReadySwitcher" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
+      <button class="modal-wrapper-button-ready centered" @click="isReadySwitcher" @mouseover="hoverIcon = true" @mouseleave="hoverIcon = false">
           <i :class="{ 'fa-solid fa-check fa-xl': !hoverIcon, 'fa-solid fa-check fa-xl fa-beat-fade': hoverIcon }" position: absolute style="color: green;"></i>
         </button>
-      </div>
     </div>
   </div>
 </template>
@@ -58,7 +58,6 @@ const fetchPlayers = async ():Promise<void> => {
   }
 };
 
-
 const hideModalWindow = async ():Promise<void> => {
   emits("hideModal");
 };
@@ -89,39 +88,23 @@ ul {
   top: 100px;
   display: flex;
   flex-flow: column wrap;
-  align-items: stretch;
+  align-items: center;
+  font-size: 30px;
 
-    font-size: 30px;
   li {
-    // position: relative;
-    // display: flex;
-    // flex-flow: column wrap;
-    // align-items: center;
-    // justify-content: center; /* Выравнивание по горизонтали */
-    // width: 130px;
-    // height: 40px;
-    // font-size: 30px;
-
-    padding: 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
     position: relative;
-    text-align: center;
-    max-width: 200px;
+    background-color: darkslateblue;
+    width: 260px;
+    overflow: hidden;
     border: 3px solid brown;
     border-radius: 10px;
-    background-color: rgb(146, 106, 6);
-    margin: 10px 50px;
-
-    i {
-      position: absolute;
-      color: green;
-      left: -35px;
-      top: 50%;
-
-    }
+    margin: 10px;
   }
 }
-
-
 
 .modal {
   &-wrapper{
@@ -130,15 +113,11 @@ ul {
     }
   
   &-container{
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-
     background-color: rgba(0, 0, 0, 1);
     text-align: center;
     color: wheat;
     font-size: 22px;
+    
     &-header{
       font-size: 40px;
       cursor: default;
@@ -147,11 +126,31 @@ ul {
   }
 }
 
-.ready-containter {
-  width: 50px;
-  height: 50px;
+.readiness-circle {
+  width: 40px;
+  height: 40px;
   border-radius: 100%;
-  background-color: aqua;
+  background-color: rgb(125, 216, 22);
+  color:red; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  margin-left: 15px;
+  right: 0;
+  justify-self: right;
+  position: absolute;
+  margin-right: 5px;
+
+  &-check{
+    @extend .readiness-circle;
+    background-color: green;
+    color: rgb(0, 230, 0);
+  }
+  &-xmark{
+    @extend .readiness-circle;
+    background-color: rgb(131, 40, 40);
+    color: red;
+  }
 }
 
 </style>

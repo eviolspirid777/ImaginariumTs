@@ -42,7 +42,7 @@
     background-color: rgba(0, 0, 0, 0.6);
     align-items: center;
     justify-content: center;
-    }
+  }
 
 .modal-container-exit {
     color: wheat;
@@ -52,28 +52,33 @@
     position: absolute;
     font-size: 35px;
     &:hover {
-        background-color: red;
-        border-radius: 100%;
-        box-shadow: 0px 0px 12px red;
-        cursor: pointer;
+      background-color: red;
+      border-radius: 100%;
+      box-shadow: 0px 0px 12px red;
+      cursor: pointer;
     }
 }
 
 .modal-wrapper-button {
-  display: flex;
-
-  .ready {
+  &-ready {
+    @extend .modal-wrapper-button;
     margin-top: 10px;
-    min-height: 30px;
-    width: 80px;
+    height: 60px;
+    width: 170px;
     background-color: wheat;
-    font-weight: 800;
     border: 0;
-    border-radius: 6px;
+    border-radius: 20px;
+    font-size: 30px;
 
+    &-small {
+      @extend .modal-wrapper-button-ready;
+      width: 150px;
+      height: 50px;
+      margin-top: 20px;
+    }
     &:hover {
       background-color: #dac397;
-      box-shadow: 0 0 12px #0ffc22;
+      box-shadow: 0 0 25px #0ffc22;
     }
   }
 }
