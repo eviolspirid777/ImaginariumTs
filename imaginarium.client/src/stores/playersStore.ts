@@ -32,7 +32,7 @@ export const usePlayersStore = defineStore("playersStore", () => {
         } catch(error){
             console.error('Error fetching word:', codeWord)
         }
-    }
+    };
 
     return {
         players,

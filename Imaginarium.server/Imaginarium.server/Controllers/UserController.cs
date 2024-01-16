@@ -7,7 +7,7 @@ namespace Imaginarium.server.Controllers
 	[Route("api/[controller]")]
 	public class UserController : Controller
 	{
-		private static List<User> currentPlayers = new List<User>();		//список текущих игроков в сессии
+		private static List<User> currentPlayers = new List<User>();        //список текущих игроков в сессии
 		private static List<Card> cards = new List<Card>();          //список всех Карточек на сервере
 
 		private static List<ScoreCards> currentCards = new List<ScoreCards>();  //список всех выбранных карточек
@@ -15,7 +15,7 @@ namespace Imaginarium.server.Controllers
 		private static string codeWord = "";
 
 		private static bool isLiquid = true;                        //позволяет замешивать карты один раз
-		private static bool isStart = false;							//запрещает стартовать игру, если сессия уже началась
+		private static bool isStart = false;                            //запрещает стартовать игру, если сессия уже началась
 
 		private void NextAdmin()
 		{
@@ -53,17 +53,10 @@ namespace Imaginarium.server.Controllers
 			return NotFound();
 		}
 
-		[HttpPost("postWord")]
-		public async Task<IActionResult> PostWord(string word)
-		{
-			codeWord = word;
-			return Ok();
-		}
-
 		[HttpPost("playersReady")]
 		public async Task<IActionResult> PlayersReady()
 		{
-			if(isLiquid == false)
+			if (isLiquid == false)
 			{
 				currentPlayers.ForEach(p => p.isReady = false);
 				NextAdmin();
@@ -83,30 +76,30 @@ namespace Imaginarium.server.Controllers
 			//удаляет выбранную карточку из карточек пользователя
 			var tmpCard = currentPlayers.Find(p => p.name == name)!.cards!.Find(p => p.id == cardId);
 			currentPlayers.Find(p => p.name == name)!.selectedCard = new Card(tmpCard!);
-            currentPlayers.Find(p => p.name == name)!.cards!.RemoveAll(p => p.id == cardId);
-            return Ok();
+			currentPlayers.Find(p => p.name == name)!.cards!.RemoveAll(p => p.id == cardId);
+			return Ok();
 		}
 
 		[HttpGet("randomCards")]
-        public async Task<IActionResult> RandomCards()
-        {
-            string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client/ImaginImag/");
-            Console.WriteLine(prop);
-            if (Directory.Exists(prop))
-            {
-                // Получение списка файлов с расширением jpg, png, и т.д. (можете настроить под свои нужды)
-                List<string> imageFiles = Directory.GetFiles(prop, "*.*", SearchOption.AllDirectories)
-                                               .Where(s => s.EndsWith(".jpg") || s.EndsWith(".jpeg") || s.EndsWith(".png") || s.EndsWith(".gif"))
-                                               .ToList();
-                Console.WriteLine("Список изображений в папке:");
-                //обрезаем путь к файлам и оставляем только их контент
-                for (int i = 0; i < imageFiles.Count; i++)
-                {
-                    imageFiles[i] = imageFiles[i].Substring(prop.Length);  //обрезаем
-                    Console.WriteLine($"img {i + 1}: {imageFiles[i]}");     //выводим кол-во изображений на экран
-                    var newCard = new Card { cardUrl = @$"{prop}{imageFiles[i]}", id = i, cardName = imageFiles[i] };       //создаем экземпляр карточки
-                    cards.Add(newCard);      //присваиваем экземпляр
-                }
+		public async Task<IActionResult> RandomCards()
+		{
+			string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client/ImaginImag/");
+			Console.WriteLine(prop);
+			if (Directory.Exists(prop))
+			{
+				// Получение списка файлов с расширением jpg, png, и т.д. (можете настроить под свои нужды)
+				List<string> imageFiles = Directory.GetFiles(prop, "*.*", SearchOption.AllDirectories)
+											   .Where(s => s.EndsWith(".jpg") || s.EndsWith(".jpeg") || s.EndsWith(".png") || s.EndsWith(".gif"))
+											   .ToList();
+				Console.WriteLine("Список изображений в папке:");
+				//обрезаем путь к файлам и оставляем только их контент
+				for (int i = 0; i < imageFiles.Count; i++)
+				{
+					imageFiles[i] = imageFiles[i].Substring(prop.Length);  //обрезаем
+					Console.WriteLine($"img {i + 1}: {imageFiles[i]}");     //выводим кол-во изображений на экран
+					var newCard = new Card { cardUrl = @$"{prop}{imageFiles[i]}", id = i, cardName = imageFiles[i] };       //создаем экземпляр карточки
+					cards.Add(newCard);      //присваиваем экземпляр
+				}
 				//Для того, чтобы замешало один раз, а не несколько!
 				if (isLiquid == true)
 				{
@@ -129,9 +122,9 @@ namespace Imaginarium.server.Controllers
 				}
 				return Ok();
 			}
-            Console.WriteLine("Указанная папка не существует.");
-            return NoContent();
-        }
+			Console.WriteLine("Указанная папка не существует.");
+			return NoContent();
+		}
 
 		//обнуляет буль, чтобы карточки могли снова замешиваться
 		[HttpPost("endGame")]
@@ -142,7 +135,7 @@ namespace Imaginarium.server.Controllers
 			return Ok();
 		}
 
-        [HttpPost("sliceUser")]
+		[HttpPost("sliceUser")]
 		public async Task<IActionResult> SliceUser(string name)
 		{
 			var userToDelete = currentPlayers.FirstOrDefault(u => u.name == name);
@@ -186,5 +179,12 @@ namespace Imaginarium.server.Controllers
 
 		[HttpGet("getWord")]
 		public async Task<IActionResult> GetWord() => Ok(codeWord);
+
+		[HttpPost("postWord")]
+		public async Task<IActionResult> PostWord(string word)
+		{
+			codeWord = word;
+			return Ok();
+		}
 	}
 }

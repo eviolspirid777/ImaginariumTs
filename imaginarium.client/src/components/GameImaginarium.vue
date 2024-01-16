@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref, watch} from "vue"
+import { onMounted, onBeforeUnmount, ref, watch, computed} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue"
@@ -106,7 +106,6 @@ const submit = async():Promise<void> => {
     playersReady();
     isSelect.value = true;
     isDisabled.value = true
-    codeWord.value = "";    //обнуляет значение кодового слова
   }
   else{
     error.value = "Вы уже выбрали карточку!"
@@ -136,6 +135,7 @@ watch(() => store.cards, (newValue) => {
 
 watch(() => store.codeWord, (newValue) => {
   store.codeWord = newValue;
+  codeWord.value = newValue;
 })
 
 onMounted(async() => {
