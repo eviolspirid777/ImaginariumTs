@@ -2,8 +2,10 @@
   <div class="modal-mask">
     <div class="modal-wrapper">
       <div class="modal-container">
-        <span class="modal-container-header">Имаджинариум</span>
-        <span class="modal-container-exit" @click="hideModalWindow">x</span>
+        <div>
+          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}:{{ store.codeWord }}</span>
+          <span class="modal-container-exit" @click="hideModalWindow">x</span>
+        </div>
         <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''" />
       </div>
       <div class="modal-wrapper-game">
@@ -13,10 +15,23 @@
               <li v-for="(player,key) in store.players" :key="key">{{player?.name}} : {{ player?.score }}</li>
             </ul>
         </div>
-        <div v-for="(player,key) in store.players" :key="key" class="modal-wrapper-game-cards">
-          <ul v-if="player && player.name == store.currentPlayer?.name" >
-            <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
-          </ul>
+        <div class="modal-wrapper-game-code-word" v-if="store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader == true">
+          <span for="me">Ассоциация:</span>
+          <input type="text" id="me" placeholder="Введите ассоциацию" v-model="codeWord">
+        </div>
+        <div v-for="(player,key) in store.players" :key="key">
+          <div v-if="store.codeWord || player?.isLeader" class="modal-wrapper-game-cards">
+            <ul v-if="player && player.name == store.currentPlayer?.name" >
+              <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
+            </ul>
+          </div>
+        </div>
+        <!-- <div class="selected-card" v-if="store.currentPlayer?.selectedCard" style="height: 400px; widows: 400px;">
+          <img :src="`../../ImaginImag/${store.currentPlayer?.selectedCard?.cardName}`">
+        </div> -->
+        <div class="modal-wrapper-game-submit">
+          <button class="modal-wrapper-game-button" type="button" @click="submit" :disabled="isDisabled">Отправить</button>
+          <!--Тут будет компонента ожидания(кружок крутящийся), для ожидания других игроков-->
         </div>
       </div>
     </div>
@@ -24,40 +39,82 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, onBeforeMount, ref} from "vue"
+import { onMounted, onBeforeUnmount, ref, watch} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue"
 import _ from "lodash"
 import axios from "axios"
 import {type Card} from "../types/Card"
+import {type ScoreCard} from "../types/ScoreCard" 
 
-const emits = defineEmits(["hideModal"]);
+const emits = defineEmits(["hideModal", "startVoting"]);
 
 const store = usePlayersStore();
 
-const isSelect = ref<Boolean>(false);
+const isSelect = ref<boolean>(false);
+const isDisabled = ref<boolean>(false);
+
 const error = ref<String>("")
-const arrayOfUsersGroupByLeader = ref();
+
+const codeWord = ref<String>("");
+const currentCard = ref<Card>();
+
+let valid = {
+  chooseCard: 1,
+  chooseCardAdmin: 2,
+  wait: 3
+}
+
+const currentMove = ref({
+  [valid.chooseCard]:"Выберите карту",
+  [valid.chooseCardAdmin]: "Выберите карту и ассоциацию",
+  [valid.wait]:"Ждите"
+});
 
 let checkUsers:any;
 let fetchScore:any;
+let checkCards:any;
+let checkWord:any;
 
-const hideModalWindow = async () => {
+const hideModalWindow = async ():Promise<void> => {
   await playersRequest.userPost('endGame');
   emits("hideModal");
 }
 
-const selectCard = async(card: Card) => {
+//Срабатывает, когда все нажмут на кнопку ГОТОВО
+const playersReady = async ():Promise<void> => {
+  let cnt = 0;
+  store.players?.forEach( async(player) => {
+    if(store.players && player?.isReady){
+      cnt++;
+      if(store.players.length == cnt){
+        const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
+        store.cards = response.data as Array<ScoreCard>;  //добавляет в стор карточки, которые сейчас в игровой сессии
+      }
+    }
+  })
+}
+
+const submit = async():Promise<void> => {
   if(!isSelect.value){
-    console.log(card);
-    //отправляем выбранную карточку на сервак
-    await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${card?.id}&name=${store.currentPlayer?.name}`);
+    if(codeWord.value !== ""){
+      await axios.post(`http://localhost:5276/api/User/postWord?word=${codeWord.value}`);
+      store.codeWord = codeWord.value;
+    }
+    await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
+    playersReady();
     isSelect.value = true;
+    isDisabled.value = true
+    codeWord.value = "";    //обнуляет значение кодового слова
   }
   else{
     error.value = "Вы уже выбрали карточку!"
   }
+}
+
+const selectCard = async(card: Card) => {
+  currentCard.value = card;
 }
 
 const sortByScore = () => {
@@ -70,24 +127,30 @@ const sortByScore = () => {
   _.sortBy(store.players, 'score', 'desc'); //сортировка по полю score
 };
 
-const sortByIsLeader = () => {
-  arrayOfUsersGroupByLeader.value = _.groupBy(store.players, 'isLeader')
-}
-
-onBeforeMount(async() => {
-  await playersRequest.userGet(`startGame`)
+watch(() => store.cards, (newValue) => {
+  if(newValue?.length == store.players?.length){
+    emits("startVoting")
+  }
 })
 
-onMounted(() => {
-  store.fetchPlayers()
+watch(() => store.codeWord, (newValue) => {
+  store.codeWord = newValue;
+})
+
+onMounted(async() => {
+  store.fetchPlayers();
   sortByScore();
   checkUsers = setInterval(store.fetchPlayers, 100);
+  checkCards = setInterval(store.fetchCards, 300);
+  checkWord = setInterval(store.fetchWord, 300);
   fetchScore = setInterval(sortByScore, 100);
 });
 
 onBeforeUnmount(() => {
   clearInterval(checkUsers);
   clearInterval(fetchScore);
+  clearInterval(checkCards);
+  clearInterval(checkWord);
 });
 </script>
 
@@ -106,11 +169,11 @@ onBeforeUnmount(() => {
     padding-right: 20px;
     &-game{
       display: flex;
-      flex-flow: row nowrap;
+      flex-flow: column nowrap;
       &-score{
         display: flex;
         flex-flow: column nowrap;
-        min-width: 30%;
+        min-width: 8%;
         max-width: 15%;
         margin-top: 20px;
         padding: 5px;
@@ -132,10 +195,32 @@ onBeforeUnmount(() => {
         width: 95%;
         padding: 15px;
         & ul{
+          display: flex;
+          flex-flow: row wrap;
           & li{
-            margin: 5px;
+            margin: 15px;
+            &:active{
+              border: 4px solid yellow;
+            }
           }
         }
+      }
+      &-code-word{
+        margin-top: 20px;
+        font-size: x-large;
+        & span{
+          margin-right: 10px;
+        }
+      }
+      &-submit{
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: center;
+      }
+      &-button{
+        font-size: 24px;
+        width: 120px;
       }
     }
   }
@@ -150,7 +235,6 @@ onBeforeUnmount(() => {
     color: wheat;
     font-size: 22px;
     &-header{
-      padding-left: 43%;
       cursor: default;
       user-select: none;
     }

@@ -1,11 +1,16 @@
 ﻿<Properties StartupConfiguration="{5C55566B-EF92-4EFE-8051-DF43D92423E7}|https">
   <MonoDevelop.Ide.ItemProperties.Imaginarium.server PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.Workbench ActiveDocument="Imaginarium.server/Controllers/UserController.cs">
     <Files>
       <File FileName="Imaginarium.server/Program.cs" />
       <File FileName="Imaginarium.server/Properties/launchSettings.json" />
-      <File FileName="Imaginarium.server/Controllers/UserController.cs" Line="15" Column="32" />
+      <File FileName="Imaginarium.server/Controllers/UserController.cs" Line="26" Column="4" />
       <File FileName="Imaginarium.server/User.cs" />
       <File FileName="Imaginarium.server/Card.cs" />
       <File FileName="Imaginarium.server/ScoreCards.cs" />
@@ -13,8 +18,8 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="Imaginarium.server">
-            <Node name="Imaginarium.server" expanded="True">
+          <Node name="Imaginarium.server" expanded="True">
+            <Node name="Imaginarium.server">
               <Node name="Controllers" expanded="True">
                 <Node name="UserController.cs" selected="True" />
               </Node>
@@ -24,9 +29,4 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MultiItemStartupConfigurations />
 </Properties>

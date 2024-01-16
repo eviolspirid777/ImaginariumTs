@@ -10,5 +10,6 @@ namespace Imaginarium.server
 		public bool? isLeader { get; set; } = false;
 		public int? score { get; set; } = 0;
         public List<Card>? cards { get; set; } = null;
+		public Card? selectedCard { get; set; }
 	}
 }

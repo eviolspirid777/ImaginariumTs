@@ -39,6 +39,10 @@ const login = async (): Promise<void> => {
         error.value = "Пользователь уже в игре!";
         throw new Error("Такого пользователя нет!");
       }
+      if (response.status === 404){
+        error.value = "Игра уже началась!";
+        throw new Error("Игра началась");
+      }
       emits("hideModal", response.data);
     } else {
       error.value = "Имя не введено!";
