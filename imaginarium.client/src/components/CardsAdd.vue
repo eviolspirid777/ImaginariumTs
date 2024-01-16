@@ -33,7 +33,7 @@ const selectFile = async (event: Event):Promise<void> => {
 }
 
 const uploadFile = async ():Promise<void> => {
-  const response = selectedFile.value 
+  const response:any = selectedFile.value 
   const fileName = `img_${Date.now()}.png`;
   saveAs(response, fileName);
   console.log('Файл успешно сохранен!');

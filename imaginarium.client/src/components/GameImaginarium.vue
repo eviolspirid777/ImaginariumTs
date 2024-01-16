@@ -53,7 +53,7 @@ const emits = defineEmits(["hideModal", "startVoting"]);
 const store = usePlayersStore();
 
 const isSelect = ref<boolean>(false);
-const isDisabled = ref<boolean>(false);
+const isDisabled = ref<boolean>(true);
 
 const error = ref<String>("")
 
@@ -115,6 +115,7 @@ const submit = async():Promise<void> => {
 
 const selectCard = async(card: Card) => {
   currentCard.value = card;
+  isDisabled.value = false;
 }
 
 const sortByScore = () => {
