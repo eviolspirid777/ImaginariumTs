@@ -20,7 +20,7 @@ export const usePlayersStore = defineStore("playersStore", () => {
 
     const fetchCards = async ():Promise<void> => {
         try{
-            await playersRequest.userGet(`getCurrentCards`)
+            cards.value = await playersRequest.userGet(`getCurrentCards`)
         } catch(error){
             console.error('Error fetching cards:', cards)
         }
@@ -28,7 +28,7 @@ export const usePlayersStore = defineStore("playersStore", () => {
 
     const fetchWord = async ():Promise<void> => {
         try{
-            await playersRequest.userGet(`getWord`)
+            codeWord.value = await playersRequest.userGet(`getWord`)
         } catch(error){
             console.error('Error fetching word:', codeWord)
         }

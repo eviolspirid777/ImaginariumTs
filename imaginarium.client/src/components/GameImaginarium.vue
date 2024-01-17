@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div>
-          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}:{{ store.codeWord }}</span>
+          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}</span>
           <span class="modal-container-exit" @click="hideModalWindow">x</span>
         </div>
         <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''" />
@@ -16,8 +16,11 @@
             </ul>
         </div>
         <div class="modal-wrapper-game-code-word" v-if="store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader == true">
-          <span for="me">Ассоциация:</span>
-          <input type="text" id="me" placeholder="Введите ассоциацию" v-model="codeWord">
+          <span for="me">Ассоциация: {{ codeWord }}</span>
+          <input type="text" id="me" placeholder="Введите ассоциацию" v-model="tempWord" />
+        </div>
+        <div class="modal-wrapper-game-code-word" v-else>
+          <span for="me">Ассоциация: {{ codeWord }}</span>
         </div>
         <div v-for="(player,key) in store.players" :key="key">
           <div v-if="store.codeWord || player?.isLeader" class="modal-wrapper-game-cards">
@@ -46,7 +49,7 @@ import ErrorModal from "../components/UI_elements/ErrorModal.vue"
 import _ from "lodash"
 import axios from "axios"
 import {type Card} from "../types/Card"
-import {type ScoreCard} from "../types/ScoreCard" 
+import {type ScoreCard} from "../types/ScoreCard"
 
 const emits = defineEmits(["hideModal", "startVoting"]);
 
@@ -57,8 +60,9 @@ const isDisabled = ref<boolean>(true);
 
 const error = ref<String>("")
 
-const codeWord = ref<String>("");
 const currentCard = ref<Card>();
+const tempWord = ref("");
+const codeWord = computed(() => store.codeWord)
 
 let valid = {
   chooseCard: 1,
@@ -98,9 +102,9 @@ const playersReady = async ():Promise<void> => {
 
 const submit = async():Promise<void> => {
   if(!isSelect.value){
-    if(codeWord.value !== ""){
+    if(store.players?.find(p => p?.id === store.currentPlayer?.id)?.isLeader){
+      store.codeWord = tempWord.value;
       await axios.post(`http://localhost:5276/api/User/postWord?word=${codeWord.value}`);
-      store.codeWord = codeWord.value;
     }
     await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
     playersReady();
@@ -118,12 +122,6 @@ const selectCard = async(card: Card) => {
 }
 
 const sortByScore = () => {
-  // store.players?.sort((a, b) => {
-  //   if (a && b && a.score !== undefined && b.score !== undefined) {
-  //     return b.score - a.score;
-  //   }
-  //   return 0;
-  // });
   _.sortBy(store.players, 'score', 'desc'); //сортировка по полю score
 };
 
@@ -135,16 +133,19 @@ watch(() => store.cards, (newValue) => {
 
 watch(() => store.codeWord, (newValue) => {
   store.codeWord = newValue;
-  codeWord.value = newValue;
+})
+
+watch(()=> store.players, (newValue)=>{
+  store.players = newValue;
 })
 
 onMounted(async() => {
   store.fetchPlayers();
   sortByScore();
   checkUsers = setInterval(store.fetchPlayers, 100);
-  checkCards = setInterval(store.fetchCards, 300);
-  checkWord = setInterval(store.fetchWord, 300);
-  fetchScore = setInterval(sortByScore, 100);
+  checkCards = setInterval(store.fetchCards, 3000);
+  checkWord = setInterval(store.fetchWord, 3000);
+  fetchScore = setInterval(sortByScore, 10000);
 });
 
 onBeforeUnmount(() => {

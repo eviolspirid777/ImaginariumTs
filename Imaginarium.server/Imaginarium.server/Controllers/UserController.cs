@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace Imaginarium.server.Controllers
 {
@@ -12,7 +13,7 @@ namespace Imaginarium.server.Controllers
 
 		private static List<ScoreCards> currentCards = new List<ScoreCards>();  //список всех выбранных карточек
 
-		private static string codeWord = "";
+		private static string codeWord;
 
 		private static bool isLiquid = true;                        //позволяет замешивать карты один раз
 		private static bool isStart = false;                            //запрещает стартовать игру, если сессия уже началась
@@ -61,7 +62,7 @@ namespace Imaginarium.server.Controllers
 				currentPlayers.ForEach(p => p.isReady = false);
 				NextAdmin();
 				isLiquid = true;
-				codeWord = "";
+				//codeWord = "";
 			}
 			return Ok(currentCards);
 		}
@@ -178,13 +179,22 @@ namespace Imaginarium.server.Controllers
 		public async Task<IActionResult> GetUser(string user) => Ok(currentPlayers.Find(u => u.name == user));
 
 		[HttpGet("getWord")]
-		public async Task<IActionResult> GetWord() => Ok(codeWord);
+		public async Task<IActionResult> GetWord()
+		{
+			//return Ok( new { name = "Bob", codeWord = codeWord});
+			return Ok(codeWord);
+		}
 
 		[HttpPost("postWord")]
 		public async Task<IActionResult> PostWord(string word)
 		{
-			codeWord = word;
-			return Ok();
+			if (word != "")
+			{
+                codeWord = word;
+                Console.WriteLine("Code word set to: " + codeWord);
+				return Ok();
+            }
+            return NoContent();
 		}
 	}
 }
