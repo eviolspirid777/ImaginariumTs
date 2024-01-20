@@ -15,30 +15,33 @@
               <li v-for="(player,key) in store.players" :key="key">{{player?.name}} : {{ player?.score }}</li>
             </ul>
         </div>
-        <div class="modal-wrapper-game-code-word" v-if="store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader == true">
+        <div v-if="store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader == true" class="modal-wrapper-game-code-word">
           <span for="me">Ассоциация: {{ codeWord }}</span>
           <input type="text" id="me" placeholder="Введите ассоциацию" v-model="tempWord" />
         </div>
-        <div class="modal-wrapper-game-code-word" v-else>
+        <div v-else class="modal-wrapper-game-code-word">
           <span for="me">Ассоциация: {{ codeWord }}</span>
         </div>
         <div v-for="(player,key) in store.players" :key="key">
-          <div v-if="store.codeWord || player?.isLeader" class="modal-wrapper-game-cards">
+          <div class="modal-wrapper-game-cards">
             <ul v-if="player && player.name == store.currentPlayer?.name" >
               <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
             </ul>
           </div>
         </div>
-        <!-- <div class="selected-card" v-if="store.currentPlayer?.selectedCard" style="height: 400px; widows: 400px;">
-          <img :src="`../../ImaginImag/${store.currentPlayer?.selectedCard?.cardName}`">
-        </div> -->
         <div class="modal-wrapper-game-submit">
-          <button class="modal-wrapper-game-button" type="button" @click="submit" :disabled="isDisabled">Отправить</button>
-          <!--Тут будет компонента ожидания(кружок крутящийся), для ожидания других игроков-->
+          <button v-if="codeWord != '' || store.players?.find(p => p?.name == store.currentPlayer?.name)?.isLeader" class="modal-wrapper-game-button" type="button" @click="submit" :disabled="isDisabled">Отправить</button>
+          <div v-else class="modal-wrapper-game-wait">
+              <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+              </svg>
+              <span>Ждем</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <SelectCard v-if="isSelectCard" @hideModal="isSelectCard = false" @nextAdmin="submitCards"/>
 </template>
 
 <script lang="ts" setup>
@@ -49,7 +52,7 @@ import ErrorModal from "../components/UI_elements/ErrorModal.vue"
 import _ from "lodash"
 import axios from "axios"
 import {type Card} from "../types/Card"
-import {type ScoreCard} from "../types/ScoreCard"
+import SelectCard from "../components/SelectingCardWindow.vue"
 
 const emits = defineEmits(["hideModal", "startVoting"]);
 
@@ -57,11 +60,12 @@ const store = usePlayersStore();
 
 const isSelect = ref<boolean>(false);
 const isDisabled = ref<boolean>(true);
+const isSelectCard = ref<boolean>(false);
 
 const error = ref<String>("")
 
 const currentCard = ref<Card>();
-const tempWord = ref("");
+const tempWord = ref<String>("");
 const codeWord = computed(() => store.codeWord)
 
 let valid = {
@@ -89,27 +93,33 @@ const hideModalWindow = async ():Promise<void> => {
 //Срабатывает, когда все нажмут на кнопку ГОТОВО
 const playersReady = async ():Promise<void> => {
   let cnt = 0;
-  store.players?.forEach( async(player) => {
+  store.players?.forEach(async(player) => {
     if(store.players && player?.isReady){
       cnt++;
       if(store.players.length == cnt){
-        const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
-        store.cards = response.data as Array<ScoreCard>;  //добавляет в стор карточки, которые сейчас в игровой сессии
+        // const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
+        // store.cards = response.data as Array<ScoreCard>;  //добавляет в стор карточки, которые сейчас в игровой сессии
+        isSelectCard.value = true;
       }
     }
   })
 }
 
+const submitCards = async ():Promise<void> => {
+  await axios.post(`http://localhost:5276/api/User/playersReady`);
+}
+
 const submit = async():Promise<void> => {
   if(!isSelect.value){
-    if(store.players?.find(p => p?.id === store.currentPlayer?.id)?.isLeader){
+    if(store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader){
       store.codeWord = tempWord.value;
       await axios.post(`http://localhost:5276/api/User/postWord?word=${codeWord.value}`);
     }
     await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
-    playersReady();
+    // playersReady();
+    isSelectCard.value = true;
     isSelect.value = true;
-    isDisabled.value = true
+    isDisabled.value = true;
   }
   else{
     error.value = "Вы уже выбрали карточку!"
@@ -126,14 +136,13 @@ const sortByScore = () => {
 };
 
 watch(() => store.cards, (newValue) => {
-  if(newValue?.length == store.players?.length){
-    emits("startVoting")
-  }
+  if(newValue?.length == store.players?.length)
+    isSelectCard.value = true;
 })
 
-watch(() => store.codeWord, (newValue) => {
-  store.codeWord = newValue;
-})
+// watch(() => store.codeWord, (newValue) => {
+//   store.codeWord = newValue;
+// })
 
 watch(()=> store.players, (newValue)=>{
   store.players = newValue;
@@ -172,6 +181,16 @@ onBeforeUnmount(() => {
     &-game{
       display: flex;
       flex-flow: column nowrap;
+      &-wait{
+        display: flex;
+        flex-flow: column-reverse wrap;
+        height: 185px;
+        width: 200px;
+        span{
+          text-align: center;
+          font-size: 18px;
+        }
+      }
       &-score{
         display: flex;
         flex-flow: column nowrap;
@@ -253,4 +272,44 @@ onBeforeUnmount(() => {
     }
   }
 }
+
+.spinner {
+  animation: rotate 2s linear infinite;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px;
+  width: 50px;
+  height: 50px;
+  
+  & .path {
+    stroke: hsl(51, 73%, 32%);
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+  
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
 </style>

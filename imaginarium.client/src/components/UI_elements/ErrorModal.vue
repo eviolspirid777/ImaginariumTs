@@ -11,7 +11,7 @@ const emits = defineEmits(["clearError"])
 const props = defineProps({
   errorText: {
     type: String,
-    default:() => {}
+    default:""
   }
 })
 

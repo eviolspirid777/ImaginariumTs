@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
 
 namespace Imaginarium.server.Controllers
 {
@@ -13,7 +12,7 @@ namespace Imaginarium.server.Controllers
 
 		private static List<ScoreCards> currentCards = new List<ScoreCards>();  //список всех выбранных карточек
 
-		private static string codeWord;
+		private static string codeWord = "";
 
 		private static bool isLiquid = true;                        //позволяет замешивать карты один раз
 		private static bool isStart = false;                            //запрещает стартовать игру, если сессия уже началась
@@ -25,11 +24,13 @@ namespace Imaginarium.server.Controllers
 				User currentAdmin = currentPlayers.FirstOrDefault(player => player.isLeader == true)!;
 				if (currentAdmin == null || currentPlayers.IndexOf(currentAdmin) == currentPlayers.Count - 1)
 				{
+					currentPlayers[currentPlayers.Count - 1].isLeader = false;
 					currentPlayers[0].isLeader = true;
 				}
 				else
 				{
 					int currentIndex = currentPlayers.IndexOf(currentAdmin);
+					currentPlayers[currentIndex].isLeader = false;
 					currentPlayers[currentIndex + 1].isLeader = true;
 				}
 				if (currentAdmin != null)
@@ -64,7 +65,7 @@ namespace Imaginarium.server.Controllers
 				isLiquid = true;
 				//codeWord = "";
 			}
-			return Ok(currentCards);
+			return Ok();
 		}
 
 		[HttpPost("selectCard")]
@@ -165,6 +166,18 @@ namespace Imaginarium.server.Controllers
 			return BadRequest();
 		}
 
+		[HttpPost("postWord")]
+		public async Task<IActionResult> PostWord(string word)
+		{
+			if (word != "")
+			{
+				codeWord = word;
+				Console.WriteLine("Code word set to: " + codeWord);
+				return Ok();
+			}
+			return NoContent();
+		}
+
 		[HttpGet("getUsers")]
 		public async Task<IActionResult> getAllUsers()
 		{
@@ -183,18 +196,6 @@ namespace Imaginarium.server.Controllers
 		{
 			//return Ok( new { name = "Bob", codeWord = codeWord});
 			return Ok(codeWord);
-		}
-
-		[HttpPost("postWord")]
-		public async Task<IActionResult> PostWord(string word)
-		{
-			if (word != "")
-			{
-                codeWord = word;
-                Console.WriteLine("Code word set to: " + codeWord);
-				return Ok();
-            }
-            return NoContent();
 		}
 	}
 }
