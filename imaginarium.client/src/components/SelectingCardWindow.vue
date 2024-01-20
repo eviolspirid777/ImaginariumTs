@@ -35,7 +35,7 @@ const cardsRefresh = async ():Promise<void> => {
   cards.value = response.data;
 }
 
-const selectCard = (card:ScoreCard) => {
+const selectCard = (card:ScoreCard):void => {
   console.log(card)
 }
 

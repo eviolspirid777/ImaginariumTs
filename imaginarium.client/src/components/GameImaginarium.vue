@@ -6,7 +6,7 @@
           <span class="modal-container-header">{{currentMove[valid.chooseCard]}}</span>
           <span class="modal-container-exit" @click="hideModalWindow">x</span>
         </div>
-        <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''" />
+        <ErrorModal :errorText="error" v-if="typeof error === 'string' && error.length" @clearError="() => error=''" />
       </div>
       <div class="modal-wrapper-game">
         <div class="modal-wrapper-game-score">
@@ -74,7 +74,7 @@ let valid = {
   wait: 3
 }
 
-const currentMove = ref({
+const currentMove = ref<Record<number,string>>({
   [valid.chooseCard]:"Выберите карту",
   [valid.chooseCardAdmin]: "Выберите карту и ассоциацию",
   [valid.wait]:"Ждите"
@@ -85,30 +85,33 @@ let fetchScore:any;
 let checkCards:any;
 let checkWord:any;
 
+//заканчивает игру и прячет модалку
 const hideModalWindow = async ():Promise<void> => {
   await playersRequest.userPost('endGame');
   emits("hideModal");
 }
 
 //Срабатывает, когда все нажмут на кнопку ГОТОВО
-const playersReady = async ():Promise<void> => {
-  let cnt = 0;
-  store.players?.forEach(async(player) => {
-    if(store.players && player?.isReady){
-      cnt++;
-      if(store.players.length == cnt){
-        // const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
-        // store.cards = response.data as Array<ScoreCard>;  //добавляет в стор карточки, которые сейчас в игровой сессии
-        isSelectCard.value = true;
-      }
-    }
-  })
-}
+// const playersReady = async ():Promise<void> => {
+//   let cnt = 0;
+//   store.players?.forEach(async(player) => {
+//     if(store.players && player?.isReady){
+//       cnt++;
+//       if(store.players.length == cnt){
+//         // const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
+//         // store.cards = response.data as Array<ScoreCard>;  //добавляет в стор карточки, которые сейчас в игровой сессии
+//         isSelectCard.value = true;
+//       }
+//     }
+//   })
+// }
 
+//Логика для передачи ЛИДЕРА следующему игроку
 const submitCards = async ():Promise<void> => {
   await axios.post(`http://localhost:5276/api/User/playersReady`);
 }
 
+//обработка нажатия на кнопку ОТПРАВИТЬ
 const submit = async():Promise<void> => {
   if(!isSelect.value){
     if(store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader){
@@ -117,7 +120,7 @@ const submit = async():Promise<void> => {
     }
     await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
     // playersReady();
-    isSelectCard.value = true;
+    //isSelectCard.value = true; //сработает только когда кол-во карточек будет равно кол-ву игроков
     isSelect.value = true;
     isDisabled.value = true;
   }
@@ -126,16 +129,24 @@ const submit = async():Promise<void> => {
   }
 }
 
-const selectCard = async(card: Card) => {
-  currentCard.value = card;
+//Выбор карточки (текущее значение карточки, выключает кнопку ОТПРАВИТЬ)
+const selectCard = (card: Card):void => {
+  currentCard.value = card; //присваивает currentCard значение
   isDisabled.value = false;
 }
 
+//сортировка по полю score
 const sortByScore = () => {
-  _.sortBy(store.players, 'score', 'desc'); //сортировка по полю score
+  _.sortBy(store.players, 'score', 'desc');
 };
 
 watch(() => store.cards, (newValue) => {
+  if(newValue?.length == store.players?.length)
+    isSelectCard.value = true;
+})
+
+//Сработает только, когда карточки и игроки выбраны
+watch(() => store.cards, (newValue)=> {
   if(newValue?.length == store.players?.length)
     isSelectCard.value = true;
 })
