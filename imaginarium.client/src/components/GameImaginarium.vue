@@ -51,7 +51,7 @@ import { playersRequest } from "@/http/httpRequests";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue"
 import _ from "lodash"
 import axios from "axios"
-import {type Card} from "../types/Card"
+import { type Card } from "../types/Card"
 import SelectCard from "../components/SelectingCardWindow.vue"
 
 const emits = defineEmits(["hideModal", "startVoting"]);
@@ -91,21 +91,6 @@ const hideModalWindow = async ():Promise<void> => {
   emits("hideModal");
 }
 
-//Срабатывает, когда все нажмут на кнопку ГОТОВО
-// const playersReady = async ():Promise<void> => {
-//   let cnt = 0;
-//   store.players?.forEach(async(player) => {
-//     if(store.players && player?.isReady){
-//       cnt++;
-//       if(store.players.length == cnt){
-//         // const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
-//         // store.cards = response.data as Array<ScoreCard>;  //добавляет в стор карточки, которые сейчас в игровой сессии
-//         isSelectCard.value = true;
-//       }
-//     }
-//   })
-// }
-
 //Логика для передачи ЛИДЕРА следующему игроку
 const submitCards = async ():Promise<void> => {
   await axios.post(`http://localhost:5276/api/User/playersReady`);
@@ -119,8 +104,7 @@ const submit = async():Promise<void> => {
       await axios.post(`http://localhost:5276/api/User/postWord?word=${codeWord.value}`);
     }
     await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
-    // playersReady();
-    //isSelectCard.value = true; //сработает только когда кол-во карточек будет равно кол-ву игроков
+    store.currentPlayer.selectedCard = currentCard.value
     isSelect.value = true;
     isDisabled.value = true;
   }
@@ -150,10 +134,6 @@ watch(() => store.cards, (newValue)=> {
   if(newValue?.length == store.players?.length)
     isSelectCard.value = true;
 })
-
-// watch(() => store.codeWord, (newValue) => {
-//   store.codeWord = newValue;
-// })
 
 watch(()=> store.players, (newValue)=>{
   store.players = newValue;

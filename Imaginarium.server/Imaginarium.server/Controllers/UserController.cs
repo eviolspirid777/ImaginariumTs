@@ -68,6 +68,56 @@ namespace Imaginarium.server.Controllers
 			return Ok();
 		}
 
+		[HttpPost("postCard")]
+		public async Task<IActionResult> PostCard(ScoreCardsResults card)
+		{
+			foreach (var player in currentPlayers)
+			{
+				foreach (var name in card.name)
+				{
+					if (name == player.name)
+					{
+						if (card.isLeader == true)
+						{
+							if (player.isLeader == true && card.score == (currentPlayers.Count - 1))  //если карточку угадали все участники
+							{
+								player.score = player.score;
+							}
+							else if (player.isLeader == true && card.score == 0)     //если карточку никто не угадал
+							{
+								player.score = player.score;					//Админ остается без изменений
+								currentPlayers.ForEach(p =>						//Добавляемм всем игрокам кроме админа 2 балла
+								{
+									if (p.isLeader == false)
+										p.score += 2;
+								});
+								continue;
+							}
+							else if(player.isLeader == true)
+							{
+								player.score += 3 + card.score;				//добавляем админу 3 балла + кол-во людей, которое за него проголосовало
+								currentPlayers.ForEach(p =>
+								{
+									if (p.isLeader == false && card.name.Contains(p.name))			//все остальные игроки, которые правильно проголосовали получают по одному баллу
+										p.score++;
+								});
+								continue;
+							}
+						}
+						else if(card.isLeader == false)
+						{
+							currentPlayers.ForEach(p =>
+							{
+								if (p.name == card.owner)
+									p.score += card.score;
+							});
+                        }
+					}
+				}
+			}
+			return Ok();
+		}
+
 		[HttpPost("selectCard")]
 		public async Task<IActionResult> SelectCard(int cardId, string name)
 		{

@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount} from 'vue';
 import { usePlayersStore } from '@/stores/playersStore';
 import axios from 'axios';
 import { type ScoreCard } from '@/types/ScoreCard';
@@ -23,6 +23,7 @@ const emits = defineEmits(["hideModal","nextAdmin"]);
 const store = usePlayersStore();
 
 const cards = ref<Array<ScoreCard>>([])
+const newCard = ref<ScoreCard>()
 
 var checkCards:any;
 
@@ -35,8 +36,11 @@ const cardsRefresh = async ():Promise<void> => {
   cards.value = response.data;
 }
 
-const selectCard = (card:ScoreCard):void => {
-  console.log(card)
+const selectCard = async (card:ScoreCard): Promise<void> => {
+  newCard.value = {...card} as any;
+  if(store.currentPlayer?.name != undefined)
+    newCard.value?.name?.push(store.currentPlayer?.name);
+  await axios.post('http://localhost:5276/api/User/postCard', newCard.value);
 }
 
 onMounted(async() => {
@@ -64,6 +68,9 @@ onBeforeUnmount(() => {
     display: flex;
     flex-flow: row wrap;
     margin-top: 20px;
+    li{
+      margin: 10px;
+    }
   }
 }
 </style>
