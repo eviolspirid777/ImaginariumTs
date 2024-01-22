@@ -4,7 +4,7 @@
       <div class="modal-container">
         <span class="modal-container-header">Введите имя...</span>
         <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span>
-        <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''"></ErrorModal>
+        <ErrorModal :errorText="error" v-if="typeof error === 'string' && error.length" @clearError="() => error=''"></ErrorModal>
       </div>
       <span class="modal-wrapper-name">
         <input v-model="playerName"/>

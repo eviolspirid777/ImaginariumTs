@@ -31,6 +31,7 @@ import WaitingRoom from "./components/WaitingRoom.vue"
 import GameWindow from "../src/components/GameImaginarium.vue"
 import {usePlayersStore} from "../src/stores/playersStore"
 import axios from "axios"
+import type { User } from "./types/User"
 
 const playersStore = usePlayersStore();
 
@@ -48,7 +49,7 @@ const windows = {
   GAME: 4
 }
 
-const windowsValid = ref({
+const windowsValid = ref<Record<number, boolean>>({
   [windows.AUTORIZATION]: false,
   [windows.CARD]: false,
   [windows.HELP]: false,
@@ -56,30 +57,30 @@ const windowsValid = ref({
   [windows.GAME]: false
 })
 
-const startGame = async ():Promise<any> => {
+const startGame = async ():Promise<void> => {
   windowsValid.value[windows.WAITING] = false;
   await axios.get("http://localhost:5276/api/User/randomCards");
   windowsValid.value[windows.GAME] = true;
 }
 
-const hideWaitingRoom = async ():Promise<any> => {
+const hideWaitingRoom = async ():Promise<void> => {
   windowsValid.value[windows.WAITING] = false;
   if(playersStore.currentPlayer != undefined)
     await axios.post(`http://localhost:5276/api/User/sliceUser?name=${playersStore.currentPlayer.name}`);
 };
 
-const hideGameRoom = async ():Promise<any> => {
+const hideGameRoom = async ():Promise<void> => {
   windowsValid.value[windows.GAME] = false;
   if(playersStore.currentPlayer != undefined)
     await axios.post(`http://localhost:5276/api/User/sliceUser?name=${playersStore.currentPlayer.name}`);
 }
 
-const validateSwitcher = async ():Promise<any> => {
+const validateSwitcher = async ():Promise<void> => {
   if(playersStore.currentPlayer != undefined)
     await axios.post(`http://localhost:5276/api/User/switchReady?name=${playersStore.currentPlayer.name}`);
 };
 
-const displaySwitcher = (val:string):any => {
+const displaySwitcher = (val:string):void => {
   if(val === "play" && windowsValid.value[windows.HELP] === false && windowsValid.value[windows.CARD] === false)
     windowsValid.value[windows.AUTORIZATION] = true;
   else if(val === "help"&& windowsValid.value[windows.AUTORIZATION] === false && windowsValid.value[windows.CARD] === false)
@@ -88,7 +89,7 @@ const displaySwitcher = (val:string):any => {
     windowsValid.value[windows.CARD] = true;
 }
 
-const autorizeComplete = (user: any) => {
+const autorizeComplete = (user: User) => {
   windowsValid.value[windows.AUTORIZATION] = false;
   windowsValid.value[windows.WAITING] = true;
   playersStore.currentPlayer = user;

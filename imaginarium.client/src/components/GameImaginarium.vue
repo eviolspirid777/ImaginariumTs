@@ -3,10 +3,10 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div>
-          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}:{{ store.codeWord }}</span>
+          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}</span>
           <span class="modal-container-exit" @click="hideModalWindow">x</span>
         </div>
-        <ErrorModal :errorText="error" v-if="error.length" @clearError="() => error=''" />
+        <ErrorModal :errorText="error" v-if="typeof error === 'string' && error.length" @clearError="() => error=''" />
       </div>
       <div class="modal-wrapper-game">
         <div class="modal-wrapper-game-score">
@@ -15,50 +15,58 @@
               <li v-for="(player,key) in store.players" :key="key">{{player?.name}} : {{ player?.score }}</li>
             </ul>
         </div>
-        <div class="modal-wrapper-game-code-word" v-if="store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader == true">
-          <span for="me">Ассоциация:</span>
-          <input type="text" id="me" placeholder="Введите ассоциацию" v-model="codeWord">
+        <div v-if="store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader == true" class="modal-wrapper-game-code-word">
+          <span for="me">Ассоциация: {{ codeWord }}</span>
+          <input type="text" id="me" placeholder="Введите ассоциацию" v-model="tempWord" />
+        </div>
+        <div v-else class="modal-wrapper-game-code-word">
+          <span for="me">Ассоциация: {{ codeWord }}</span>
         </div>
         <div v-for="(player,key) in store.players" :key="key">
-          <div v-if="store.codeWord || player?.isLeader" class="modal-wrapper-game-cards">
+          <div class="modal-wrapper-game-cards">
             <ul v-if="player && player.name == store.currentPlayer?.name" >
               <li v-for="(card,key2) in player.cards" :key="key2" @click="selectCard(card)"><img :src="`../../imaginImag/${card?.cardName}`"></li>
             </ul>
           </div>
         </div>
-        <!-- <div class="selected-card" v-if="store.currentPlayer?.selectedCard" style="height: 400px; widows: 400px;">
-          <img :src="`../../ImaginImag/${store.currentPlayer?.selectedCard?.cardName}`">
-        </div> -->
         <div class="modal-wrapper-game-submit">
-          <button class="modal-wrapper-game-button" type="button" @click="submit" :disabled="isDisabled">Отправить</button>
-          <!--Тут будет компонента ожидания(кружок крутящийся), для ожидания других игроков-->
+          <button v-if="codeWord != '' || store.players?.find(p => p?.name == store.currentPlayer?.name)?.isLeader" class="modal-wrapper-game-button" type="button" @click="submit" :disabled="isDisabled">Отправить</button>
+          <div v-else class="modal-wrapper-game-wait">
+              <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+              </svg>
+              <span>Ждем</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <SelectCard v-if="isSelectCard" @hideModal="isSelectCard = false" @nextAdmin="submitCards"/>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref, watch} from "vue"
+import { onMounted, onBeforeUnmount, ref, watch, computed} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue"
 import _ from "lodash"
 import axios from "axios"
-import {type Card} from "../types/Card"
-import {type ScoreCard} from "../types/ScoreCard" 
+import { type Card } from "../types/Card"
+import SelectCard from "../components/SelectingCardWindow.vue"
 
 const emits = defineEmits(["hideModal", "startVoting"]);
 
 const store = usePlayersStore();
 
 const isSelect = ref<boolean>(false);
-const isDisabled = ref<boolean>(false);
+const isDisabled = ref<boolean>(true);
+const isSelectCard = ref<boolean>(false);
 
 const error = ref<String>("")
 
-const codeWord = ref<String>("");
 const currentCard = ref<Card>();
+const tempWord = ref<String>("");
+const codeWord = computed(() => store.codeWord)
 
 let valid = {
   chooseCard: 1,
@@ -66,7 +74,7 @@ let valid = {
   wait: 3
 }
 
-const currentMove = ref({
+const currentMove = ref<Record<number,string>>({
   [valid.chooseCard]:"Выберите карту",
   [valid.chooseCardAdmin]: "Выберите карту и ассоциацию",
   [valid.wait]:"Ждите"
@@ -77,73 +85,67 @@ let fetchScore:any;
 let checkCards:any;
 let checkWord:any;
 
+//заканчивает игру и прячет модалку
 const hideModalWindow = async ():Promise<void> => {
   await playersRequest.userPost('endGame');
   emits("hideModal");
 }
 
-//Срабатывает, когда все нажмут на кнопку ГОТОВО
-const playersReady = async ():Promise<void> => {
-  let cnt = 0;
-  store.players?.forEach( async(player) => {
-    if(store.players && player?.isReady){
-      cnt++;
-      if(store.players.length == cnt){
-        const response = await axios.post(`http://localhost:5276/api/User/playersReady`);
-        store.cards = response.data as Array<ScoreCard>;  //добавляет в стор карточки, которые сейчас в игровой сессии
-      }
-    }
-  })
+//Логика для передачи ЛИДЕРА следующему игроку
+const submitCards = async ():Promise<void> => {
+  await axios.post(`http://localhost:5276/api/User/playersReady`);
 }
 
+//обработка нажатия на кнопку ОТПРАВИТЬ
 const submit = async():Promise<void> => {
   if(!isSelect.value){
-    if(codeWord.value !== ""){
+    if(store.players?.find(p => p?.name === store.currentPlayer?.name)?.isLeader){
+      store.codeWord = tempWord.value;
       await axios.post(`http://localhost:5276/api/User/postWord?word=${codeWord.value}`);
-      store.codeWord = codeWord.value;
     }
     await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
-    playersReady();
+    store.currentPlayer.selectedCard = currentCard.value
     isSelect.value = true;
-    isDisabled.value = true
-    codeWord.value = "";    //обнуляет значение кодового слова
+    isDisabled.value = true;
   }
   else{
     error.value = "Вы уже выбрали карточку!"
   }
 }
 
-const selectCard = async(card: Card) => {
-  currentCard.value = card;
+//Выбор карточки (текущее значение карточки, выключает кнопку ОТПРАВИТЬ)
+const selectCard = (card: Card):void => {
+  currentCard.value = card; //присваивает currentCard значение
+  isDisabled.value = false;
 }
 
+//сортировка по полю score
 const sortByScore = () => {
-  // store.players?.sort((a, b) => {
-  //   if (a && b && a.score !== undefined && b.score !== undefined) {
-  //     return b.score - a.score;
-  //   }
-  //   return 0;
-  // });
-  _.sortBy(store.players, 'score', 'desc'); //сортировка по полю score
+  _.sortBy(store.players, 'score', 'desc');
 };
 
 watch(() => store.cards, (newValue) => {
-  if(newValue?.length == store.players?.length){
-    emits("startVoting")
-  }
+  if(newValue?.length == store.players?.length)
+    isSelectCard.value = true;
 })
 
-watch(() => store.codeWord, (newValue) => {
-  store.codeWord = newValue;
+//Сработает только, когда карточки и игроки выбраны
+watch(() => store.cards, (newValue)=> {
+  if(newValue?.length == store.players?.length)
+    isSelectCard.value = true;
+})
+
+watch(()=> store.players, (newValue)=>{
+  store.players = newValue;
 })
 
 onMounted(async() => {
   store.fetchPlayers();
   sortByScore();
   checkUsers = setInterval(store.fetchPlayers, 100);
-  checkCards = setInterval(store.fetchCards, 300);
-  checkWord = setInterval(store.fetchWord, 300);
-  fetchScore = setInterval(sortByScore, 100);
+  checkCards = setInterval(store.fetchCards, 3000);
+  checkWord = setInterval(store.fetchWord, 3000);
+  fetchScore = setInterval(sortByScore, 10000);
 });
 
 onBeforeUnmount(() => {
@@ -170,6 +172,16 @@ onBeforeUnmount(() => {
     &-game{
       display: flex;
       flex-flow: column nowrap;
+      &-wait{
+        display: flex;
+        flex-flow: column-reverse wrap;
+        height: 185px;
+        width: 200px;
+        span{
+          text-align: center;
+          font-size: 18px;
+        }
+      }
       &-score{
         display: flex;
         flex-flow: column nowrap;
@@ -251,4 +263,44 @@ onBeforeUnmount(() => {
     }
   }
 }
+
+.spinner {
+  animation: rotate 2s linear infinite;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px;
+  width: 50px;
+  height: 50px;
+  
+  & .path {
+    stroke: hsl(51, 73%, 32%);
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+  
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
 </style>

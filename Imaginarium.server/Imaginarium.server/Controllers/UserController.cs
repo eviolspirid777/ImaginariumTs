@@ -7,7 +7,7 @@ namespace Imaginarium.server.Controllers
 	[Route("api/[controller]")]
 	public class UserController : Controller
 	{
-		private static List<User> currentPlayers = new List<User>();		//список текущих игроков в сессии
+		private static List<User> currentPlayers = new List<User>();        //список текущих игроков в сессии
 		private static List<Card> cards = new List<Card>();          //список всех Карточек на сервере
 
 		private static List<ScoreCards> currentCards = new List<ScoreCards>();  //список всех выбранных карточек
@@ -15,7 +15,7 @@ namespace Imaginarium.server.Controllers
 		private static string codeWord = "";
 
 		private static bool isLiquid = true;                        //позволяет замешивать карты один раз
-		private static bool isStart = false;							//запрещает стартовать игру, если сессия уже началась
+		private static bool isStart = false;                            //запрещает стартовать игру, если сессия уже началась
 
 		private void NextAdmin()
 		{
@@ -24,11 +24,13 @@ namespace Imaginarium.server.Controllers
 				User currentAdmin = currentPlayers.FirstOrDefault(player => player.isLeader == true)!;
 				if (currentAdmin == null || currentPlayers.IndexOf(currentAdmin) == currentPlayers.Count - 1)
 				{
+					currentPlayers[currentPlayers.Count - 1].isLeader = false;
 					currentPlayers[0].isLeader = true;
 				}
 				else
 				{
 					int currentIndex = currentPlayers.IndexOf(currentAdmin);
+					currentPlayers[currentIndex].isLeader = false;
 					currentPlayers[currentIndex + 1].isLeader = true;
 				}
 				if (currentAdmin != null)
@@ -53,24 +55,67 @@ namespace Imaginarium.server.Controllers
 			return NotFound();
 		}
 
-		[HttpPost("postWord")]
-		public async Task<IActionResult> PostWord(string word)
-		{
-			codeWord = word;
-			return Ok();
-		}
-
 		[HttpPost("playersReady")]
 		public async Task<IActionResult> PlayersReady()
 		{
-			if(isLiquid == false)
+			if (isLiquid == false)
 			{
 				currentPlayers.ForEach(p => p.isReady = false);
 				NextAdmin();
 				isLiquid = true;
-				codeWord = "";
+				//codeWord = "";
 			}
-			return Ok(currentCards);
+			return Ok();
+		}
+
+		[HttpPost("postCard")]
+		public async Task<IActionResult> PostCard(ScoreCardsResults card)
+		{
+			foreach (var player in currentPlayers)
+			{
+				foreach (var name in card.name)
+				{
+					if (name == player.name)
+					{
+						if (card.isLeader == true)
+						{
+							if (player.isLeader == true && card.score == (currentPlayers.Count - 1))  //если карточку угадали все участники
+							{
+								player.score = player.score;
+							}
+							else if (player.isLeader == true && card.score == 0)     //если карточку никто не угадал
+							{
+								player.score = player.score;					//Админ остается без изменений
+								currentPlayers.ForEach(p =>						//Добавляемм всем игрокам кроме админа 2 балла
+								{
+									if (p.isLeader == false)
+										p.score += 2;
+								});
+								continue;
+							}
+							else if(player.isLeader == true)
+							{
+								player.score += 3 + card.score;				//добавляем админу 3 балла + кол-во людей, которое за него проголосовало
+								currentPlayers.ForEach(p =>
+								{
+									if (p.isLeader == false && card.name.Contains(p.name))			//все остальные игроки, которые правильно проголосовали получают по одному баллу
+										p.score++;
+								});
+								continue;
+							}
+						}
+						else if(card.isLeader == false)
+						{
+							currentPlayers.ForEach(p =>
+							{
+								if (p.name == card.owner)
+									p.score += card.score;
+							});
+                        }
+					}
+				}
+			}
+			return Ok();
 		}
 
 		[HttpPost("selectCard")]
@@ -83,30 +128,30 @@ namespace Imaginarium.server.Controllers
 			//удаляет выбранную карточку из карточек пользователя
 			var tmpCard = currentPlayers.Find(p => p.name == name)!.cards!.Find(p => p.id == cardId);
 			currentPlayers.Find(p => p.name == name)!.selectedCard = new Card(tmpCard!);
-            currentPlayers.Find(p => p.name == name)!.cards!.RemoveAll(p => p.id == cardId);
-            return Ok();
+			currentPlayers.Find(p => p.name == name)!.cards!.RemoveAll(p => p.id == cardId);
+			return Ok();
 		}
 
 		[HttpGet("randomCards")]
-        public async Task<IActionResult> RandomCards()
-        {
-            string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client/ImaginImag/");
-            Console.WriteLine(prop);
-            if (Directory.Exists(prop))
-            {
-                // Получение списка файлов с расширением jpg, png, и т.д. (можете настроить под свои нужды)
-                List<string> imageFiles = Directory.GetFiles(prop, "*.*", SearchOption.AllDirectories)
-                                               .Where(s => s.EndsWith(".jpg") || s.EndsWith(".jpeg") || s.EndsWith(".png") || s.EndsWith(".gif"))
-                                               .ToList();
-                Console.WriteLine("Список изображений в папке:");
-                //обрезаем путь к файлам и оставляем только их контент
-                for (int i = 0; i < imageFiles.Count; i++)
-                {
-                    imageFiles[i] = imageFiles[i].Substring(prop.Length);  //обрезаем
-                    Console.WriteLine($"img {i + 1}: {imageFiles[i]}");     //выводим кол-во изображений на экран
-                    var newCard = new Card { cardUrl = @$"{prop}{imageFiles[i]}", id = i, cardName = imageFiles[i] };       //создаем экземпляр карточки
-                    cards.Add(newCard);      //присваиваем экземпляр
-                }
+		public async Task<IActionResult> RandomCards()
+		{
+			string prop = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName, @"imaginarium.client/ImaginImag/");
+			Console.WriteLine(prop);
+			if (Directory.Exists(prop))
+			{
+				// Получение списка файлов с расширением jpg, png, и т.д. (можете настроить под свои нужды)
+				List<string> imageFiles = Directory.GetFiles(prop, "*.*", SearchOption.AllDirectories)
+											   .Where(s => s.EndsWith(".jpg") || s.EndsWith(".jpeg") || s.EndsWith(".png") || s.EndsWith(".gif"))
+											   .ToList();
+				Console.WriteLine("Список изображений в папке:");
+				//обрезаем путь к файлам и оставляем только их контент
+				for (int i = 0; i < imageFiles.Count; i++)
+				{
+					imageFiles[i] = imageFiles[i].Substring(prop.Length);  //обрезаем
+					Console.WriteLine($"img {i + 1}: {imageFiles[i]}");     //выводим кол-во изображений на экран
+					var newCard = new Card { cardUrl = @$"{prop}{imageFiles[i]}", id = i, cardName = imageFiles[i] };       //создаем экземпляр карточки
+					cards.Add(newCard);      //присваиваем экземпляр
+				}
 				//Для того, чтобы замешало один раз, а не несколько!
 				if (isLiquid == true)
 				{
@@ -129,9 +174,9 @@ namespace Imaginarium.server.Controllers
 				}
 				return Ok();
 			}
-            Console.WriteLine("Указанная папка не существует.");
-            return NoContent();
-        }
+			Console.WriteLine("Указанная папка не существует.");
+			return NoContent();
+		}
 
 		//обнуляет буль, чтобы карточки могли снова замешиваться
 		[HttpPost("endGame")]
@@ -142,7 +187,7 @@ namespace Imaginarium.server.Controllers
 			return Ok();
 		}
 
-        [HttpPost("sliceUser")]
+		[HttpPost("sliceUser")]
 		public async Task<IActionResult> SliceUser(string name)
 		{
 			var userToDelete = currentPlayers.FirstOrDefault(u => u.name == name);
@@ -171,6 +216,18 @@ namespace Imaginarium.server.Controllers
 			return BadRequest();
 		}
 
+		[HttpPost("postWord")]
+		public async Task<IActionResult> PostWord(string word)
+		{
+			if (word != "")
+			{
+				codeWord = word;
+				Console.WriteLine("Code word set to: " + codeWord);
+				return Ok();
+			}
+			return NoContent();
+		}
+
 		[HttpGet("getUsers")]
 		public async Task<IActionResult> getAllUsers()
 		{
@@ -185,6 +242,10 @@ namespace Imaginarium.server.Controllers
 		public async Task<IActionResult> GetUser(string user) => Ok(currentPlayers.Find(u => u.name == user));
 
 		[HttpGet("getWord")]
-		public async Task<IActionResult> GetWord() => Ok(codeWord);
+		public async Task<IActionResult> GetWord()
+		{
+			//return Ok( new { name = "Bob", codeWord = codeWord});
+			return Ok(codeWord);
+		}
 	}
 }
