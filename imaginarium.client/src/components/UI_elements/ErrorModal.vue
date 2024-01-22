@@ -22,8 +22,8 @@ watch(() => error.value, (newValue) => {
 })
 
 setTimeout(() => {
-    error.value = '';
-    emits("clearError")
+  error.value = '';
+  emits("clearError")
 }, 4000);
 
 </script>
