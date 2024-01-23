@@ -89,7 +89,7 @@ namespace Imaginarium.server.Controllers
 				isFetchedScore = false;
 
 				var leader = currentCards.Find(p => p.isLeader == true);
-				bool allPlayersGuessedLeader = currentCards.All(p => p.card == leader.card);
+				bool allPlayersGuessedLeader = currentCards.Where(p => p.isLeader != true).All(p => p.card == leader.card);
 				if (allPlayersGuessedLeader)
 				{
 					// Все игроки угадали карточку ведущего

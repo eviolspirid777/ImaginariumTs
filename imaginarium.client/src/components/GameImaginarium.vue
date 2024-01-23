@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref, watch, computed} from "vue"
+import { onMounted, onBeforeUnmount, ref, watch, computed, type ComputedRef} from "vue"
 import { usePlayersStore } from "@/stores/playersStore";
 import { playersRequest } from "@/http/httpRequests";
 import ErrorModal from "../components/UI_elements/ErrorModal.vue"
@@ -66,7 +66,7 @@ const error = ref<String>("")
 
 const currentCard = ref<Card>();
 const tempWord = ref<String>("");
-const codeWord = computed(() => store.codeWord)
+const codeWord = computed(() => store.codeWord) as ComputedRef<string>
 
 let valid = {
   chooseCard: 1,
@@ -87,6 +87,7 @@ let checkWord:any;
 
 const hideSelectCard = async():Promise<void> => {
   isSelectCard.value = false;
+  isSelect.value = false;
   await axios.post(`http://localhost:5276/api/User/playersReady`);
 }
 
@@ -104,7 +105,8 @@ const submit = async():Promise<void> => {
       await axios.post(`http://localhost:5276/api/User/postWord?word=${codeWord.value}`);
     }
     await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
-    store.currentPlayer.selectedCard = currentCard.value
+    if(store.currentPlayer)
+      store.currentPlayer.selectedCard = currentCard.value
     isSelect.value = true;
     isDisabled.value = true;
   }
@@ -120,7 +122,7 @@ const selectCard = (card: Card):void => {
 }
 
 //сортировка по полю score
-const sortByScore = () => {
+const sortByScore = (): void => {
   _.sortBy(store.players, 'score', 'desc');
 };
 

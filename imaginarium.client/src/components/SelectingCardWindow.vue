@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <span class="modal-container-header">Выберите карту: {{ store.codeWord }}</span>
-        <!-- <span class="fa-solid fa-circle-xmark modal-container-exit" @click="hideModalWindow"></span> -->
+        <span class="fa-solid fa-circle-xmark modal-container-exit" @click="() => emits('hideModal')"></span>
         <ErrorModal :errorText="error" v-if="typeof error === 'string' && error.length" @clearError="() => error=''"></ErrorModal>
       </div>
       <ul class="modal-container-cards">
@@ -44,7 +44,7 @@ const selectCard = async (card:ScoreCard): Promise<void> => {
   // if(store.currentPlayer?.name != undefined)
   //   newCard.value?.name?.push(store.currentPlayer?.name);
   // await axios.post('http://localhost:5276/api/User/postCard', newCard.value);
-  if(isValid.value == true && store.players?.find(p => p?.name == store.currentPlayer?.name)?.isLeader == false && store.currentPlayer?.selectedCard?.cardName == card?.card?.cardName) {
+  if(isValid.value == true && store.players?.find(p => p?.name == store.currentPlayer?.name)?.isLeader == false && store.currentPlayer?.selectedCard?.cardName != card?.card?.cardName) {
     await axios.post(`http://localhost:5276/api/User/selectUserCard?authorName=${store.currentPlayer?.name}&cardName=${card?.card?.cardName}`);
     isValid.value = false;
   }
