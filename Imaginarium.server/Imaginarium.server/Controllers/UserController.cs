@@ -10,12 +10,13 @@ namespace Imaginarium.server.Controllers
 		private static List<User> currentPlayers = new List<User>();        //список текущих игроков в сессии
 		private static List<Card> cards = new List<Card>();          //список всех Карточек на сервере
 
-		private static List<ScoreCards> currentCards = new List<ScoreCards>();  //список всех выбранных карточек
+		private static List<ScoreCardsResults> currentCards = new List<ScoreCardsResults>();  //список всех выбранных карточек
 
 		private static string codeWord = "";
 
 		private static bool isLiquid = true;                        //позволяет замешивать карты один раз
 		private static bool isStart = false;                            //запрещает стартовать игру, если сессия уже началась
+		private static bool isFetchedScore = true;
 
 		private void NextAdmin()
 		{
@@ -62,57 +63,62 @@ namespace Imaginarium.server.Controllers
 			{
 				currentPlayers.ForEach(p => p.isReady = false);
 				NextAdmin();
-				isLiquid = true;
-				//codeWord = "";
+				isLiquid = true; //Запрещает срабатывание этой функции дважды
+				codeWord = "";  //чистим кодовое слово
+				currentCards = new List<ScoreCardsResults>(); //Чистим прошлый список и создаем новый
 			}
 			return Ok();
 		}
 
-		[HttpPost("postCard")]
-		public async Task<IActionResult> PostCard(ScoreCardsResults card)
+		[HttpPost("selectUserCard")]
+		public async Task<IActionResult> SelectUserCard(string authorName, string cardName)
 		{
-			foreach (var player in currentPlayers)
+			var card  = currentCards.Find(c => c.card!.cardName == cardName);
+			card.score += 1;
+			card.name?.Add(authorName);
+			currentPlayers.Find(p => p.name ==  authorName).isReady = true;
+			currentPlayers.Find(p => p.isLeader == true).isReady = true;
+			return Ok();
+		}
+
+		[HttpPost("fetchScore")]
+		public async Task<IActionResult> FetchScore()
+		{
+			if(isFetchedScore == true)
 			{
-				foreach (var name in card.name)
+				isFetchedScore = false;
+
+				var leader = currentCards.Find(p => p.isLeader == true);
+				bool allPlayersGuessedLeader = currentCards.All(p => p.card == leader.card);
+				if (allPlayersGuessedLeader)
 				{
-					if (name == player.name)
+					// Все игроки угадали карточку ведущего
+					leader.score -= 3;// Ведущий идет на 3 хода назад
+									  // Остальные игроки остаются на месте
+					foreach (var player in currentPlayers)
 					{
-						if (card.isLeader == true)
-						{
-							if (player.isLeader == true && card.score == (currentPlayers.Count - 1))  //если карточку угадали все участники
-							{
-								player.score = player.score;
-							}
-							else if (player.isLeader == true && card.score == 0)     //если карточку никто не угадал
-							{
-								player.score = player.score;					//Админ остается без изменений
-								currentPlayers.ForEach(p =>						//Добавляемм всем игрокам кроме админа 2 балла
-								{
-									if (p.isLeader == false)
-										p.score += 2;
-								});
-								continue;
-							}
-							else if(player.isLeader == true)
-							{
-								player.score += 3 + card.score;				//добавляем админу 3 балла + кол-во людей, которое за него проголосовало
-								currentPlayers.ForEach(p =>
-								{
-									if (p.isLeader == false && card.name.Contains(p.name))			//все остальные игроки, которые правильно проголосовали получают по одному баллу
-										p.score++;
-								});
-								continue;
-							}
-						}
-						else if(card.isLeader == false)
-						{
-							currentPlayers.ForEach(p =>
-							{
-								if (p.name == card.owner)
-									p.score += card.score;
-							});
-                        }
+						if (player.isLeader == false)
+							player.score += 3; // Все остальные игроки получают по 3 очка
 					}
+				}
+				else
+				{
+					// Никто не угадал карточку ведущего
+					leader.score -= 2; // Ведущий идет на 2 хода назад
+									   // Очки получают игроки, чьи карточки угадали
+					foreach (var player in currentPlayers)
+					{
+						if (player.selectedCard != null && player.selectedCard != leader.card)
+							player.score += 3; // Игрок получает 3 очка за угаданную карточку
+					}
+				}
+				// Очки для ведущего
+				leader.score += 3 + currentPlayers.Count(player => player.selectedCard == leader.card);
+				// Очки для остальных игроков за угаданные карточки
+				foreach (var player in currentPlayers)
+				{
+					if (player.selectedCard != null && player.selectedCard != leader.card)
+						player.score += 1; // Игрок получает 1 очко за каждого угадавшего его игрока
 				}
 			}
 			return Ok();
@@ -122,7 +128,7 @@ namespace Imaginarium.server.Controllers
 		public async Task<IActionResult> SelectCard(int cardId, string name)
 		{
 			//не работает присваивание карточки на стороне клиента
-			var newCard = new ScoreCards { card = currentPlayers.Find(p => p.name == name)!.cards!.Find(c => c.id == cardId)!, isLeader = currentPlayers.Find(p => p.name == name)!.isLeader, score = 0 };
+			var newCard = new ScoreCardsResults { card = currentPlayers.Find(p => p.name == name)!.cards!.Find(c => c.id == cardId)!, isLeader = currentPlayers.Find(p => p.name == name).isLeader, score = 0, owner=name };
 			currentCards.Add(newCard);
 			currentPlayers.Find(p => p.name == name)!.isReady = true;
 			//удаляет выбранную карточку из карточек пользователя
@@ -246,6 +252,12 @@ namespace Imaginarium.server.Controllers
 		{
 			//return Ok( new { name = "Bob", codeWord = codeWord});
 			return Ok(codeWord);
+		}
+		[HttpPost("unReady")]
+		public async Task<IActionResult> Unready()
+		{
+			currentPlayers.ForEach(p => p.isReady = false);
+			return Ok();
 		}
 	}
 }

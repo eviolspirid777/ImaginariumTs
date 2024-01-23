@@ -41,7 +41,7 @@
       </div>
     </div>
   </div>
-  <SelectCard v-if="isSelectCard" @hideModal="isSelectCard = false" @nextAdmin="submitCards"/>
+  <SelectCard v-if="isSelectCard" @hideModal="hideSelectCard" />
 </template>
 
 <script lang="ts" setup>
@@ -85,15 +85,15 @@ let fetchScore:any;
 let checkCards:any;
 let checkWord:any;
 
+const hideSelectCard = async():Promise<void> => {
+  isSelectCard.value = false;
+  await axios.post(`http://localhost:5276/api/User/playersReady`);
+}
+
 //заканчивает игру и прячет модалку
 const hideModalWindow = async ():Promise<void> => {
   await playersRequest.userPost('endGame');
   emits("hideModal");
-}
-
-//Логика для передачи ЛИДЕРА следующему игроку
-const submitCards = async ():Promise<void> => {
-  await axios.post(`http://localhost:5276/api/User/playersReady`);
 }
 
 //обработка нажатия на кнопку ОТПРАВИТЬ
@@ -109,7 +109,7 @@ const submit = async():Promise<void> => {
     isDisabled.value = true;
   }
   else{
-    error.value = "Вы уже выбрали карточку!"
+    error.value = "Вы уже выбрали карточку";
   }
 }
 
@@ -124,15 +124,12 @@ const sortByScore = () => {
   _.sortBy(store.players, 'score', 'desc');
 };
 
-watch(() => store.cards, (newValue) => {
-  if(newValue?.length == store.players?.length)
-    isSelectCard.value = true;
-})
-
 //Сработает только, когда карточки и игроки выбраны
-watch(() => store.cards, (newValue)=> {
-  if(newValue?.length == store.players?.length)
+watch(() => store.cards, async(newValue)=> {
+  if(newValue?.length == store.players?.length){
     isSelectCard.value = true;
+    await axios.post('http://localhost:5276/api/User/unReady')
+  }
 })
 
 watch(()=> store.players, (newValue)=>{
