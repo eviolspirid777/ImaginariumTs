@@ -61,9 +61,13 @@ namespace Imaginarium.server.Controllers
 		{
 			if (isLiquid == false)
 			{
-				currentPlayers.ForEach(p => p.isReady = false);
-				NextAdmin();
 				isLiquid = true; //Запрещает срабатывание этой функции дважды
+				currentPlayers.ForEach(p =>
+				{
+					p.isReady = false;
+					p.selectedCard = null;
+				});
+				NextAdmin();
 				codeWord = "";  //чистим кодовое слово
 				currentCards = new List<ScoreCardsResults>(); //Чистим прошлый список и создаем новый
 			}
@@ -77,7 +81,7 @@ namespace Imaginarium.server.Controllers
 			card.score += 1;
 			card.name?.Add(authorName);
 			currentPlayers.Find(p => p.name ==  authorName).isReady = true;
-			currentPlayers.Find(p => p.isLeader == true).isReady = true;
+/*			currentPlayers.Find(p => p.isLeader == true).isReady = true;*/
 			return Ok();
 		}
 
@@ -86,14 +90,15 @@ namespace Imaginarium.server.Controllers
 		{
 			if(isFetchedScore == true)
 			{
-				isFetchedScore = false;
+				isFetchedScore = false; //Запрещает срабатывание этой функции дважды
+				isLiquid = false; //буль дря передачи роли админа следующему
 
 				var leader = currentCards.Find(p => p.isLeader == true);
 				bool allPlayersGuessedLeader = currentCards.Where(p => p.isLeader != true).All(p => p.card == leader.card);
 				if (allPlayersGuessedLeader)
 				{
 					// Все игроки угадали карточку ведущего
-					leader.score -= 3;// Ведущий идет на 3 хода назад
+					leader!.score -= 3;// Ведущий идет на 3 хода назад
 									  // Остальные игроки остаются на месте
 					foreach (var player in currentPlayers)
 					{
@@ -170,7 +175,7 @@ namespace Imaginarium.server.Controllers
 					}
 					isLiquid = false;
 					isStart = true;
-					NextAdmin();
+/*					NextAdmin();*/
 					/*			Console.WriteLine("Раздача карточек:");
 								foreach (var player in currentPlayers)
 								{
@@ -248,10 +253,12 @@ namespace Imaginarium.server.Controllers
 		public async Task<IActionResult> GetUser(string user) => Ok(currentPlayers.Find(u => u.name == user));
 
 		[HttpGet("getWord")]
-		public async Task<IActionResult> GetWord()
+		public async Task<IActionResult> GetWord() => Ok(codeWord);
+		[HttpPost("firstPlayerAdmin")]
+		public async Task<IActionResult> FirstPlayerAdmin()
 		{
-			//return Ok( new { name = "Bob", codeWord = codeWord});
-			return Ok(codeWord);
+			currentPlayers[0].isLeader = true;
+			return Ok();
 		}
 		[HttpPost("unReady")]
 		public async Task<IActionResult> Unready()

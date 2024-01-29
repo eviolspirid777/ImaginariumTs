@@ -22,7 +22,7 @@ import { usePlayersStore } from '@/stores/playersStore';
 import { playersRequest } from "../http/httpRequests"
 
 const emits = defineEmits(["hideModal", "switch", "startGame"]);
-const hoverIcon = ref<boolean>(false);
+const hoverIcon = ref(false);
 
 const store = usePlayersStore();
 

@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div>
-          <span class="modal-container-header">{{currentMove[valid.chooseCard]}}</span>
+          <span class="modal-container-header">{{header}}</span>
           <span class="modal-container-exit" @click="hideModalWindow">x</span>
         </div>
         <ErrorModal :errorText="error" v-if="typeof error === 'string' && error.length" @clearError="() => error=''" />
@@ -58,16 +58,6 @@ const emits = defineEmits(["hideModal", "startVoting"]);
 
 const store = usePlayersStore();
 
-const isSelect = ref<boolean>(false);
-const isDisabled = ref<boolean>(true);
-const isSelectCard = ref<boolean>(false);
-
-const error = ref<String>("")
-
-const currentCard = ref<Card>();
-const tempWord = ref<String>("");
-const codeWord = computed(() => store.codeWord) as ComputedRef<string>
-
 let valid = {
   chooseCard: 1,
   chooseCardAdmin: 2,
@@ -80,6 +70,17 @@ const currentMove = ref<Record<number,string>>({
   [valid.wait]:"Ждите"
 });
 
+const isSelect = ref<boolean>(false);
+const isDisabled = ref<boolean>(true);
+const isSelectCard = ref<boolean>(false);
+
+const error = ref<String>("")
+
+const currentCard = ref<Card>();
+const tempWord = ref<String>("");
+const codeWord = computed(() => store.codeWord) as ComputedRef<string>
+const header = ref<String>(currentMove.value[valid.chooseCard])
+
 let checkUsers:any;
 let fetchScore:any;
 let checkCards:any;
@@ -88,6 +89,7 @@ let checkWord:any;
 const hideSelectCard = async():Promise<void> => {
   isSelectCard.value = false;
   isSelect.value = false;
+  await axios.post('http://localhost:5276/api/User/fetchScore')
   await axios.post(`http://localhost:5276/api/User/playersReady`);
 }
 
@@ -106,9 +108,10 @@ const submit = async():Promise<void> => {
     }
     await axios.post(`http://localhost:5276/api/User/selectCard?cardId=${currentCard.value?.id}&name=${store.currentPlayer?.name}`);
     if(store.currentPlayer)
-      store.currentPlayer.selectedCard = currentCard.value
+      store.currentPlayer.selectedCard = currentCard.value;
     isSelect.value = true;
     isDisabled.value = true;
+    header.value = currentMove.value[valid.wait];
   }
   else{
     error.value = "Вы уже выбрали карточку";
@@ -127,7 +130,8 @@ const sortByScore = (): void => {
 };
 
 //Сработает только, когда карточки и игроки выбраны
-watch(() => store.cards, async(newValue)=> {
+watch(() => store.cards, async(newValue) => {
+  store.cards = newValue;
   if(newValue?.length == store.players?.length){
     isSelectCard.value = true;
     await axios.post('http://localhost:5276/api/User/unReady')
@@ -139,7 +143,8 @@ watch(()=> store.players, (newValue)=>{
 })
 
 onMounted(async() => {
-  store.fetchPlayers();
+  await axios.post("http://localhost:5276/api/User/firstPlayerAdmin")
+  await store.fetchPlayers();
   sortByScore();
   checkUsers = setInterval(store.fetchPlayers, 100);
   checkCards = setInterval(store.fetchCards, 3000);
@@ -267,7 +272,7 @@ onBeforeUnmount(() => {
   animation: rotate 2s linear infinite;
   z-index: 2;
   position: absolute;
-  top: 50%;
+  top: 70%;
   left: 50%;
   margin: -25px 0 0 -25px;
   width: 50px;
